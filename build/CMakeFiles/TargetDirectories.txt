@@ -1,6 +1,0 @@
-C:/Demo/lightcyber/build/CMakeFiles/minification.dir
-C:/Demo/lightcyber/build/CMakeFiles/lightcyber.dir
-C:/Demo/lightcyber/build/CMakeFiles/texture_packing.dir
-C:/Demo/lightcyber/build/CMakeFiles/symbolization.dir
-C:/Demo/lightcyber/build/CMakeFiles/ALL_BUILD.dir
-C:/Demo/lightcyber/build/CMakeFiles/ZERO_CHECK.dir
