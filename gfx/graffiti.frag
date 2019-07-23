@@ -1,4 +1,4 @@
-/* Gross Gloss by Team210 - 64k intro by Team210 at Solskogen 2k19
+/* Lightcyber by Team210 - 64k intro by Team210 at Solskogen 2k19
 * Copyright (C) 2019  Alexander Kraus <nr4@z10.info>
 *
 * This program is free software: you can redistribute it and/or modify
@@ -20,160 +20,161 @@
 uniform float iTime;
 uniform vec2 iResolution;
 
-float nbeats;
-float iScale;
-
 // Global constants
 const float pi = acos(-1.);
 const vec3 c = vec3(1.0, 0.0, -1.0);
 float a = 1.0;
 
-void hsv2rgb(in vec3 hsv, out vec3 rgb);
-void rgb2hsv(in vec3 rgb, out vec3 hsv);
+float iScale, nbeats;
+
 void rand(in vec2 x, out float n);
 void lfnoise(in vec2 t, out float n);
+void mfnoise(in vec2 x, in float d, in float b, in float e, out float n);
+void dtriangle(in vec2 p, in vec2 p0, in vec2 p1, in vec2 p2, out float dst);
+void dbox(in vec2 x, in vec2 b, out float d);
 void dlinesegment(in vec2 x, in vec2 p1, in vec2 p2, out float d);
-float dist2(vec2 p0,vec2 p1,vec2 p2,vec2 x,float t);
-void dspline2(in vec2 x, in vec2 p0, in vec2 p1, in vec2 p2, out float ds);
 void stroke(in float d0, in float s, out float d);
+void dvoronoi(in vec2 x, out float d, out vec2 z);
+
+void graf(in vec2 x, out float d)
+{
+    x.y *= .7;
+    float size = .4,
+        n,
+        da;
+    vec2 y = vec2(mod(x.x, size)-.5*size, x.y),
+        yi = (x-y)/size,
+        x1,
+        x2,
+        x3;
+    
+    dbox(y,vec2(.75,.75)*size, d);
+    
+    // lines
+    rand(yi, n);
+    x1 = vec2(-.5+.02+n*.96, .75)*size,
+    x2 = vec2(.5-.02-n*.96, -.75)*size;
+    x1.x = floor(5.*x1.x)/5.;
+    x2.x = floor(5.*x2.x)/5.;
+    x1.x = max(x1.x,-.4*size);
+    x1.x = min(x1.x,.4*size);
+    x2.x = max(x2.x,-.4*size);
+    x2.x = min(x2.x,.4*size);
+    dlinesegment(y, x1, x2, da);
+    stroke(da, .02, da);
+    d = max(d, -da);
+    
+    // upper triangles
+    rand(yi+1337., n);
+	x1 = vec2(-.55+n,.75)*size*1.05,
+    x2 = vec2(.5-n,.75)*size*1.05,
+    x3 = .75*(.8-n)*size*1.05*c.yx-.01*c.yx;
+    x1 = round(15.*x1)/15.;
+    x2 = round(15.*x2)/15.;
+    x3 = round(15.*x3)/15.;
+    dtriangle(y, x1, x2, x3, da);
+    d = max(d, -da);
+    
+    // lower triangles
+    rand(yi+2337., n);
+    x1 = vec2(-.5+n,-.75)*size*1.05,
+    x2 = vec2(.55-n,-.75)*size*1.05,
+    x3 = -.75*(.8-n)*size*1.05*c.yx+.01*c.yx;
+    x1 = round(15.*x1)/15.;
+    x2 = round(15.*x2)/15.;
+    x3 = round(15.*x3)/15.;
+    dtriangle(y, x1, x2, x3, da);
+    d = max(d, -da);
+}
+
 void zextrude(in float z, in float d2d, in float h, out float d);
+void add(in vec2 sda, in vec2 sdb, out vec2 sdf);
+
+void scene(in vec3 x, out vec2 sdf)
+{
+    x.x += .3*iTime;
+    
+    vec2 n;
+    lfnoise(x.x*c.xx-iTime, n.x);
+    lfnoise(x.x*c.xx-iTime-1337., n.y);
+    x.yz += .3*vec2(cos(x.x), sin(x.x))*n;
+    
+    float d, da;
+    
+    graf(x.xy, d);
+    stroke(d+mix(.01,.04, iScale), mix(.01,.04, iScale), da);
+    //stroke(d,.01,da);
+    
+    float v;
+    vec2 ind;
+    dvoronoi(12.*x.xy, v, ind);
+    
+    zextrude(x.z, -d, .1-.1*v, d);
+    
+	sdf = vec2(d,1.);
+    float modsize = .05,
+		y = mod(d-.3-.02*iTime,modsize)-.5*modsize,
+        yi = (d-y)/modsize;
+    
+    float na;
+    lfnoise(2.*yi*c.xx-.3*iTime, na);
+
+    zextrude(x.z-.05*na, -y, mix(0.,.05+.05*na,iScale), d);
+    //stroke(d,mix(0.,.035,iScale),d);
+    
+    
+    
+    add(sdf, vec2(d, 1.), sdf);
+    
+    zextrude(x.z, -da, .25, da);
+	add(sdf, vec2(da, 1.), sdf);
+    
+    add(sdf, vec2(x.z+.25,1.), sdf);
+}
+
+void normal(in vec3 x, out vec3 n, in float dx);
+
 float sm(float d)
 {
     return smoothstep(1.5/iResolution.y, -1.5/iResolution.y, d);
 }
-void smoothmin(in float a, in float b, in float k, out float dst);
-float ind;
-void graf(in vec2 x, in vec2 size, in float w, out float dst)
-{
-    x.x += .3*iTime;
-    x.y -= .1;
-    
-    vec2 y = vec2(mod(x.x, size.x)-.5*size.x, x.y);
-    ind = (y.x-x.x)/size.x;
-    vec3 r,
-        d;
-    
-    size.x -= 2.*w; 
-    
-    rand(vec2(ind,0.), r.x);
-    rand(vec2(ind,1337.), r.y);
-    rand(vec2(ind,2337.), r.z);
-    
-    vec2 pc = vec2(.5*size.x*(-1.+2.*r.y), 0.);
-    
-    // x component of r selects first actor
-    if(r.x < .5) // Lin
-    {
-        vec2 p1 = vec2(.5*size.x*(-1.+4.*r.x),-.5*size.y),
-            p2 = pc;
-        dlinesegment(y, p1, p2, dst);
-    }
-    else // Quad
-    {
-        vec2 p1 = vec2(.5*size.x*(-1.+4.*(r.x-.5)),-.5*size.y),
-            p2 = vec2(.5*size.x*(-1.+2.*r.y), -.5*size.y),
-            p3 = pc;
-        dspline2(y, p1, p2, p3, dst);
-    }
-    
-    // y component of r selects connection type
-    
-    // z component of r selects second actor
-    if(r.z < .5) // Lin
-    {
-        vec2 p1 = vec2(.5*size.x*(-1.+4.*r.z),.5*size.y),
-            p2 = pc;
-        dlinesegment(y, p1, p2, d.x);
-    }
-    else // Quad
-    {
-        vec2 p1 = vec2(.5*size.x*(-1.+4.*(r.z-.5)),.5*size.y),
-            p2 = vec2(.5*size.x*(-1.+2.*r.y), .5*size.y),
-            p3 = pc;
-        dspline2(y, p1, p2, p3, d.x);
-    }
-    
-    dst = min(dst, d.x);
-    
-    // Generate displacement
-    lfnoise(12.*x, d.y);
-    lfnoise(22.*x, d.z);
-    d.y += .3*d.z;
-    d.y = floor(.2+d.y);
-    
-    stroke(dst, w+.08*d.y, dst);
-}
 
-void add(in vec2 sda, in vec2 sdb, out vec2 sdf);
-void scene(in vec3 x, out vec2 sdf)
-{
-    float n;
-    lfnoise(5.*x.xy+iTime*c.xy, n);
-    x.z += .03*n;
-    
-    float d = 1., da;
-    for(float i=0.; i<2.; i+=1.)
-    {
-    	graf(x.xy-1337.333*i*c.xy, vec2(.4,.6), .05, da);
-        //d = min(d, da);
-        float rr;
-        rand(i*c.xx*1.e2,rr); 
-        zextrude(x.z, -d+.5*abs(x.z), .07+.06*rr, d);
-        stroke(d,mix(.02,.04,iScale), d);
-        smoothmin(d, da, .2, d);
-    }
-    d = mix(1., d, smoothstep(19., 23., iTime));
-    sdf = vec2(d, 2.);
-    
-    add(sdf, vec2(x.z+.05,1.), sdf);
-}   
-
-void normal(in vec3 x, out vec3 n, in float dx);
 void colorize(in vec2 x, out vec3 col)
 {
     x.x += .3*iTime;
-    x.y -= .05;
+
+    float n;
+    lfnoise(x.x*c.xx-iTime, n);
+    x.y += .3*cos(x.x)*n;
     
-    col = .5*c.xxx;
+    float d;
+    graf(x, d);
+    col = mix(col, vec3(.9,.3,.7), sm(d-.2));
+    col = mix(col, vec3(.3,.7,.9), sm(d));
+    float da = d;
+    stroke(d+mix(.01,.03, iScale), mix(.01,.04,iScale), d);
+    //stroke(d,.01, d);
+    col = mix(col, 1.4*col, sm(d));
+    stroke(d, .001, d);
+    col = mix(col, 1.3*col, sm(d));
     
-    float s = .1;
-    vec2 dd = mod(x, s)-.5*s;
-    stroke(dd.x, .005, dd.x);
-    stroke(dd.y, .005, dd.y);
-    col = mix(col, c.xxx, sm(min(dd.x, dd.y)));
-    
-    float d = 1., da;
-    for(float i=0.; i<2.; i+=1.)
+    if(da < .02 && da > -.02)
     {
-    	graf(x.xy-1337.333*i*c.xy-.3*iTime*c.xy, vec2(.4,.6), .05, da);
-        //d = min(d, da);
-        float rr;
-        rand(i*c.xx*1.e2,rr); 
-        stroke(da,.18, da);
-        smoothmin(d, da, .2, d);
+        lfnoise(5.*x, da);
+	    mfnoise(x, 32., 422., .45, d);
+        d = .5*(d+da);
+		col = mix(col, vec3(.4,.2,.9), sm(d));
+        stroke(d, .1, d);
+        col = mix(col, 1.5*col, sm(d));
     }
-    d = mix(1., d, smoothstep(15., 19., iTime));
-    vec3 c1 = vec3(.78,.61*abs(2.*x.y),.15);
     
-//     vec3 hsv;
-//     rgb2hsv(c1, hsv);
-//     float na;
-//     lfnoise(x.xy-iTime+4.*hsv.x, na);
-//     hsv.x = mod(1.*hsv.x+.2*na+iTime, 2.*pi);
-//     hsv2rgb(hsv, c1);
-    
-    col = mix(col, c1, sm(d));
-    
-    if(d != 1.)
-    {
-        stroke(d-.03, .03, d);
-        col = mix(col, c.yyy, sm(d));
-    }
+    col *= mix(1., 1.6, iScale);
 }
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
     a = iResolution.x/iResolution.y;
+    
     nbeats = mod(iTime, 60./29.);
     iScale = nbeats-30./29.;
     iScale = smoothstep(-5./29., 0., iScale)*(1.-smoothstep(0., 15./29., iScale));
@@ -188,31 +189,31 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         dir,
         n,
         x;
-    int N = 150,
+    int N = 250,
         i;
     t = uv.x * r + uv.y * u;
     dir = normalize(t-o);
 
-    float d = -(o.z-.08)/dir.z;
+    float d = -(o.z-.35)/dir.z;
     
     for(i = 0; i<N; ++i)
     {
      	x = o + d * dir;
         scene(x,s);
         if(s.x < 1.e-4)break;
-        if(x.z<-.1)
+        if(x.z<-.35)
         {
             col = .2*c.xxx;
             i = N;
             break;
         }
-        d += min(s.x,5.e-3);
+        d += min(s.x,5.e-2);
         //d += s.x;
     }
     
     if(i < N)
     {
-        normal(x,n, 5.e-3);
+        normal(x,n, 1.e-2);
         
         if(s.y == 1.)
         {
@@ -221,29 +222,13 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
             col = .1*col
                 + 1.*col * abs(dot(l,n))
                 + 1.5 * col * abs(pow(dot(reflect(x-l,n),dir),2.));
-            
         }
         else if(s.y == 2.)
         {
             vec3 l = normalize(x+c.xzx);
             float r;
             lfnoise(x.xy, r);
-            col = vec3(0.99,0.43,0.15);
-            
-            vec3 hsv;
-//             rgb2hsv(col, hsv);
-//             float na;
-//             lfnoise(x.xy-iTime+4.*hsv.x, na);
-//             hsv.x = mod(1.*hsv.x+.2*na+iTime, 2.*pi);
-//             hsv2rgb(hsv, col);
-            
-            vec3 c2 = vec3(0.44,0.07,0.66);
-//             rgb2hsv(c2, hsv);
-//             lfnoise(x.xy+iTime+4.*hsv.x, na);
-//             hsv.x = mod(1.*hsv.x+.2*na-iTime, 2.*pi);
-//             hsv2rgb(hsv, c2);
-            
-            col = mix(col,c2,sin(2.*iScale*r*x));
+            col = mix(vec3(0.99,0.43,0.15),vec3(0.44,0.07,0.66),sin(2.*iScale*r*x));
             col = .1*col
                 + .8*col * abs(dot(l,n))
                 + 6.5*col * abs(pow(dot(reflect(x-l,n),dir),3.));
@@ -252,12 +237,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     
     //col += col;
     
-    col *= col;
+    col *= col*col;
     col = mix(col, c.yyy, clamp((d-2.-(o.z-.2)/dir.z)/4.,0.,1.));
-    
-    col = mix(c.yyy, col, smoothstep(0., 1., iTime));
-    col = mix(col, c.yyy, smoothstep(48.655, 49.655, iTime));
-    
     fragColor = vec4(clamp(col,0.,1.),1.0);
 }
 
