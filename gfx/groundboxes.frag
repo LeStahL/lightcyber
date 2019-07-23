@@ -201,6 +201,7 @@ void rot3(in vec3 p, out mat3 rot)
 }
 
 vec2 ind=c.yy;
+
 void scene(in vec3 x, out vec2 sdf)
 {    
     
@@ -224,7 +225,7 @@ void scene(in vec3 x, out vec2 sdf)
     x = RR * x;
     //*/
     
-    for(float size = .1; size < .35; size += .0125)
+    for(float size = .1; size < .55; size += .0125)
     {
         dbox3(x, size*c.xxx, d);
         stroke(d, .001, d);
@@ -299,7 +300,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     dir = normalize(t-o);
     float d = 0., ra, ss, inside = 0., dd;
     
-    for(ss = .3; ss >= .1; ss -= .0125)
+    for(ss = .5; ss >= .1; ss -= .0125)
     {
         size = ss*c.xxx+1.e-4;
 
@@ -315,6 +316,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         dn = mix(dn, vec4(tlo.y,c.yxy), float(all(lessThan(abylo,size.xz)))*step(tlo.y,dn.x));
         dn = mix(dn, vec4(tlo.z,c.yyx), float(all(lessThan(abzlo,size.xy)))*step(tlo.z,dn.x));
 
+        inside += .05;
+        
         if(ss == 3.)dd = dn.r;
         d = dn.r;
         
@@ -322,7 +325,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         scene(x, s);
         if(s.x < 1.e-4)break;
         
-        else inside += .1;
     }
     
     if(s.x > 1.e-4 && uv.y<-2.e-4)
