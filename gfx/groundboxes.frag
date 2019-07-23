@@ -333,6 +333,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         x = o + d * dir;
         scene(x, s);
     }
+    else x = o + d * dir;
     
     if(i < N)
     {
@@ -401,6 +402,19 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
             col = .1*col
                 + 1.*col * abs(dot(l,n))
                 + 1.5 * col * abs(pow(dot(reflect(x-l,n),dir),2.));
+                
+            vec3 dc;
+
+            vec3 zz = mod(x, .025)-.5*.025, zi = x-zz;
+            rand(zi.xy+zi.yz+zi.zx, dc.x);
+            rand(zi.xy+zi.yz+zi.zx+1337., dc.y);
+            rand(zi.xy+zi.yz+zi.zx+2337., dc.z);
+            float da;
+            dbox3(zz, .01*c.xxx, da);
+            stroke(da, .001, da);
+            col = mix(col, 1.2*col*col+.2*dc, sm(da));
+            stroke(da-.002, .001, da);
+            col = mix(col, 1.6*col*col, sm(da));
         }
         else if(s.y == -2.)
         {
@@ -425,12 +439,17 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     
     col *= 1.2;
     //col = .3*sqrt(col);
-    col *= col;
-    col *= col*col;
-    //col = mix(col, c.yyy, clamp((d-2.-(o.z-.2)/dir.z)/4.,0.,1.));
     
-    //col *= mix(col, length(col)/sqrt(3.)*c.xxx, iScale);
 
+    col *= col;
+    
+    
+//     col = mix(col, .4*col, clamp(length(col)/sqrt(3.),0.,1.));
+//     col = mix(col, col/.4, 1.-clamp(length(col)/sqrt(3.),0.,1.));
+
+    
+    col *= col*col;
+    
     fragColor = vec4(clamp(col,0.,1.),1.0);
 }
 
