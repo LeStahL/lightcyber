@@ -20,7 +20,6 @@
 uniform float iTime;
 uniform vec2 iResolution;
 
-
 /* Gross Gloss by Team210 - 64k intro by Team210 at Solskogen 2k19
  * Copyright (C) 2019  Alexander Kraus <nr4@z10.info>
  *
@@ -225,17 +224,17 @@ void scene(in vec3 x, out vec2 sdf)
     x = RR * x;
     //*/
     
-    for(float size = .1; size < .35; size += .1)
+    for(float size = .1; size < .35; size += .0125)
     {
         dbox3(x, size*c.xxx, d);
         stroke(d, .001, d);
         vec2 sda = vec2(d,3.+size);
 
         float n;
-        vec3 y = mod(x,.25*size)-.5*.25*size,
+        vec3 y = mod(x,.125*size)-.5*.125*size,
             yi = (x-y)/size;
 		ind = yi.xy+yi.yz+yi.xz;
-        lfnoise(1.6*ind+5.*size-1.1*iTime, n);
+        lfnoise(3.6*ind+15.*size-1.1*iTime, n);
         
         if(n>-.3)
         {
@@ -291,75 +290,46 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         dir,
         n,
         x,
-        size = .35*c.xxx;
+        size = .301*c.xxx;
         
-    int N = 950,
+    int N = 150,
         i = 0;
     t = uv.x * r + uv.y * u;
     t = RR * t;
     dir = normalize(t-o);
+    float d = 0., ra, ss, inside = 0., dd;
     
-    vec3 tlo = min((size-o)/dir,(-size-o)/dir); // Select 3 visible planes
-    vec2 abxlo = abs(o.yz + tlo.x*dir.yz),
-        abylo = abs(o.xz + tlo.y*dir.xz),
-        abzlo = abs(o.xy + tlo.z*dir.xy);
+    for(ss = .3; ss >= .1; ss -= .0125)
+    {
+        size = ss*c.xxx+1.e-4;
 
-    vec4 dn = 100.*c.xyyy;
-    float d = 0., ra;
-    
-    dn = mix(dn, vec4(tlo.x,c.xyy), float(all(lessThan(abxlo,size.yz)))*step(tlo.x,dn.x));
-    dn = mix(dn, vec4(tlo.y,c.yxy), float(all(lessThan(abylo,size.xz)))*step(tlo.y,dn.x));
-    dn = mix(dn, vec4(tlo.z,c.yyx), float(all(lessThan(abzlo,size.xy)))*step(tlo.z,dn.x));
-    
-    d = dn.r;
-    /*
-    if(d < 10.) 
-    {
-        fragColor = c.xyyx;
-        return;
-    }*/
-    
-    int inside = 0;
-    if(d < 2.)
-    {
-        inside = 1;
-        for(i = 0; i<N; ++i)
-        {
-            x = o + d * dir;
-            scene(x,s);
-            if(s.x < 1.e-4)break;
-            if(x.y<-.5)
-            {
-                col = .2*c.xxx;
-                i = N;
-                break;
-            }
-            //d += s.x;
-            //d += exp(-1.5e0*d)*s.x;
-            d += s.x<1.e-1?min(s.x,1.e-3):s.x;
-        }
-    }
-    if(d > 2. || i==N) 
-    {
-        d = -(o.y+.37)/dir.y;
+        vec3 tlo = min((size-o)/dir,(-size-o)/dir); // Select 3 visible planes
+        vec2 abxlo = abs(o.yz + tlo.x*dir.yz),
+            abylo = abs(o.xz + tlo.y*dir.xz),
+            abzlo = abs(o.xy + tlo.z*dir.xy);
+
+        vec4 dn = 100.*c.xyyy;
+        
+
+        dn = mix(dn, vec4(tlo.x,c.xyy), float(all(lessThan(abxlo,size.yz)))*step(tlo.x,dn.x));
+        dn = mix(dn, vec4(tlo.y,c.yxy), float(all(lessThan(abylo,size.xz)))*step(tlo.y,dn.x));
+        dn = mix(dn, vec4(tlo.z,c.yyx), float(all(lessThan(abzlo,size.xy)))*step(tlo.z,dn.x));
+
+        if(ss == 3.)dd = dn.r;
+        d = dn.r;
+        
         x = o + d * dir;
         scene(x, s);
+        if(s.x < 1.e-4)break;
         
-        for(i = 0; i<N; ++i)
-        {
-            x = o + d * dir;
-            scene(x,s);
-            if(s.x < 1.e-4)break;
-            if(x.y<-.5)
-            {
-                col = .2*c.xxx;
-                i = N;
-                break;
-            }
-            d += s.x;
-            //d += exp(-1.5e0*d)*s.x;
-            //d += s.x<1.e-1?min(s.x,1.e-3):s.x;
-        }
+        else inside += .1;
+    }
+    
+    if(s.x > 1.e-4 && uv.y<-2.e-4)
+    {
+        d = -(o.y+.375)/dir.y;
+        x = o + d * dir;
+        scene(x, s);
     }
     
     if(i < N)
@@ -381,14 +351,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         else if(dp.x < dd && dp.z < dd) n = f;
         else if(dp.x < dd && dp.y < dd) n = u;
         else s.y = -1.;
-        /*
-        if(dp.x+dp.y < .1*dd) ;
-        else if(dp.y+dp.z < .1*dd) ;
-        else if(dp.z+dp.x < .1*dd) ;
-        else s.y = -1.;
-        */
-        vec3 l = normalize(x+.2*mix(c.yxx,c.yxz,iScale));
-        
+
+        vec3 l = normalize(x+.2*c.yyx);
         
         if(s.y == 1.)
         {
@@ -406,8 +370,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
             col = mix(col, c1, .5+.5*ra);
             col = .3*c.xxx;
             col = .1*col
-                + .8*col * abs(dot(l,n))
-                + 1.*col * abs(pow(dot(reflect(x-l,n),dir),3.));
+                + .4*col * abs(dot(l,n))
+                + .3*col * abs(pow(dot(reflect(x-l,n),dir),3.));
         }
         else if(s.y >= 3.)
         {
@@ -448,17 +412,18 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
     }
     
-    if(inside == 1)
+    if(s.y == -1.)
     {
         vec3 c1 = mix(vec3(0.99,0.43,0.15),vec3(0.44,0.07,0.66),.5+.5*sin(2.*iScale*ra*x));
-    	col = mix(col, c1, .3);
+    	
+        col = mix(col, c1, .5*inside);
     }
     
     col = mix(col, c.yyy, smoothstep(2., 3., d));
     
     col *= 1.2;
     //col = .3*sqrt(col);
-    //col *= col;
+    col *= col;
     col *= col*col;
     //col = mix(col, c.yyy, clamp((d-2.-(o.z-.2)/dir.z)/4.,0.,1.));
     
