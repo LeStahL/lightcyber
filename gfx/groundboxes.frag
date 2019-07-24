@@ -207,7 +207,9 @@ void scene(in vec3 x, out vec2 sdf)
     
     float d,
         s = .1;
+    /*
     vec2 x2 = mod(x.xz,s)-.5*s;
+	
 	
     ind = (x.xz - x2)/s;
     dbox(x2, .5*s*c.xx, d);
@@ -215,8 +217,8 @@ void scene(in vec3 x, out vec2 sdf)
     d = max(x.y,d);
     d = abs(d);
     sdf = vec2(d,2.);
-    
-    //sdf = c.xy;
+    */
+    sdf = c.xy;
     //sdf = vec2(x.y+.3, -2.);
     
     /**
@@ -276,7 +278,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     a = iResolution.x/iResolution.y;
     
     mat3 RR;
-    rot3(-pi/4.*c.yxy, RR);
+    rot3(/*-pi/4.*c.yxy*/.2*iTime*vec3(1.1,1.4,1.6), RR);
     
     nbeats = mod(iTime, 60./29.);
     iScale = nbeats-30./29.;
@@ -332,6 +334,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         d = -(o.y+.375)/dir.y;
         x = o + d * dir;
         scene(x, s);
+        i=N;
     }
     else x = o + d * dir;
     
@@ -353,9 +356,9 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         if(dp.y < dd && dp.z < dd) n = r;
         else if(dp.x < dd && dp.z < dd) n = f;
         else if(dp.x < dd && dp.y < dd) n = u;
-        else s.y = -1.;
+        s.y = -1.;
 
-        vec3 l = normalize(x+.2*c.yyx);
+        vec3 l = normalize(x+.03*normalize(x-o));
         
         if(s.y == 1.)
         {
@@ -401,7 +404,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
             col = .8+.2*col;
             col = .1*col
                 + 1.*col * abs(dot(l,n))
-                + 1.5 * col * abs(pow(dot(reflect(x-l,n),dir),2.));
+                + 1.5 * col * abs(pow(dot(reflect(x-l,n),dir),3.));
                 
             vec3 dc;
 
