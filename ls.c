@@ -27,6 +27,7 @@ int _fltused = 0;
 
 #ifdef MIDI
 
+int btns = 1;
 void select_button(int index)
 {
     for(int i=0; i<40; ++i)
@@ -41,7 +42,8 @@ void select_button(int index)
         scene_override = 1;
     }
     
-    DWORD out_msg = 0x9 << 4 | index << 8 | 57 << 16;
+    DWORD out_msg = 0x9 << 4 | index << 8 | btns << 16;
+    btns = 1+(btns+1)%125;
     midiOutShortMsg(hMidiOut, out_msg);
 }
 
