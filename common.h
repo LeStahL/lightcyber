@@ -128,7 +128,40 @@ void debugp(int program)
 
 int w = 1920, h = 1080;
 
+#ifdef MIDI
+HMIDIOUT hMidiOut;
+#endif
+
 int
+#ifdef MIDI
+    // MIDI controller values
+    fader_0_value,
+    fader_1_value,
+    fader_2_value,
+    fader_3_value,
+    fader_4_value,
+    fader_5_value,
+    fader_6_value,
+    fader_7_value,
+    fader_0_location,
+    fader_1_location,
+    fader_2_location,
+    fader_3_location,
+    fader_4_location,
+    fader_5_location,
+    fader_6_location,
+    fader_7_location,
+    
+    dial_0_value,
+    dial_1_value,
+    dial_2_value,
+    dial_3_value,
+    dial_4_value,
+    dial_5_value,
+    dial_6_value,
+    dial_7_value,
+#endif
+    
     // SFX
     sfx_program,
     sfx_handle,

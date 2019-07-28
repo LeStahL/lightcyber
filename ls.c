@@ -15,7 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#define DEBUG
+#define DEBUG // Shader debug i/o
+#define MIDI // APC40 mkII controls
 
 const char *demoname = "Lightcyber/Team210";
 unsigned int muted = 0.;
@@ -24,6 +25,65 @@ int _fltused = 0;
 
 #include "common.h"
 
+#ifdef MIDI
+
+#define NOTE_OFF 0x8
+#define NOTE_ON 0x9
+#define CONTROL_CHANGE 0xB
+
+// #define APC_TOPDIAL 0x3
+// #define APC_RIGHTDIAL 0x1
+// #define APC_FADER
+// #define APC_BUTTONMATRIX 0x2
+void CALLBACK MidiInProc_apc40mk2(HMIDIIN hMidiIn, UINT wMsg, DWORD dwInstance, DWORD dwParam1, DWORD dwParam2)
+{
+    for(int i=0; i<40; ++i)
+    {
+        DWORD out_msg = 0x8 << 4 | i << 8 | 0 << 16;
+        midiOutShortMsg(hMidiOut, out_msg);
+    }
+    
+    if(wMsg == MIM_DATA)
+    {
+        BYTE b1 = (dwParam1 >> 24) & 0xFF,
+            b2 = (dwParam1 >> 16) & 0xFF,
+            b3 = (dwParam1 >> 8) & 0xFF,
+            b4 = dwParam1 & 0xFF;
+        BYTE b3lo = b3 & 0xF,
+            b3hi = (b3 >> 4) & 0xF,
+            b4lo = b4 & 0xF,
+            b4hi = (b4 >> 4) & 0xF;
+        
+        BYTE channel = b4lo,
+            button = b3;
+            
+        if(b4hi == NOTE_ON)
+        {
+//             printf("Note on in channel %d (Button %d)\n", channel, button);
+            if(button < 40)
+            {
+                override_index = button+1;
+                scene_override = 1;
+            }
+        }
+        else if(b4hi == NOTE_OFF)
+        {
+//             printf("Note off in channel %d (Button %d)\n", channel, button);
+        }
+        else if(b4hi == CONTROL_CHANGE)// Channel select
+        {
+            printf("Control change in channel %d\n", channel);
+        }
+
+        printf("wMsg=MIM_DATA, dwParam1=%08x, byte=%02x %02x h_%01x l_%01x %02x, dwParam2=%08x\n", dwParam1, b1, b2, b3hi, b3lo, b4, dwParam2);
+    }
+    
+    DWORD out_msg = 0x9 << 4 | override_index-1 << 8 | 57 << 16;
+    midiOutShortMsg(hMidiOut, out_msg);
+    
+	return;
+}
+#endif
 
 void load_demo()
 {
@@ -207,6 +267,66 @@ void load_demo()
 	glUseProgram(0);
 
 	initialize_sound();
+    
+#ifdef MIDI
+    UINT nMidiDeviceNum;
+    MIDIINCAPS caps;
+    
+	nMidiDeviceNum = midiInGetNumDevs();
+	if(nMidiDeviceNum == 0) 
+    {
+        printf("No MIDI input devices connected.\n");
+    }
+    else
+    {
+        printf("Available MIDI devices:\n");
+        for (unsigned int i = 0; i < nMidiDeviceNum; ++i) 
+        {
+            midiInGetDevCaps(i, &caps, sizeof(MIDIINCAPS));
+            printf("->%d: %s ", i, caps.szPname);
+            
+            if(!strcmp("APC40 mkII", caps.szPname))
+            {
+                HMIDIIN hMidiDevice;
+                MMRESULT rv = midiInOpen(&hMidiDevice, i, (DWORD)(void*)MidiInProc_apc40mk2, 0, CALLBACK_FUNCTION);
+                midiInStart(hMidiDevice);
+                
+                printf(" >> opened.\n");
+            }
+            else
+            {
+                printf("(Unsupported MIDI controller).\n");
+            }
+        }
+    }
+    
+    MIDIOUTCAPS ocaps;
+    nMidiDeviceNum = midiOutGetNumDevs();
+
+    if(nMidiDeviceNum == 0) 
+    {
+        printf("No MIDI output devices connected.\n");
+    }
+    else
+    {
+        printf("Available MIDI devices:\n");
+        for (unsigned int i = 0; i < nMidiDeviceNum; ++i) 
+        {
+            midiOutGetDevCaps(i, &ocaps, sizeof(MIDIOUTCAPS));
+            printf("->%d: %s ", i, ocaps.szPname);
+            
+            if(!strcmp("APC40 mkII", ocaps.szPname))
+            {
+                MMRESULT rv = midiOutOpen (&hMidiOut, i, 0, 0, CALLBACK_NULL);
+            }
+            else
+            {
+                printf("(Unsupported MIDI controller).\n");
+            }
+        }
+    }
+    
+#endif
 }
 
 unsigned long __stdcall LoadMusicThread( void *lpParam)
@@ -369,61 +489,57 @@ void draw()
     {
         if(override_index == 1)
         {
-            glUseProgram(graffiti_program);
-            glUniform1f(graffiti_iTime_location, t);
-            glUniform2f(graffiti_iResolution_location, w, h);
+            t = t_now;
         }
         else if(override_index == 2)
         {
             t = t_now + 49.655;
-            glUseProgram(groundboxes_program);
-            glUniform1f(groundboxes_iTime_location, t-49.655);
-            glUniform2f(groundboxes_iResolution_location, w, h);
         }
         else if(override_index == 3)
         {
             t = t_now + 82.76;
-            glUseProgram(voronoidesign_program);
-            glUniform1f(voronoidesign_iTime_location, t-82.76);
-            glUniform2f(voronoidesign_iResolution_location, w, h);
         }
         else if(override_index == 4)
         {
             t = t_now + 99.31;
-            glUseProgram(bloodcells_program);
-            glUniform1f(bloodcells_iTime_location, t-99.31);
-            glUniform2f(bloodcells_iResolution_location, w, h);
         }
         else ExitProcess(0);
     }
-    else
+
+    if(t < 49.655)
     {
-        if(t < 49.655)
-        {
-            glUseProgram(graffiti_program);
-            glUniform1f(graffiti_iTime_location, t);
-            glUniform2f(graffiti_iResolution_location, w, h);
-        }
-        else if(t < 82.76)
-        {
-            glUseProgram(groundboxes_program);
-            glUniform1f(groundboxes_iTime_location, t-49.655);
-            glUniform2f(groundboxes_iResolution_location, w, h);
-        }
-        else if(t < 99.31)
-        {
-            glUseProgram(voronoidesign_program);
-            glUniform1f(voronoidesign_iTime_location, t-82.76);
-            glUniform2f(voronoidesign_iResolution_location, w, h);
-        }
-        else if(t < t_end)
-        {
-            glUseProgram(bloodcells_program);
-            glUniform1f(bloodcells_iTime_location, t-99.31);
-            glUniform2f(bloodcells_iResolution_location, w, h);
-        }
-        else ExitProcess(0);
+        glUseProgram(graffiti_program);
+        glUniform1f(graffiti_iTime_location, t);
+        glUniform2f(graffiti_iResolution_location, w, h);
+        
+        override_index = 1;
     }
+    else if(t < 82.76)
+    {
+        glUseProgram(groundboxes_program);
+        glUniform1f(groundboxes_iTime_location, t-49.655);
+        glUniform2f(groundboxes_iResolution_location, w, h);
+        
+        override_index = 2;
+    }
+    else if(t < 99.31)
+    {
+        glUseProgram(voronoidesign_program);
+        glUniform1f(voronoidesign_iTime_location, t-82.76);
+        glUniform2f(voronoidesign_iResolution_location, w, h);
+        
+        override_index = 3;
+    }
+    else if(t < t_end)
+    {
+        glUseProgram(bloodcells_program);
+        glUniform1f(bloodcells_iTime_location, t-99.31);
+        glUniform2f(bloodcells_iResolution_location, w, h);
+        
+        override_index = 4;
+    }
+    else ExitProcess(0);
+    
     quad();
 
     // Render post processing to buffer
