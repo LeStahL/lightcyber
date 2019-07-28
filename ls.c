@@ -69,7 +69,7 @@ void CALLBACK MidiInProc_apc40mk2(HMIDIIN hMidiIn, UINT wMsg, DWORD dwInstance, 
         BYTE channel = b4lo,
             button = b3;
             
-        if(b4hi == NOTE_ON || b4hi == NOTE_OFF)
+        if(b4hi == NOTE_ON)
         {
             waveOutReset(hWaveOut);
             select_button(button);
@@ -109,6 +109,10 @@ void CALLBACK MidiInProc_apc40mk2(HMIDIIN hMidiIn, UINT wMsg, DWORD dwInstance, 
                 waveOutWrite(hWaveOut, &header, sizeof(WAVEHDR));
                 waveOutRestart(hWaveOut);
             }
+        }
+        else if(b4hi == NOTE_OFF)
+        {
+            select_button(button);
         }
         else if(b4hi == CONTROL_CHANGE)// Channel select
         {
@@ -549,10 +553,10 @@ void draw()
         glUniform2f(graffiti_iResolution_location, w, h);
         
 #ifdef MIDI
-        if(override_index != 1) 
+        if(override_index == 0)
         {
-            override_index = 1;
             select_button(override_index);
+            scene_override = 0;
         }
 #endif
     }
@@ -563,10 +567,10 @@ void draw()
         glUniform2f(groundboxes_iResolution_location, w, h);
         
 #ifdef MIDI
-        if(override_index != 2) 
+        if(override_index == 1) 
         {
-            override_index = 2;
             select_button(override_index);
+            scene_override = 0;
         }
 #endif
     }
@@ -577,10 +581,10 @@ void draw()
         glUniform2f(voronoidesign_iResolution_location, w, h);
       
 #ifdef MIDI
-        if(override_index != 3) 
+        if(override_index == 2) 
         {
-            override_index = 3;
             select_button(override_index);
+            scene_override = 0;
         }
 #endif
     }
@@ -591,10 +595,10 @@ void draw()
         glUniform2f(bloodcells_iResolution_location, w, h);
       
 #ifdef MIDI
-        if(override_index != 4) 
+        if(override_index == 3) 
         {
-            override_index = 4;
             select_button(override_index);
+            scene_override = 0;
         }
 #endif
     }
