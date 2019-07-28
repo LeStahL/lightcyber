@@ -27,6 +27,24 @@ int _fltused = 0;
 
 #ifdef MIDI
 
+void select_button(int index)
+{
+    for(int i=0; i<40; ++i)
+    {
+        DWORD out_msg = 0x8 << 4 | i << 8 | 0 << 16;
+        midiOutShortMsg(hMidiOut, out_msg);
+    }
+
+    if(index < 40)
+    {
+        override_index = index+1;
+        scene_override = 1;
+    }
+    
+    DWORD out_msg = 0x9 << 4 | index << 8 | 57 << 16;
+    midiOutShortMsg(hMidiOut, out_msg);
+}
+
 #define NOTE_OFF 0x8
 #define NOTE_ON 0x9
 #define CONTROL_CHANGE 0xB
@@ -37,12 +55,6 @@ int _fltused = 0;
 // #define APC_BUTTONMATRIX 0x2
 void CALLBACK MidiInProc_apc40mk2(HMIDIIN hMidiIn, UINT wMsg, DWORD dwInstance, DWORD dwParam1, DWORD dwParam2)
 {
-    for(int i=0; i<40; ++i)
-    {
-        DWORD out_msg = 0x8 << 4 | i << 8 | 0 << 16;
-        midiOutShortMsg(hMidiOut, out_msg);
-    }
-    
     if(wMsg == MIM_DATA)
     {
         BYTE b1 = (dwParam1 >> 24) & 0xFF,
@@ -57,18 +69,46 @@ void CALLBACK MidiInProc_apc40mk2(HMIDIIN hMidiIn, UINT wMsg, DWORD dwInstance, 
         BYTE channel = b4lo,
             button = b3;
             
-        if(b4hi == NOTE_ON)
+        if(b4hi == NOTE_ON || b4hi == NOTE_OFF)
         {
-//             printf("Note on in channel %d (Button %d)\n", channel, button);
-            if(button < 40)
+            waveOutReset(hWaveOut);
+            select_button(button);
+            
+            if(button == 0)
             {
-                override_index = button+1;
-                scene_override = 1;
+                header.lpData = smusic1;
+                header.dwBufferLength = 4 * music1_size;
+                waveOutPrepareHeader(hWaveOut, &header, sizeof(WAVEHDR));
+                waveOutWrite(hWaveOut, &header, sizeof(WAVEHDR));
+                waveOutRestart(hWaveOut);
             }
-        }
-        else if(b4hi == NOTE_OFF)
-        {
-//             printf("Note off in channel %d (Button %d)\n", channel, button);
+            else if(button == 1)
+            {
+                int delta = 49.655 * (double)sample_rate;
+                header.lpData = smusic1+delta;
+                header.dwBufferLength = 4 * (music1_size-delta);
+                waveOutPrepareHeader(hWaveOut, &header, sizeof(WAVEHDR));
+                waveOutWrite(hWaveOut, &header, sizeof(WAVEHDR));
+                waveOutRestart(hWaveOut);
+            }
+            else if(button == 2)
+            {
+                int delta = 82.76 * (double)sample_rate;
+                header.lpData = smusic1+delta;
+                header.dwBufferLength = 4 * (music1_size-delta);
+                waveOutPrepareHeader(hWaveOut, &header, sizeof(WAVEHDR));
+                waveOutWrite(hWaveOut, &header, sizeof(WAVEHDR));
+                waveOutRestart(hWaveOut);
+            }
+            else if(button == 3)
+            {
+                int delta = 99.31 * (double)sample_rate;
+                header.lpData = smusic1+delta;
+                header.dwBufferLength = 4 * (music1_size-delta);
+                waveOutPrepareHeader(hWaveOut, &header, sizeof(WAVEHDR));
+                waveOutWrite(hWaveOut, &header, sizeof(WAVEHDR));
+                waveOutRestart(hWaveOut);
+            }
         }
         else if(b4hi == CONTROL_CHANGE)// Channel select
         {
@@ -77,9 +117,6 @@ void CALLBACK MidiInProc_apc40mk2(HMIDIIN hMidiIn, UINT wMsg, DWORD dwInstance, 
 
         printf("wMsg=MIM_DATA, dwParam1=%08x, byte=%02x %02x h_%01x l_%01x %02x, dwParam2=%08x\n", dwParam1, b1, b2, b3hi, b3lo, b4, dwParam2);
     }
-    
-    DWORD out_msg = 0x9 << 4 | override_index-1 << 8 | 57 << 16;
-    midiOutShortMsg(hMidiOut, out_msg);
     
 	return;
 }
@@ -503,16 +540,21 @@ void draw()
         {
             t = t_now + 99.31;
         }
-        else ExitProcess(0);
     }
-
+    
     if(t < 49.655)
     {
         glUseProgram(graffiti_program);
         glUniform1f(graffiti_iTime_location, t);
         glUniform2f(graffiti_iResolution_location, w, h);
         
-        override_index = 1;
+#ifdef MIDI
+        if(override_index != 1) 
+        {
+            override_index = 1;
+            select_button(override_index);
+        }
+#endif
     }
     else if(t < 82.76)
     {
@@ -520,23 +562,41 @@ void draw()
         glUniform1f(groundboxes_iTime_location, t-49.655);
         glUniform2f(groundboxes_iResolution_location, w, h);
         
-        override_index = 2;
+#ifdef MIDI
+        if(override_index != 2) 
+        {
+            override_index = 2;
+            select_button(override_index);
+        }
+#endif
     }
     else if(t < 99.31)
     {
         glUseProgram(voronoidesign_program);
         glUniform1f(voronoidesign_iTime_location, t-82.76);
         glUniform2f(voronoidesign_iResolution_location, w, h);
-        
-        override_index = 3;
+      
+#ifdef MIDI
+        if(override_index != 3) 
+        {
+            override_index = 3;
+            select_button(override_index);
+        }
+#endif
     }
     else if(t < t_end)
     {
         glUseProgram(bloodcells_program);
         glUniform1f(bloodcells_iTime_location, t-99.31);
         glUniform2f(bloodcells_iResolution_location, w, h);
-        
-        override_index = 4;
+      
+#ifdef MIDI
+        if(override_index != 4) 
+        {
+            override_index = 4;
+            select_button(override_index);
+        }
+#endif
     }
     else ExitProcess(0);
     
@@ -592,3 +652,6 @@ void draw()
     
     glBindTexture(GL_TEXTURE_2D, 0);
 }
+
+
+
