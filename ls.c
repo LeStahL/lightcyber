@@ -133,6 +133,7 @@ void CALLBACK MidiInProc_apc40mk2(HMIDIIN hMidiIn, UINT wMsg, DWORD dwInstance, 
             waveOutPrepareHeader(hWaveOut, &header, sizeof(WAVEHDR));
             waveOutWrite(hWaveOut, &header, sizeof(WAVEHDR));
             waveOutPause(hWaveOut);
+            paused = 1;
         }
 
         draw();
