@@ -1,0 +1,2 @@
+- zwei zeitpunkte auswählen zwischen denen dann demo loopt, die auf dem board angezeigt werden.
+- uniforms slideable machen
