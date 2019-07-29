@@ -121,10 +121,38 @@ void CALLBACK MidiInProc_apc40mk2(HMIDIIN hMidiIn, UINT wMsg, DWORD dwInstance, 
                 char data[40] = 
                 {
                     1,  1,  0,  1,  0,  1,  1,  0,
-                    12,  12,  1,  1,  1,  12,  12,  1,
+                    12, 12, 1,  1,  1,  12, 12, 1,
                     0,  0,  1,  1,  1,  0,  0,  1,
                     0,  0,  1,  1,  1,  0,  0,  1,
-                    1,  1,  12,  1,  12,  1,  1,  12
+                    1,  1,  12, 1,  12, 1,  1,  12
+                };
+
+                for(int i=0; i<40; ++i)
+                {
+                    
+                    DWORD out_msg;
+                    if(data[i] == 0) 
+                    {
+                        out_msg = 0x8 << 4 | i << 8 | 0 << 16;
+                    }
+                    else
+                    {
+                        out_msg = 0x9 << 4 | i << 8 | 1+(data[i]+btns) %125 << 16;
+                    }
+                    midiOutShortMsg(hMidiOut, out_msg);
+                }
+                btns = 1+(btns+1)%125;
+            }
+            // Kewlers Logo
+            else if(button == 0x57)
+            {
+                char data[40] = 
+                {
+                    3,3,3,3,1,1,1,1,
+                    3,3,3,3,1,1,1,1,
+                    3,3,3,0,0,1,1,1,
+                    0,3,0,0,0,0,1,0,
+                    0,7,0,0,0,0,9,0
                 };
 
                 for(int i=0; i<40; ++i)
