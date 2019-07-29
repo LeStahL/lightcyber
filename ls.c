@@ -74,7 +74,7 @@ void CALLBACK MidiInProc_apc40mk2(HMIDIIN hMidiIn, UINT wMsg, DWORD dwInstance, 
             waveOutReset(hWaveOut);
             select_button(button);
             
-            if(button == 0)
+            if(button == 0x0)
             {
                 header.lpData = smusic1;
                 header.dwBufferLength = 4 * music1_size;
@@ -82,7 +82,7 @@ void CALLBACK MidiInProc_apc40mk2(HMIDIIN hMidiIn, UINT wMsg, DWORD dwInstance, 
                 waveOutWrite(hWaveOut, &header, sizeof(WAVEHDR));
                 waveOutRestart(hWaveOut);
             }
-            else if(button == 1)
+            else if(button == 0x1)
             {
                 int delta = 49.655 * (double)sample_rate;
                 header.lpData = smusic1+delta;
@@ -91,7 +91,7 @@ void CALLBACK MidiInProc_apc40mk2(HMIDIIN hMidiIn, UINT wMsg, DWORD dwInstance, 
                 waveOutWrite(hWaveOut, &header, sizeof(WAVEHDR));
                 waveOutRestart(hWaveOut);
             }
-            else if(button == 2)
+            else if(button == 0x2)
             {
                 int delta = 82.76 * (double)sample_rate;
                 header.lpData = smusic1+delta;
@@ -100,7 +100,7 @@ void CALLBACK MidiInProc_apc40mk2(HMIDIIN hMidiIn, UINT wMsg, DWORD dwInstance, 
                 waveOutWrite(hWaveOut, &header, sizeof(WAVEHDR));
                 waveOutRestart(hWaveOut);
             }
-            else if(button == 3)
+            else if(button == 0x3)
             {
                 int delta = 99.31 * (double)sample_rate;
                 header.lpData = smusic1+delta;
@@ -109,10 +109,40 @@ void CALLBACK MidiInProc_apc40mk2(HMIDIIN hMidiIn, UINT wMsg, DWORD dwInstance, 
                 waveOutWrite(hWaveOut, &header, sizeof(WAVEHDR));
                 waveOutRestart(hWaveOut);
             }
+            
         }
         else if(b4hi == NOTE_OFF)
         {
             select_button(button);
+            
+            // Logo 210
+            if(button == 0x59)
+            {
+                char data[40] = 
+                {
+                    1,  1,  0,  1,  0,  1,  1,  0,
+                    12,  12,  1,  1,  1,  12,  12,  1,
+                    0,  0,  1,  1,  1,  0,  0,  1,
+                    0,  0,  1,  1,  1,  0,  0,  1,
+                    1,  1,  12,  1,  12,  1,  1,  12
+                };
+
+                for(int i=0; i<40; ++i)
+                {
+                    
+                    DWORD out_msg;
+                    if(data[i] == 0) 
+                    {
+                        out_msg = 0x8 << 4 | i << 8 | 0 << 16;
+                    }
+                    else
+                    {
+                        out_msg = 0x9 << 4 | i << 8 | 1+(data[i]+btns) %125 << 16;
+                    }
+                    midiOutShortMsg(hMidiOut, out_msg);
+                }
+                btns = 1+(btns+1)%125;
+            }
         }
         else if(b4hi == CONTROL_CHANGE)// Channel select
         {
