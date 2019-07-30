@@ -229,7 +229,8 @@ double t_start = 0.,
     t_end = duration,
     t,
     time_dial = 0.,
-    time_fine_dial = 0.;
+    time_fine_dial = 0.,
+    time_very_fine_dial = 0.;
 
 unsigned int loading = 1, music_loading = 0;
 int music_block = 0;

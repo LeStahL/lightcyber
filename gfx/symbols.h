@@ -673,7 +673,7 @@ const char *groundboxes_source = "/* Gross Gloss by Team210 - 64k intro by Team2
 "    \n"
 "    nbeats = mod(iTime, 60./29.);\n"
 "    iScale = nbeats-30./29.;\n"
-"    iScale = smoothstep(-5./29., 0., iScale)*(1.-smoothstep(0., 5./29., iScale));\n"
+"    iScale = smoothstep(-5./29., 0., iScale)*(1.-smoothstep(0., 15./29., iScale));\n"
 "    vec2 uv = fragCoord/iResolution.yy-0.5*vec2(a, 1.0), \n"
 "        s;\n"
 "    vec3 col = c.yyy, \n"

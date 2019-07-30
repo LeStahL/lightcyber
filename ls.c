@@ -53,6 +53,8 @@ void select_button(int index)
 
 #define TIME_DIAL 0x30
 #define TIME_FINE_DIAL 0x31
+#define TIME_VERYFINE_DIAL 0x32
+
 void CALLBACK MidiInProc_apc40mk2(HMIDIIN hMidiIn, UINT wMsg, DWORD dwInstance, DWORD dwParam1, DWORD dwParam2)
 {
     if(wMsg == MIM_DATA)
@@ -184,8 +186,12 @@ void CALLBACK MidiInProc_apc40mk2(HMIDIIN hMidiIn, UINT wMsg, DWORD dwInstance, 
                 waveOutReset(hWaveOut);
                 time_fine_dial = (double)b2/(double)0x7F;
             }
-            
-            int delta = (.9*time_dial+.1*time_fine_dial) * t_end * (double)sample_rate;
+            else if(button == TIME_VERYFINE_DIAL)
+            {
+                waveOutReset(hWaveOut);
+                time_very_fine_dial = (double)b2/(double)0x7F;
+            }
+            int delta = (.9*time_dial+.09*time_fine_dial+.01*time_very_fine_dial) * t_end * (double)sample_rate;
             header.lpData = min(max(smusic1, smusic1+delta), smusic1+music1_size);
             header.dwBufferLength = 4 * (music1_size-delta);
             waveOutPrepareHeader(hWaveOut, &header, sizeof(WAVEHDR));
@@ -603,9 +609,9 @@ void draw()
     if(t > t_end)
         ExitProcess(0);
     
-    if(time_dial != 0 ||  time_fine_dial != 0)
+    if(time_dial != 0 ||  time_fine_dial != 0 || time_very_fine_dial != 0)
     {
-        t = t_now + (.9*time_dial+.1*time_fine_dial) * t_end;
+        t = t_now + (.9*time_dial+.09*time_fine_dial+.01*time_very_fine_dial) * t_end;
         scene_override = 0;
     }
     
