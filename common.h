@@ -223,7 +223,7 @@ int
 double mx, my;
 
 // Demo globals
-#define duration 157.
+#define duration 180.
 double t_start = 0.,
     t_now = 0.,
     t_end = duration,
