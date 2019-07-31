@@ -227,6 +227,14 @@ const char *voronoidesign_source = "/* Gross Gloss by Team210 - 64k intro by Tea
 "\n"
 "uniform float iTime;\n"
 "uniform vec2 iResolution;\n"
+"uniform float iFader0;\n"
+"uniform float iFader1;\n"
+"uniform float iFader2;\n"
+"uniform float iFader3;\n"
+"uniform float iFader4;\n"
+"uniform float iFader5;\n"
+"uniform float iFader6;\n"
+"uniform float iFader7;\n"
 "\n"
 "float nbeats;\n"
 "float iScale;\n"
@@ -427,6 +435,15 @@ const char *groundboxes_source = "/* Gross Gloss by Team210 - 64k intro by Team2
 "\n"
 "uniform float iTime;\n"
 "uniform vec2 iResolution;\n"
+"uniform float iFader0;\n"
+"uniform float iFader1;\n"
+"uniform float iFader2;\n"
+"uniform float iFader3;\n"
+"uniform float iFader4;\n"
+"uniform float iFader5;\n"
+"uniform float iFader6;\n"
+"uniform float iFader7;\n"
+"\n"
 "\n"
 "// Global constants\n"
 "const float pi = acos(-1.);\n"
@@ -872,6 +889,14 @@ const char *graffiti_source = "/* Lightcyber by Team210 - 64k intro by Team210 a
 "\n"
 "uniform float iTime;\n"
 "uniform vec2 iResolution;\n"
+"uniform float iFader0;\n"
+"uniform float iFader1;\n"
+"uniform float iFader2;\n"
+"uniform float iFader3;\n"
+"uniform float iFader4;\n"
+"uniform float iFader5;\n"
+"uniform float iFader6;\n"
+"uniform float iFader7;\n"
 "\n"
 "// Global constants\n"
 "const float pi = acos(-1.);\n"
@@ -960,7 +985,7 @@ const char *graffiti_source = "/* Lightcyber by Team210 - 64k intro by Team210 a
 "    \n"
 "    float v;\n"
 "    vec2 ind;\n"
-"    dvoronoi(12.*x.xy, v, ind);\n"
+"    dvoronoi(mix(1.,24., iFader0)*x.xy, v, ind);\n"
 "    \n"
 "    zextrude(x.z, -d, .1-.1*v, d);\n"
 "    \n"
@@ -1121,6 +1146,14 @@ const char *bloodcells_source = "/* Gross Gloss by Team210 - 64k intro by Team21
 "\n"
 "uniform float iTime;\n"
 "uniform vec2 iResolution;\n"
+"uniform float iFader0;\n"
+"uniform float iFader1;\n"
+"uniform float iFader2;\n"
+"uniform float iFader3;\n"
+"uniform float iFader4;\n"
+"uniform float iFader5;\n"
+"uniform float iFader6;\n"
+"uniform float iFader7;\n"
 "\n"
 "float nbeats;\n"
 "float iScale;\n"
@@ -1517,12 +1550,44 @@ void LoadSymbols()
 int voronoidesign_program, voronoidesign_handle, groundboxes_program, groundboxes_handle, graffiti_program, graffiti_handle, bloodcells_program, bloodcells_handle;
 int voronoidesign_iTime_location;
 voronoidesign_iResolution_location;
+voronoidesign_iFader0_location;
+voronoidesign_iFader1_location;
+voronoidesign_iFader2_location;
+voronoidesign_iFader3_location;
+voronoidesign_iFader4_location;
+voronoidesign_iFader5_location;
+voronoidesign_iFader6_location;
+voronoidesign_iFader7_location;
 int groundboxes_iTime_location;
 groundboxes_iResolution_location;
+groundboxes_iFader0_location;
+groundboxes_iFader1_location;
+groundboxes_iFader2_location;
+groundboxes_iFader3_location;
+groundboxes_iFader4_location;
+groundboxes_iFader5_location;
+groundboxes_iFader6_location;
+groundboxes_iFader7_location;
 int graffiti_iTime_location;
 graffiti_iResolution_location;
+graffiti_iFader0_location;
+graffiti_iFader1_location;
+graffiti_iFader2_location;
+graffiti_iFader3_location;
+graffiti_iFader4_location;
+graffiti_iFader5_location;
+graffiti_iFader6_location;
+graffiti_iFader7_location;
 int bloodcells_iTime_location;
 bloodcells_iResolution_location;
+bloodcells_iFader0_location;
+bloodcells_iFader1_location;
+bloodcells_iFader2_location;
+bloodcells_iFader3_location;
+bloodcells_iFader4_location;
+bloodcells_iFader5_location;
+bloodcells_iFader6_location;
+bloodcells_iFader7_location;
 const int nprograms = 4;
 
 void Loadvoronoidesign()
@@ -1556,6 +1621,14 @@ void Loadvoronoidesign()
     glUseProgram(voronoidesign_program);
     voronoidesign_iTime_location = glGetUniformLocation(voronoidesign_program, "iTime");
     voronoidesign_iResolution_location = glGetUniformLocation(voronoidesign_program, "iResolution");
+    voronoidesign_iFader0_location = glGetUniformLocation(voronoidesign_program, "iFader0");
+    voronoidesign_iFader1_location = glGetUniformLocation(voronoidesign_program, "iFader1");
+    voronoidesign_iFader2_location = glGetUniformLocation(voronoidesign_program, "iFader2");
+    voronoidesign_iFader3_location = glGetUniformLocation(voronoidesign_program, "iFader3");
+    voronoidesign_iFader4_location = glGetUniformLocation(voronoidesign_program, "iFader4");
+    voronoidesign_iFader5_location = glGetUniformLocation(voronoidesign_program, "iFader5");
+    voronoidesign_iFader6_location = glGetUniformLocation(voronoidesign_program, "iFader6");
+    voronoidesign_iFader7_location = glGetUniformLocation(voronoidesign_program, "iFader7");
     progress += .2/(float)nprograms;
 }
 
@@ -1581,6 +1654,14 @@ void Loadgroundboxes()
     glUseProgram(groundboxes_program);
     groundboxes_iTime_location = glGetUniformLocation(groundboxes_program, "iTime");
     groundboxes_iResolution_location = glGetUniformLocation(groundboxes_program, "iResolution");
+    groundboxes_iFader0_location = glGetUniformLocation(groundboxes_program, "iFader0");
+    groundboxes_iFader1_location = glGetUniformLocation(groundboxes_program, "iFader1");
+    groundboxes_iFader2_location = glGetUniformLocation(groundboxes_program, "iFader2");
+    groundboxes_iFader3_location = glGetUniformLocation(groundboxes_program, "iFader3");
+    groundboxes_iFader4_location = glGetUniformLocation(groundboxes_program, "iFader4");
+    groundboxes_iFader5_location = glGetUniformLocation(groundboxes_program, "iFader5");
+    groundboxes_iFader6_location = glGetUniformLocation(groundboxes_program, "iFader6");
+    groundboxes_iFader7_location = glGetUniformLocation(groundboxes_program, "iFader7");
     progress += .2/(float)nprograms;
 }
 
@@ -1617,6 +1698,14 @@ void Loadgraffiti()
     glUseProgram(graffiti_program);
     graffiti_iTime_location = glGetUniformLocation(graffiti_program, "iTime");
     graffiti_iResolution_location = glGetUniformLocation(graffiti_program, "iResolution");
+    graffiti_iFader0_location = glGetUniformLocation(graffiti_program, "iFader0");
+    graffiti_iFader1_location = glGetUniformLocation(graffiti_program, "iFader1");
+    graffiti_iFader2_location = glGetUniformLocation(graffiti_program, "iFader2");
+    graffiti_iFader3_location = glGetUniformLocation(graffiti_program, "iFader3");
+    graffiti_iFader4_location = glGetUniformLocation(graffiti_program, "iFader4");
+    graffiti_iFader5_location = glGetUniformLocation(graffiti_program, "iFader5");
+    graffiti_iFader6_location = glGetUniformLocation(graffiti_program, "iFader6");
+    graffiti_iFader7_location = glGetUniformLocation(graffiti_program, "iFader7");
     progress += .2/(float)nprograms;
 }
 
@@ -1651,6 +1740,14 @@ void Loadbloodcells()
     glUseProgram(bloodcells_program);
     bloodcells_iTime_location = glGetUniformLocation(bloodcells_program, "iTime");
     bloodcells_iResolution_location = glGetUniformLocation(bloodcells_program, "iResolution");
+    bloodcells_iFader0_location = glGetUniformLocation(bloodcells_program, "iFader0");
+    bloodcells_iFader1_location = glGetUniformLocation(bloodcells_program, "iFader1");
+    bloodcells_iFader2_location = glGetUniformLocation(bloodcells_program, "iFader2");
+    bloodcells_iFader3_location = glGetUniformLocation(bloodcells_program, "iFader3");
+    bloodcells_iFader4_location = glGetUniformLocation(bloodcells_program, "iFader4");
+    bloodcells_iFader5_location = glGetUniformLocation(bloodcells_program, "iFader5");
+    bloodcells_iFader6_location = glGetUniformLocation(bloodcells_program, "iFader6");
+    bloodcells_iFader7_location = glGetUniformLocation(bloodcells_program, "iFader7");
     progress += .2/(float)nprograms;
 }
 

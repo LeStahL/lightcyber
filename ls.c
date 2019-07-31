@@ -180,24 +180,52 @@ void CALLBACK MidiInProc_apc40mk2(HMIDIIN hMidiIn, UINT wMsg, DWORD dwInstance, 
             {
                 waveOutReset(hWaveOut);
                 time_dial = (double)b2/(double)0x7F;
+                
+                int delta = (.9*time_dial+.09*time_fine_dial+.01*time_very_fine_dial) * t_end * (double)sample_rate;
+                header.lpData = min(max(smusic1, smusic1+delta), smusic1+music1_size);
+                header.dwBufferLength = 4 * (music1_size-delta);
+                waveOutPrepareHeader(hWaveOut, &header, sizeof(WAVEHDR));
+                waveOutWrite(hWaveOut, &header, sizeof(WAVEHDR));
+                waveOutPause(hWaveOut);
+                paused = 1;
             }
             else if(button == TIME_FINE_DIAL)
             {
                 waveOutReset(hWaveOut);
                 time_fine_dial = (double)b2/(double)0x7F;
+                
+                int delta = (.9*time_dial+.09*time_fine_dial+.01*time_very_fine_dial) * t_end * (double)sample_rate;
+                header.lpData = min(max(smusic1, smusic1+delta), smusic1+music1_size);
+                header.dwBufferLength = 4 * (music1_size-delta);
+                waveOutPrepareHeader(hWaveOut, &header, sizeof(WAVEHDR));
+                waveOutWrite(hWaveOut, &header, sizeof(WAVEHDR));
+                waveOutPause(hWaveOut);
+                paused = 1;
             }
             else if(button == TIME_VERYFINE_DIAL)
             {
                 waveOutReset(hWaveOut);
                 time_very_fine_dial = (double)b2/(double)0x7F;
+                
+                int delta = (.9*time_dial+.09*time_fine_dial+.01*time_very_fine_dial) * t_end * (double)sample_rate;
+                header.lpData = min(max(smusic1, smusic1+delta), smusic1+music1_size);
+                header.dwBufferLength = 4 * (music1_size-delta);
+                waveOutPrepareHeader(hWaveOut, &header, sizeof(WAVEHDR));
+                waveOutWrite(hWaveOut, &header, sizeof(WAVEHDR));
+                waveOutPause(hWaveOut);
+                paused = 1;
             }
-            int delta = (.9*time_dial+.09*time_fine_dial+.01*time_very_fine_dial) * t_end * (double)sample_rate;
-            header.lpData = min(max(smusic1, smusic1+delta), smusic1+music1_size);
-            header.dwBufferLength = 4 * (music1_size-delta);
-            waveOutPrepareHeader(hWaveOut, &header, sizeof(WAVEHDR));
-            waveOutWrite(hWaveOut, &header, sizeof(WAVEHDR));
-            waveOutPause(hWaveOut);
-            paused = 1;
+            else
+            {
+                if(channel == 0 && button == 0x07) fader0 = (double)b2/(double)0x7F;
+                else if(channel == 1 && button == 0x07) fader1 = (double)b2/(double)0x7F;
+                else if(channel == 2 && button == 0x07) fader2 = (double)b2/(double)0x7F;
+                else if(channel == 3 && button == 0x07) fader3 = (double)b2/(double)0x7F;
+                else if(channel == 4 && button == 0x07) fader4 = (double)b2/(double)0x7F;
+                else if(channel == 5 && button == 0x07) fader5 = (double)b2/(double)0x7F;
+                else if(channel == 6 && button == 0x07) fader6 = (double)b2/(double)0x7F;
+                else if(channel == 7 && button == 0x07) fader7 = (double)b2/(double)0x7F;
+            }
         }
 
         draw();
@@ -642,6 +670,15 @@ void draw()
         glUniform2f(graffiti_iResolution_location, w, h);
         
 #ifdef MIDI
+        glUniform1f(graffiti_iFader0_location, fader0);
+        glUniform1f(graffiti_iFader1_location, fader1);
+        glUniform1f(graffiti_iFader2_location, fader2);
+        glUniform1f(graffiti_iFader3_location, fader3);
+        glUniform1f(graffiti_iFader4_location, fader4);
+        glUniform1f(graffiti_iFader5_location, fader5);
+        glUniform1f(graffiti_iFader6_location, fader6);
+        glUniform1f(graffiti_iFader7_location, fader7);
+        
         if(override_index == 0)
         {
             select_button(override_index);
@@ -656,6 +693,15 @@ void draw()
         glUniform2f(groundboxes_iResolution_location, w, h);
         
 #ifdef MIDI
+        glUniform1f(groundboxes_iFader0_location, fader0);
+        glUniform1f(groundboxes_iFader1_location, fader1);
+        glUniform1f(groundboxes_iFader2_location, fader2);
+        glUniform1f(groundboxes_iFader3_location, fader3);
+        glUniform1f(groundboxes_iFader4_location, fader4);
+        glUniform1f(groundboxes_iFader5_location, fader5);
+        glUniform1f(groundboxes_iFader6_location, fader6);
+        glUniform1f(groundboxes_iFader7_location, fader7);
+        
         if(override_index == 1) 
         {
             select_button(override_index);

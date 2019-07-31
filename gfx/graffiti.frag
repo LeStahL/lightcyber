@@ -19,6 +19,14 @@
 
 uniform float iTime;
 uniform vec2 iResolution;
+uniform float iFader0;
+uniform float iFader1;
+uniform float iFader2;
+uniform float iFader3;
+uniform float iFader4;
+uniform float iFader5;
+uniform float iFader6;
+uniform float iFader7;
 
 // Global constants
 const float pi = acos(-1.);
@@ -107,7 +115,7 @@ void scene(in vec3 x, out vec2 sdf)
     
     float v;
     vec2 ind;
-    dvoronoi(12.*x.xy, v, ind);
+    dvoronoi(mix(1.,24., iFader0)*x.xy, v, ind);
     
     zextrude(x.z, -d, .1-.1*v, d);
     

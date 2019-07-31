@@ -227,10 +227,22 @@ double mx, my;
 double t_start = 0.,
     t_now = 0.,
     t_end = duration,
-    t,
+    t
+#ifdef MIDI
+    ,
     time_dial = 0.,
     time_fine_dial = 0.,
-    time_very_fine_dial = 0.;
+    time_very_fine_dial = 0.,
+    fader0 = 0,
+    fader1 = 0,
+    fader2 = 0,
+    fader3 = 0,
+    fader4 = 0,
+    fader5 = 0,
+    fader6 = 0,
+    fader7 = 0
+#endif
+    ;
 
 unsigned int loading = 1, music_loading = 0;
 int music_block = 0;
