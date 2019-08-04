@@ -43,6 +43,7 @@ void dbox(in vec2 x, in vec2 b, out float d);
 void dlinesegment(in vec2 x, in vec2 p1, in vec2 p2, out float d);
 void stroke(in float d0, in float s, out float d);
 void dvoronoi(in vec2 x, out float d, out vec2 z);
+void rot3(in vec3 phi, out mat3 R); 
 
 void graf(in vec2 x, out float d)
 {
@@ -101,13 +102,18 @@ void add(in vec2 sda, in vec2 sdb, out vec2 sdf);
 void scene(in vec3 x, out vec2 sdf)
 {
     x.x += .3*iTime;
+    x *= 2.;
     
     vec2 n;
     lfnoise(x.x*c.xx-iTime, n.x);
-    lfnoise(x.x*c.xx-iTime-1337., n.y);
-    x.yz += .3*vec2(cos(x.x), sin(x.x))*n;
+    lfnoise(2.*x.x*c.xx-iTime-1337., n.y);
+    x.yz += .1*vec2(cos(x.x), sin(x.x))*n;
     
-    float d, da;
+    mat3 RR;
+    rot3(mix(.2,1.5, .5+.5*n.x)*n.y * c.xyy, RR);
+    x = RR * x;
+    
+    float d, da, db;
     
     graf(x.xy, d);
     stroke(d+mix(.01,.04, iScale), mix(.01,.04, iScale), da);
@@ -115,12 +121,12 @@ void scene(in vec3 x, out vec2 sdf)
     
     float v;
     vec2 ind;
-    dvoronoi(mix(1.,24., iFader0)*x.xy, v, ind);
+    dvoronoi(12.*x.xy, v, ind); // 12.
     
     zextrude(x.z, -d, .1-.1*v, d);
     
 	sdf = vec2(d,1.);
-    float modsize = .05,
+    float modsize = .025,
 		y = mod(d-.3-.02*iTime,modsize)-.5*modsize,
         yi = (d-y)/modsize;
     
@@ -129,15 +135,23 @@ void scene(in vec3 x, out vec2 sdf)
 
     zextrude(x.z-.05*na, -y, mix(0.,.05+.05*na,iScale), d);
     //stroke(d,mix(0.,.035,iScale),d);
-    
-    
-    
+        
     add(sdf, vec2(d, 1.), sdf);
     
     zextrude(x.z, -da, .25, da);
+    
 	add(sdf, vec2(da, 1.), sdf);
+	
+	lfnoise(5.*x.xy, da);
+	    mfnoise(x.xy, 32., 422., .45, db);
+        da = .5*(db+da);
+		sdf.x -= .001*da; // .001
+        stroke(da, .1, da);
+        sdf.x -=.005*da; // .005
     
     add(sdf, vec2(x.z+.25,1.), sdf);
+    
+    
 }
 
 void normal(in vec3 x, out vec3 n, in float dx);
@@ -150,11 +164,12 @@ float sm(float d)
 void colorize(in vec2 x, out vec3 col)
 {
     x.x += .3*iTime;
+    x *= 2.;
 
     float n;
     lfnoise(x.x*c.xx-iTime, n);
     x.y += .3*cos(x.x)*n;
-    
+ 
     float d;
     graf(x, d);
     col = mix(col, vec3(.9,.3,.7), sm(d-.2));

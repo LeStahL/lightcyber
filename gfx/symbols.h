@@ -2,8 +2,8 @@
 #ifndef SYMBOLIZE_H
 #define SYMBOLIZE_H
 
-extern float progress;int hsv2rgb_handle, rgb2hsv_handle, rand_handle, lfnoise_handle, mfnoise_handle, stroke_handle, add_handle, dvoronoi_handle, normal_handle, dtriangle_handle, dbox_handle, dlinesegment_handle, zextrude_handle, smoothmin_handle;
-const int nsymbols = 14;
+extern float progress;int hsv2rgb_handle, rgb2hsv_handle, rand_handle, lfnoise_handle, mfnoise_handle, stroke_handle, add_handle, dvoronoi_handle, normal_handle, dtriangle_handle, dbox_handle, dlinesegment_handle, rot3_handle, zextrude_handle, smoothmin_handle;
+const int nsymbols = 15;
 const char *hsv2rgb_source = "#version 130\n\n"
 "const float pi = acos(-1.);\n"
 "void hsv2rgb(in vec3 hsv, out vec3 rgb)\n"
@@ -190,6 +190,14 @@ const char *dlinesegment_source = "#version 130\n\n"
 "{\n"
 "    vec2 da = p2-p1;\n"
 "    d = length(x-mix(p1, p2, clamp(dot(x-p1, da)/dot(da,da),0.,1.)));\n"
+"}\n"
+"\0";
+const char *rot3_source = "const vec3 c = vec3(1.,0.,-1.);\n"
+"void rot3(in vec3 p, out mat3 rot)\n"
+"{\n"
+"    rot = mat3(c.xyyy, cos(p.x), sin(p.x), 0., -sin(p.x), cos(p.x))\n"
+"        *mat3(cos(p.y), 0., -sin(p.y), c.yxy, sin(p.y), 0., cos(p.y))\n"
+"        *mat3(cos(p.z), -sin(p.z), 0., sin(p.z), cos(p.z), c.yyyx);\n"
 "}\n"
 "\0";
 const char *zextrude_source = "// Extrusion\n"
@@ -913,6 +921,7 @@ const char *graffiti_source = "/* Lightcyber by Team210 - 64k intro by Team210 a
 "void dlinesegment(in vec2 x, in vec2 p1, in vec2 p2, out float d);\n"
 "void stroke(in float d0, in float s, out float d);\n"
 "void dvoronoi(in vec2 x, out float d, out vec2 z);\n"
+"void rot3(in vec3 phi, out mat3 R); \n"
 "\n"
 "void graf(in vec2 x, out float d)\n"
 "{\n"
@@ -971,13 +980,18 @@ const char *graffiti_source = "/* Lightcyber by Team210 - 64k intro by Team210 a
 "void scene(in vec3 x, out vec2 sdf)\n"
 "{\n"
 "    x.x += .3*iTime;\n"
+"    x *= 2.;\n"
 "    \n"
 "    vec2 n;\n"
 "    lfnoise(x.x*c.xx-iTime, n.x);\n"
-"    lfnoise(x.x*c.xx-iTime-1337., n.y);\n"
-"    x.yz += .3*vec2(cos(x.x), sin(x.x))*n;\n"
+"    lfnoise(2.*x.x*c.xx-iTime-1337., n.y);\n"
+"    x.yz += .1*vec2(cos(x.x), sin(x.x))*n;\n"
 "    \n"
-"    float d, da;\n"
+"    mat3 RR;\n"
+"    rot3(mix(.2,1.5, .5+.5*n.x)*n.y * c.xyy, RR);\n"
+"    x = RR * x;\n"
+"    \n"
+"    float d, da, db;\n"
 "    \n"
 "    graf(x.xy, d);\n"
 "    stroke(d+mix(.01,.04, iScale), mix(.01,.04, iScale), da);\n"
@@ -985,12 +999,12 @@ const char *graffiti_source = "/* Lightcyber by Team210 - 64k intro by Team210 a
 "    \n"
 "    float v;\n"
 "    vec2 ind;\n"
-"    dvoronoi(mix(1.,24., iFader0)*x.xy, v, ind);\n"
+"    dvoronoi(12.*x.xy, v, ind); // 12.\n"
 "    \n"
 "    zextrude(x.z, -d, .1-.1*v, d);\n"
 "    \n"
 "	sdf = vec2(d,1.);\n"
-"    float modsize = .05,\n"
+"    float modsize = .025,\n"
 "		y = mod(d-.3-.02*iTime,modsize)-.5*modsize,\n"
 "        yi = (d-y)/modsize;\n"
 "    \n"
@@ -999,15 +1013,23 @@ const char *graffiti_source = "/* Lightcyber by Team210 - 64k intro by Team210 a
 "\n"
 "    zextrude(x.z-.05*na, -y, mix(0.,.05+.05*na,iScale), d);\n"
 "    //stroke(d,mix(0.,.035,iScale),d);\n"
-"    \n"
-"    \n"
-"    \n"
+"        \n"
 "    add(sdf, vec2(d, 1.), sdf);\n"
 "    \n"
 "    zextrude(x.z, -da, .25, da);\n"
+"    \n"
 "	add(sdf, vec2(da, 1.), sdf);\n"
+"	\n"
+"	lfnoise(5.*x.xy, da);\n"
+"	    mfnoise(x.xy, 32., 422., .45, db);\n"
+"        da = .5*(db+da);\n"
+"		sdf.x -= .001*da; // .001\n"
+"        stroke(da, .1, da);\n"
+"        sdf.x -=.005*da; // .005\n"
 "    \n"
 "    add(sdf, vec2(x.z+.25,1.), sdf);\n"
+"    \n"
+"    \n"
 "}\n"
 "\n"
 "void normal(in vec3 x, out vec3 n, in float dx);\n"
@@ -1020,11 +1042,12 @@ const char *graffiti_source = "/* Lightcyber by Team210 - 64k intro by Team210 a
 "void colorize(in vec2 x, out vec3 col)\n"
 "{\n"
 "    x.x += .3*iTime;\n"
+"    x *= 2.;\n"
 "\n"
 "    float n;\n"
 "    lfnoise(x.x*c.xx-iTime, n);\n"
 "    x.y += .3*cos(x.x)*n;\n"
-"    \n"
+" \n"
 "    float d;\n"
 "    graf(x, d);\n"
 "    col = mix(col, vec3(.9,.3,.7), sm(d-.2));\n"
@@ -1489,6 +1512,19 @@ void Loaddlinesegment()
 #endif
     progress += .2/(float)nsymbols;
 }
+void Loadrot3()
+{
+    int rot3_size = strlen(rot3_source);
+    rot3_handle = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(rot3_handle, 1, (GLchar **)&rot3_source, &rot3_size);
+    glCompileShader(rot3_handle);
+#ifdef DEBUG
+    printf("---> rot3 Shader:\n");
+    debug(rot3_handle);
+    printf(">>>>\n");
+#endif
+    progress += .2/(float)nsymbols;
+}
 void Loadzextrude()
 {
     int zextrude_size = strlen(zextrude_source);
@@ -1541,6 +1577,8 @@ void LoadSymbols()
     Loaddbox();
     updateBar();
     Loaddlinesegment();
+    updateBar();
+    Loadrot3();
     updateBar();
     Loadzextrude();
     updateBar();
@@ -1686,6 +1724,7 @@ void Loadgraffiti()
     glAttachShader(graffiti_program,dlinesegment_handle);
     glAttachShader(graffiti_program,stroke_handle);
     glAttachShader(graffiti_program,dvoronoi_handle);
+    glAttachShader(graffiti_program,rot3_handle);
     glAttachShader(graffiti_program,zextrude_handle);
     glAttachShader(graffiti_program,add_handle);
     glAttachShader(graffiti_program,normal_handle);
