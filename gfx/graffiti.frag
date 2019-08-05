@@ -104,13 +104,15 @@ void scene(in vec3 x, out vec2 sdf)
     x.x += .3*iTime;
     x *= 2.;
     
-    vec2 n;
+    vec3 n;
     lfnoise(x.x*c.xx-iTime, n.x);
     lfnoise(2.*x.x*c.xx-iTime-1337., n.y);
-    x.yz += .1*vec2(cos(x.x), sin(x.x))*n;
+    lfnoise(x.x*c.xx+2.*iTime-2337., n.z);
+
+    x.yz += .1*vec2(cos(x.x), sin(x.x))*n.xy;
     
     mat3 RR;
-    rot3(mix(.2,1.5, .5+.5*n.x)*n.y * c.xyy, RR);
+    rot3(1.3*mix(.2,1.5, .5+.5*n.x)*n.z * c.xyy, RR);
     x = RR * x;
     
     float d, da, db;
@@ -134,9 +136,9 @@ void scene(in vec3 x, out vec2 sdf)
     lfnoise(2.*yi*c.xx-.3*iTime, na);
 
     zextrude(x.z-.05*na, -y, mix(0.,.05+.05*na,iScale), d);
-    //stroke(d,mix(0.,.035,iScale),d);
+    stroke(d,.035,d);
         
-    add(sdf, vec2(d, 1.), sdf);
+    
     
     zextrude(x.z, -da, .25, da);
     
@@ -148,9 +150,13 @@ void scene(in vec3 x, out vec2 sdf)
 		sdf.x -= .001*da; // .001
         stroke(da, .1, da);
         sdf.x -=.005*da; // .005
-    
+    add(sdf, vec2(d, 1.), sdf);
     add(sdf, vec2(x.z+.25,1.), sdf);
     
+    // xa(t)
+    float xa = mix(x.x+3.*a,x.x-3.*a,clamp(iTime/3.,0.,1.));
+    xa = mix(xa,-xa, clamp((iTime-3.)/6., 0.,1.));
+    sdf.x += mix(0., 2., smoothstep(-.5, .5, xa));
     
 }
 
@@ -172,8 +178,8 @@ void colorize(in vec2 x, out vec3 col)
  
     float d;
     graf(x, d);
-    col = mix(col, vec3(.9,.3,.7), sm(d-.2));
-    col = mix(col, vec3(.3,.7,.9), sm(d));
+    col = mix(col, mix(vec3(0.85,0.87,0.89), vec3(0.04,0.18,0.24), clamp(abs(x.y/2.),0.,1.)), sm(d-.2));
+    col = mix(col, vec3(1.00,0.40,0.39), sm(d));
     float da = d;
     stroke(d+mix(.01,.03, iScale), mix(.01,.04,iScale), d);
     //stroke(d,.01, d);
@@ -186,7 +192,7 @@ void colorize(in vec2 x, out vec3 col)
         lfnoise(5.*x, da);
 	    mfnoise(x, 32., 422., .45, d);
         d = .5*(d+da);
-		col = mix(col, vec3(.4,.2,.9), sm(d));
+		col = mix(col, vec3(0.27,0.27,0.27), sm(d));
         stroke(d, .1, d);
         col = mix(col, 1.5*col, sm(d));
     }
@@ -262,6 +268,13 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     
     col *= col*col;
     col = mix(col, c.yyy, clamp((d-2.-(o.z-.2)/dir.z)/4.,0.,1.));
+    
+    vec2 ff = abs(mod(uv,.1)-.05)-.0005;
+    col = mix(col, vec3(.7,.11,.42), sm(min(ff.x,ff.y)));
+    ff = abs(mod(uv-.0005,.1)-.05)-.0005;
+    col = mix(col, c.xxx, sm(min(ff.x,ff.y)));
+    
+    
     fragColor = vec4(clamp(col,0.,1.),1.0);
 }
 

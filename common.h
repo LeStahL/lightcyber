@@ -268,7 +268,6 @@ GLenum error;
 
 float t_load_end = 0.;
 
-
 void load_demo();
 unsigned long __stdcall LoadMusicThread(void *lpParam);
 unsigned long __stdcall LoadLogo210Thread(void * lpParam);

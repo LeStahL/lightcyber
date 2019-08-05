@@ -72,10 +72,10 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		case WM_RBUTTONDOWN:
 			ExitProcess(0);
 			break;
-        case WM_MOUSEMOVE:
-            mx = GET_X_LPARAM(lParam);
-            my = GET_Y_LPARAM(lParam);
-            break;
+//         case WM_MOUSEMOVE:
+//             mx = GET_X_LPARAM(lParam);
+//             my = GET_Y_LPARAM(lParam);
+//             break;
 
 		default:
 			break;
