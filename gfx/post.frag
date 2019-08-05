@@ -160,7 +160,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord_ )
     float d;
     vec2 s;
     vec3 o, r, u, t, size, dir, x, n;
-    vec2 uv2 = 10.*(uv-vec2(-.4*a,.45));
+    vec2 uv2 = 10.*(uv-vec2(-.45*a,.45));
     o = R * c.yyx;
 	r = c.xyy; 
 	u = c.yxy;

@@ -544,6 +544,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     vec4 old = vec4(-1.,texture(iChannel0, fragCoord/iResolution.xy).rgb), new = old; // Scene
 //     
     // Display time
+    /*
     vec4 b = vec4(1., vec3(0.99,0.64,0.02)), bd = vec4(1., .5*vec3(0.99,0.64,0.02));
     box(uv-vec2(-.48,.45)-.03*sin(iTime)*c.xy, vec2(.2,.02), b.x);    
     stroke(b.x, .001, bd.x);
@@ -619,7 +620,9 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     {
         new = old;
     }
+    */
     
+    new = old;
     fragColor = vec4(new.gba, 1.);
 }
 

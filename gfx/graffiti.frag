@@ -223,6 +223,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     t = uv.x * r + uv.y * u;
     dir = normalize(t-o);
 
+    vec3 c1;
     float d = -(o.z-.35)/dir.z;
     
     for(i = 0; i<N; ++i)
@@ -230,9 +231,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
      	x = o + d * dir;
         scene(x,s);
         if(s.x < 1.e-4)break;
-        if(x.z<-.35)
+        if(x.z<-.15)
         {
-            col = .2*c.xxx;
             i = N;
             break;
         }
@@ -247,33 +247,45 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         if(s.y == 1.)
         {
             vec3 l = normalize(x+.5*c.yzx);
-            colorize(x.xy, col);
-            col = .1*col
-                + 1.*col * abs(dot(l,n))
-                + 1.5 * col * abs(pow(dot(reflect(x-l,n),dir),2.));
+            colorize(x.xy, c1);
+            c1 = .1*c1
+                + 1.*c1 * abs(dot(l,n))
+                + 1.5 * c1 * abs(pow(dot(reflect(x-l,n),dir),2.));
         }
         else if(s.y == 2.)
         {
             vec3 l = normalize(x+c.xzx);
             float r;
             lfnoise(x.xy, r);
-            col = mix(vec3(0.99,0.43,0.15),vec3(0.44,0.07,0.66),sin(2.*iScale*r*x));
-            col = .1*col
-                + .8*col * abs(dot(l,n))
-                + 6.5*col * abs(pow(dot(reflect(x-l,n),dir),3.));
+            c1 = mix(vec3(0.99,0.43,0.15),vec3(0.44,0.07,0.66),sin(2.*iScale*r*x));
+            c1 = .1*c1
+                + .8*c1 * abs(dot(l,n))
+                + 6.5*c1 * abs(pow(dot(reflect(x-l,n),dir),3.));
         }
+        col = c1;
     }
+    
     
     //col += col;
     
     col *= col*col;
     col = mix(col, c.yyy, clamp((d-2.-(o.z-.2)/dir.z)/4.,0.,1.));
     
-    vec2 ff = abs(mod(uv,.1)-.05)-.0005;
-    col = mix(col, vec3(.7,.11,.42), sm(min(ff.x,ff.y)));
-    ff = abs(mod(uv-.0005,.1)-.05)-.0005;
-    col = mix(col, c.xxx, sm(min(ff.x,ff.y)));
-    
+    // Background geraffel
+    if(length(col) < .001)
+    {
+        float v, ra, v2;
+        vec2 ind, ind2;
+        lfnoise(iTime*c.xx, ind2.x);
+        lfnoise(iTime*c.xx-1337., ind2.y);
+        dvoronoi(12.*(uv-.03*ind2), v, ind);
+//         dvoronoi(43.*uv, v2, ind2);
+//         ind += .1*ind2;
+        rand(ind, ra);
+        stroke(-v, .05, v);
+        v = -v;
+        col = mix(col, .3*ra*mix( .5*vec3(1.00,0.40,0.39), .05*c.xxx, clamp(tanh(1.5*length(uv)),0.,1.)), sm(v));
+    }
     
     fragColor = vec4(clamp(col,0.,1.),1.0);
 }

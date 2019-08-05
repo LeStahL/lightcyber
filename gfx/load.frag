@@ -143,10 +143,10 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         
     }
     
-    vec2 ff = abs(mod(uv,.1)-.05)-.0005;
-    col = mix(col, vec3(.7,.11,.42), sm(min(ff.x,ff.y)));
-    ff = abs(mod(uv-.0005,.1)-.05)-.0005;
-    col = mix(col, c.xxx, sm(min(ff.x,ff.y)));
+//     vec2 ff = abs(mod(uv,.1)-.05)-.0005;
+//     col = mix(col, vec3(.7,.11,.42), sm(min(ff.x,ff.y)));
+//     ff = abs(mod(uv-.0005,.1)-.05)-.0005;
+//     col = mix(col, c.xxx, sm(min(ff.x,ff.y)));
     
     fragColor = vec4(clamp(col,0.,1.),1.0);
 }
