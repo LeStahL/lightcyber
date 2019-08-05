@@ -716,6 +716,15 @@ void draw()
         glUniform2f(voronoidesign_iResolution_location, w, h);
       
 #ifdef MIDI
+        glUniform1f(voronoidesign_iFader0_location, fader0);
+        glUniform1f(voronoidesign_iFader1_location, fader1);
+        glUniform1f(voronoidesign_iFader2_location, fader2);
+        glUniform1f(voronoidesign_iFader3_location, fader3);
+        glUniform1f(voronoidesign_iFader4_location, fader4);
+        glUniform1f(voronoidesign_iFader5_location, fader5);
+        glUniform1f(voronoidesign_iFader6_location, fader6);
+        glUniform1f(voronoidesign_iFader7_location, fader7);
+        
         if(override_index == 2) 
         {
             select_button(override_index);

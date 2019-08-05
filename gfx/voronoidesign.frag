@@ -216,7 +216,7 @@ void dvoronoi(in vec2 x, out float d, out vec2 z)
 }
 
 vec2 vind,vind2;
-float v, fn;
+float v, fn, r1;
 void scene(in vec3 x, out vec2 sdf)
 {
     x.y += .2*iTime;
@@ -234,22 +234,24 @@ void scene(in vec3 x, out vec2 sdf)
     mat2 RR = mat2(cos(n2), sin(n2), -sin(n2), cos(n2));
     vec2 a = x.xy;
     x.xy = RR * x.xy;
+    rand(vind, r1);
+    float r2;
+    rand(vind -1336., r2);
     
     float phi = atan(y.y, y.x),
         dp = pi/24.,
         phii = mod(phi, dp)-.5*dp,
         pa = phi - phii, 
         R1 = .05,
-        R2 = .4;
+        R2 = mix(.4,.25,1.-r2);
     
     R2 = mix(R1, R2, .5+.5*n2);
     
-    float r0, r1;
+    float r0;
     rand(pa*c.xx, r0);
     r0 = mix(r0,.5+.5*n,.5);
     
     
-    rand(vind, r1);
     
     dspline3(y, vec3(R1*cos(pa), R1*sin(pa), -.5), vec3(R1*cos(pa), R1*sin(pa), .1*r1), vec3(mix(R1,R2,.5)*cos(pa), mix(R1,R2,.5)*sin(pa), .1*r1), sdf.x);
     float da;
@@ -410,13 +412,16 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
             float r;
             rand(vind, r);
             
-            col = mix(mix(vec3(0.76,0.20,0.23),vec3(.18,.32,.13), r), vec3(0.23,0.23,0.23),  clamp((x.z)/.05,0.,1.));
+            col = mix(mix(vec3(0.76,0.20,0.23),vec3(.18,.32,.13), r), vec3(0.23,0.23,0.23),  clamp((x.z)/r1/.1,0.,1.));
             col = .2*col
                 + .2*col * abs(dot(l,n))
                 + .6*col * pow(abs(dot(reflect(-l,n),dir)),3.);
+            col = mix(col, 5.*col, .25*n.x*n.x);
         }
-
+        
     }
+    
+    
     
     col = mix(col, 0.*.23*c.xxx*vec3(0.76,0.20,0.13),smoothstep(1.,5.,d));
     col *=3.6;
