@@ -118,7 +118,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     y = (o + d * dir).xy;
     dcirclesegment(y, .3, -pi, mix(-pi, pi, iProgress), d);
     stroke(d, .03, d);
-    col = mix(col, mix(col, vec3(0.85,0.87,0.89), .8), sm(d));
+    col = mix(col, mix(col, 1.5*vec3(0.85,0.87,0.89), .8), sm(d));
     stroke(d, .0035, d);
     col = mix(col, mix(col, vec3(0.04,0.18,0.24), .5), sm(d));
     

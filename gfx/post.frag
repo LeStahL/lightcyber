@@ -82,6 +82,11 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord_ )
             }
         col /= iFSAA;
     }
+    
+    // Scan lines
+//     col = mix(clamp(col,c.yyy,c.xxx), c.xxx, smoothstep(1.5/iResolution.y, -1.5/iResolution.y, stroke(logo(uv-vec2(-.45,.45),.02),.005)));
+    col += vec3(0., 0.05, 0.1)*sin(uv.y*1050.+ 5.*iTime);
+    
     fragColor = vec4(col,1.0);
 }
 

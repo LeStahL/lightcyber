@@ -122,7 +122,7 @@ const char * load_frag =
 "    y = (o + d * dir).xy;\n"
 "    dcirclesegment(y, .3, -pi, mix(-pi, pi, iProgress), d);\n"
 "    stroke(d, .03, d);\n"
-"    col = mix(col, mix(col, vec3(0.85,0.87,0.89), .8), sm(d));\n"
+"    col = mix(col, mix(col, 1.5*vec3(0.85,0.87,0.89), .8), sm(d));\n"
 "    stroke(d, .0035, d);\n"
 "    col = mix(col, mix(col, vec3(0.04,0.18,0.24), .5), sm(d));\n"
 "    \n"
