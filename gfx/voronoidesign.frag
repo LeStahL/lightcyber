@@ -253,7 +253,7 @@ void scene(in vec3 x, out vec2 sdf)
     
     
     
-    dspline3(y, vec3(R1*cos(pa), R1*sin(pa), -.5), vec3(R1*cos(pa), R1*sin(pa), .1*r1), vec3(mix(R1,R2,.5)*cos(pa), mix(R1,R2,.5)*sin(pa), .1*r1), sdf.x);
+    dspline3(y, vec3(1.4*R1*cos(pa), 1.4*R1*sin(pa), -.5), vec3(R1*cos(pa), R1*sin(pa), .1*r1), vec3(mix(R1,R2,.5)*cos(pa), mix(R1,R2,.5)*sin(pa), .1*r1), sdf.x);
     float da;
     dspline3(y, vec3(mix(R1,R2,.5)*cos(pa), mix(R1,R2,.5)*sin(pa), .1*r1), vec3(R2*cos(pa), R2*sin(pa), .1*r1), vec3(R2*cos(pa), R2*sin(pa), .1-.4*r0), da);
     sdf.x = min(sdf.x, da);
@@ -262,10 +262,13 @@ void scene(in vec3 x, out vec2 sdf)
     
     add(sdf, vec2(length(y-vec3(R2*cos(pa), R2*sin(pa), .1-.4*r0))-.01, 3.), sdf);
     
+    
     float fa;
     lfnoise(4.*a,  fa);
     dvoronoi(a,fn, vind2); 
-    add(sdf, vec2(x.z+.4+.1*mix((v+fn),fa,.5),4.), sdf);
+    fa = x.z+.4+.1*mix((v+fn),fa,.5);
+    add(sdf, vec2(fa,4.), sdf);
+    smoothmin(sdf.x, fa, .1, sdf.x);
     //x.xy = x.yx;
     /*
     float t, ta;
