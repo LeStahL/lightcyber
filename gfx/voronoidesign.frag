@@ -216,7 +216,7 @@ void dvoronoi(in vec2 x, out float d, out vec2 z)
 }
 
 vec2 vind,vind2;
-float v, fn, r1;
+float v, fn, r1, fb;
 void scene(in vec3 x, out vec2 sdf)
 {
     x.y += .2*iTime;
@@ -262,13 +262,16 @@ void scene(in vec3 x, out vec2 sdf)
     
     add(sdf, vec2(length(y-vec3(R2*cos(pa), R2*sin(pa), .1-.4*r0))-.01, 3.), sdf);
     
-    
     float fa;
     lfnoise(4.*a,  fa);
     dvoronoi(a,fn, vind2); 
     fa = x.z+.4+.1*mix((v+fn),fa,.5);
     add(sdf, vec2(fa,4.), sdf);
     smoothmin(sdf.x, fa, .1, sdf.x);
+    
+    
+    
+    
     //x.xy = x.yx;
     /*
     float t, ta;
@@ -408,6 +411,12 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
             stroke(fn, .01, fn);
             col = mix(col, c.yyy, sm(v));
             col = mix(col, col*col, sm(fn));
+//             float nn;
+//             mfnoise(x.xy+.2*iTime*c.yx, 3.,100.,.45,nn);
+//             stroke(nn,.01,nn);
+//             col = mix(col, vec3(0.76,0.40,0.23), sm(nn));
+//             stroke(nn-.005, .001, nn);
+//             col= mix(col, c.xxx, sm(nn));
         }
 		if(s.y == 2.)
         {
@@ -432,6 +441,9 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     
     //col = atan(col);
     col *= col;
+    
+//     col = length(col)/sqrt(3.)*c.xxx;
+    
     fragColor = vec4(clamp(col,0.,1.),1.0);
 }	
 
