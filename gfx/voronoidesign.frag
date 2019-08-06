@@ -31,25 +31,6 @@ uniform float iFader7;
 float nbeats;
 float iScale;
 
-/* Gross Gloss by Team210 - 64k intro by Team210 at Solskogen 2k19
- * Copyright (C) 2019  Alexander Kraus <nr4@z10.info>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
-// Update1: Changes implementing FabriceNeyret2's comments.
-
 // Global constants
 const vec3 c = vec3(1.0, 0.0, -1.0);
 const float pi = acos(-1.);
@@ -251,8 +232,6 @@ void scene(in vec3 x, out vec2 sdf)
     rand(pa*c.xx, r0);
     r0 = mix(r0,.5+.5*n,.5);
     
-    
-    
     dspline3(y, vec3(1.4*R1*cos(pa), 1.4*R1*sin(pa), -.5), vec3(R1*cos(pa), R1*sin(pa), .1*r1), vec3(mix(R1,R2,.5)*cos(pa), mix(R1,R2,.5)*sin(pa), .1*r1), sdf.x);
     float da;
     dspline3(y, vec3(mix(R1,R2,.5)*cos(pa), mix(R1,R2,.5)*sin(pa), .1*r1), vec3(R2*cos(pa), R2*sin(pa), .1*r1), vec3(R2*cos(pa), R2*sin(pa), .1-.4*r0), da);
@@ -268,60 +247,6 @@ void scene(in vec3 x, out vec2 sdf)
     fa = x.z+.4+.1*mix((v+fn),fa,.5);
     add(sdf, vec2(fa,4.), sdf);
     smoothmin(sdf.x, fa, .1, sdf.x);
-    
-    
-    
-    
-    //x.xy = x.yx;
-    /*
-    float t, ta;
-
-    x.y += .3*iTime;
-
-    
-    lfnoise(5.*x.y*c.xx, t);
-    lfnoise(5.*(x.y*c.xx-iTime), ta);
-    
-    
-    mat2 R = mat2(cos(ta), sin(ta), -sin(ta), cos(ta));
-    vec2 z = R * x.xz;
-    x.x = z.x;
-    x.z = z.y;
-
-    float size = .4,
-        r = (.5-.3*t)*size,
-        phi = atan(x.z,x.x),
-        modsize = pi/32.,
-        phii = (phi-mod(phi, modsize)+.5*modsize);
-    vec3 dx = vec3(r*cos(phii), 0., r*sin(phii));
-    
-    x -= dx;
-    
-    dlinesegment3(x, 1.e3*c.yxy, -1.e3*c.yxy, sdf.x);
-    stroke(sdf.x, .01, sdf.x);
-    sdf.y = 2.;*/
-    
-/*    
-    vec3 y = vec3(x.x, mod(x.y,size)-.5*size, x.z),
-        dxi, 
-        dxip1, 
-        dxim1;
-    float yi = (y.y-x.y)/size,
-        d;
-    
-    
-    
-    hash31(yi, dxi);
-    hash31(yi-1., dxim1);
-    hash31(yi+1., dxip1);
-    
-    
-    dlinesegment3(y, size*(.5*dxi-.25), size*(.5*dxip1-.25-c.yxy), sdf.x);
-    dlinesegment3(y, size*(.5*dxi-.25), size*(.5*dxim1-.25+c.yxy), d);
-    d = min(d, sdf.x);
-    stroke(d, .01, sdf.x);
-    sdf.y = 2.;
-*/
 }
 
 void normal(in vec3 x, out vec3 n)
@@ -344,6 +269,13 @@ float sm(float d)
     return smoothstep(1.5/iResolution.y, -1.5/iResolution.y, d);
 }
 
+void vs(in vec3 x, out vec2 sdf)
+{
+    vec2 vi;
+    dvoronoi(3.*(x.xy+.2*iTime*c.yx), sdf.x, vi);
+    sdf.x = x.z-.1-.2*sdf.x;
+}
+
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
     vec2 uv = ( fragCoord -.5* iResolution.xy) / iResolution.y, 
@@ -364,22 +296,47 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     t = uv.x * r + uv.y * u;
     dir = normalize(t-o);
 
-    float d = -(o.z-.1)/dir.z;
+    float d = -(o.z-.3)/dir.z;
+    for(i = 0; i<N; ++i)
+    {
+     	x = o + d * dir;
+        vs(x,s);
+        if(s.x < 1.e-4)break;
+        d += s.x;
+    }
+    float v1, rar, dx = 1.e-3;
+    vec2 vi1, na;
+    vec3 cv, l;
+    x = o + d * dir;
+    dvoronoi(3.*(x.xy+.2*iTime*c.yx), v1, vi1);
+
+    rand(vi1, rar);
+    cv = mix(c.yyy,vec3(.23,.23,.23), rar);
+    v1 = abs(v1)-.01;
+    cv = mix(cv, c.yyy, sm(v1));
+    v1 = abs(v1-.01)-.005;
+    cv = mix(cv, /*vec3(0.76,0.20,0.13)*/c.xxx, sm(v1));
+    vs(x,s);
+    vs(x+dx*c.xyy, na);
+    n.x = na.x;
+    vs(x+dx*c.yxy, na);
+    n.y = na.x;
+    vs(x+dx*c.yyx, na);
+    n.z = na.x;
+    n = normalize(n-s.x);
+    l = normalize(x+c.yyx);
+    cv = .2*cv
+        +.2*cv*abs(dot(l,n))
+        +.6*cv*pow(abs(dot(reflect(-l,n),dir)),3.);
+    dir = refract(dir, n, .99);
     
     for(i = 0; i<N; ++i)
     {
      	x = o + d * dir;
         scene(x,s);
         if(s.x < 1.e-4)break;
-        /*
-        if(x.z<-.05)
-        {
-            col = .2*c.xxx;
-            i = N;
-            break;
-        }*/
+
         d += min(s.x,3.e-2);
-        //d += s.x;
     }
     
     if(i < N)
@@ -388,18 +345,17 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
        
         if(s.y == 3.)
         {
-            vec3 l = normalize(x+c.yyx);
+            l = normalize(x+c.yyx);
             float r;
             
-            col = mix(c.xxx, vec3(0.76,0.20,0.13), .2);
-            //col = mix(vec3(0.76,0.20,0.13), vec3(0.23,0.23,0.23),  clamp((x.z-.2*length(x.xy))/.1,0.,1.));
+            col = mix(c.xxx, vec3(0.76,0.20,0.13), .8);
             col = .4*col
-                + .4*col * abs(dot(l,n))
-                + .2*col * pow(abs(dot(reflect(-l,n),dir)),3.);
+                + .2*col * abs(dot(l,n))
+                + .8*col * pow(abs(dot(reflect(-l,n),dir)),2.);
         }
         else if(s.y == 4.)
         {
-            vec3 l = normalize(x+c.yyx);
+            l = normalize(x+c.yyx);
             float r;
             rand(vind+vind2,r);
             
@@ -411,16 +367,10 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
             stroke(fn, .01, fn);
             col = mix(col, c.yyy, sm(v));
             col = mix(col, col*col, sm(fn));
-//             float nn;
-//             mfnoise(x.xy+.2*iTime*c.yx, 3.,100.,.45,nn);
-//             stroke(nn,.01,nn);
-//             col = mix(col, vec3(0.76,0.40,0.23), sm(nn));
-//             stroke(nn-.005, .001, nn);
-//             col= mix(col, c.xxx, sm(nn));
         }
 		if(s.y == 2.)
         {
-            vec3 l = normalize(x+c.yyx);
+            l = normalize(x+c.yyx);
             float r;
             rand(vind, r);
             
@@ -433,17 +383,17 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         
     }
     
-    
-    
-    col = mix(col, 0.*.23*c.xxx*vec3(0.76,0.20,0.13),smoothstep(1.,5.,d));
     col *=3.6;
-    //col = mix(col, 2.*col, iScale);
-    
-    //col = atan(col);
     col *= col;
+
+    if(s.y != 3.)
+    {
+        col = length(col)/sqrt(3.)*c.xxx;
+    }
     
-//     col = length(col)/sqrt(3.)*c.xxx;
-    
+    col = mix(col,cv,.8);
+    col = mix(col, c.yyy,smoothstep(1.,5.,d));
+
     fragColor = vec4(clamp(col,0.,1.),1.0);
 }	
 
