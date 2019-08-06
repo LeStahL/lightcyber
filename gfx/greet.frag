@@ -34,470 +34,28 @@ const float pi = acos(-1.);
 
 float iScale;
 
-void rand(in vec2 x, out float n)
-{
-    x += 400.;
-    n = fract(sin(dot(sign(x)*abs(x) ,vec2(12.9898,78.233)))*43758.5453);
-}
+// void dpolygon(in vec2 x, in float N, out float d);
+// void rot(in float phi, out mat2 m);
+// void dcircle(in vec2 x, out float d);
+// void dbox(in vec2 x, in vec2 b, out float d);
+// void dlinesegment(in vec2 x, in vec2 p1, in vec2 p2, out float d);
+// void dtriangle(in vec2 p, in vec2 p0, in vec2 p1, in vec2 p2, out float dst);
 
-// Creative Commons Attribution-ShareAlike 4.0 International Public License
-// Created by David Hoskins.
-// See https://www.shadertoy.com/view/4djSRW
-void hash31(in float p, out vec3 d)
-{
-   vec3 p3 = fract(vec3(p) * vec3(.1031, .1030, .0973));
-   p3 += dot(p3, p3.yzx+33.33);
-   d = fract((p3.xxy+p3.yzz)*p3.zyx); 
-}
-// End of Hoskins Hash
-
-void lfnoise(in vec2 t, out float n)
-{
-    vec2 i = floor(t);
-    t = fract(t);
-    t = smoothstep(c.yy, c.xx, t);
-    vec2 v1, v2;
-    rand(i, v1.x);
-    rand(i+c.xy, v1.y);
-    rand(i+c.yx, v2.x);
-    rand(i+c.xx, v2.y);
-    v1 = c.zz+2.*mix(v1, v2, t.y);
-    n = mix(v1.x, v1.y, t.x);
-}
-
-void mfnoise(in vec2 x, in float d, in float b, in float e, out float n)
-{
-    n = 0.;
-    float a = 1., nf = 0., buf;
-    for(float f = d; f<b; f *= 2.)
-    {
-        lfnoise(f*x, buf);
-        n += a*buf;
-        a *= e;
-        nf += 1.;
-    }
-    n *= (1.-e)/(1.-pow(e, nf));
-}
-
-// Box sdf
-void dbox(in vec2 x, in vec2 b, out float d)
-{
-    vec2 da = abs(x)-b;
-    d = length(max(da,c.yy)) + min(max(da.x,da.y),0.0);
-}
-
-void dlinesegment3(in vec3 x, in vec3 p1, in vec3 p2, out float d)
-{
-    vec3 da = p2-p1;
-    d = length(x-mix(p1, p2, clamp(dot(x-p1, da)/dot(da,da),0.,1.)));
-}
-
-// Stroke
-void stroke(in float d0, in float s, out float d)
-{
-    d = abs(d0)-s;
-}
-
-// Extrusion
-void zextrude(in float z, in float d2d, in float h, out float d)
-{
-    vec2 w = vec2(-d2d, abs(z)-0.5*h);
-    d = length(max(w,0.0));
-}
-
-// Add sdfs
-void add(in vec2 sda, in vec2 sdb, out vec2 sdf)
-{
-    sdf = sda.x<sdb.x?sda:sdb;
-}
-
-// iq's smooth minimum
-void smoothmin(in float a, in float b, in float k, out float dst)
-{
-    float h = max( k-abs(a-b), 0.0 )/k;
-    dst = min( a, b ) - h*h*h*k*(1.0/6.0);
-}
-
-//distance to spline with parameter t
-float dist3(vec3 p0,vec3 p1,vec3 p2,vec3 x,float t)
-{
-    t = clamp(t, 0., 1.);
-    return length(x-pow(1.-t,2.)*p0-2.*(1.-t)*t*p1-t*t*p2);
-}
-
-//minimum dist3ance to spline
-void dspline3(in vec3 x, in vec3 p0, in vec3 p1, in vec3 p2, out float ds)
-{
-    //coefficients for 0 = t^3 + a * t^2 + b * t + c
-    vec3 E = x-p0, F = p2-2.*p1+p0, G = p1-p0,
-    	ai = vec3(3.*dot(G,F), 2.*dot(G,G)-dot(E,F), -dot(E,G))/dot(F,F);
-
-	//discriminant and helpers
-    float tau = ai.x/3., p = ai.y-tau*ai.x, q = - tau*(tau*tau+p)+ai.z, dis = q*q/4.+p*p*p/27.;
-    
-    //triple real root
-    if(dis > 0.) 
-    {
-        vec2 ki = -.5*q*c.xx+sqrt(dis)*c.xz, ui = sign(ki)*pow(abs(ki), c.xx/3.);
-        ds = dist3(p0,p1,p2,x,ui.x+ui.y-tau);
-        return;
-    }
-    
-    //three dist3inct real roots
-    float fac = sqrt(-4./3.*p), arg = acos(-.5*q*sqrt(-27./p/p/p))/3.;
-    vec3 t = c.zxz*fac*cos(arg*c.xxx+c*pi/3.)-tau;
-    ds = min(
-        dist3(p0,p1,p2,x, t.x),
-        min(
-            dist3(p0,p1,p2,x,t.y),
-            dist3(p0,p1,p2,x,t.z)
-        )
-    );
-}
-
-void dvoronoi(in vec2 x, out float d, out vec2 z)
-{
-    vec2 y = floor(x);
-       float ret = 1.;
-    vec2 pf=c.yy, p;
-    float df=10.;
-    
-    for(int i=-1; i<=1; i+=1)
-        for(int j=-1; j<=1; j+=1)
-        {
-            p = y + vec2(float(i), float(j));
-            float pa;
-            rand(p, pa);
-            p += pa;
-            
-            d = length(x-p);
-            
-            if(d < df)
-            {
-                df = d;
-                pf = p;
-            }
-        }
-    for(int i=-1; i<=1; i+=1)
-        for(int j=-1; j<=1; j+=1)
-        {
-            p = y + vec2(float(i), float(j));
-            float pa;
-            rand(p, pa);
-            p += pa;
-            
-            vec2 o = p - pf;
-            d = length(.5*o-dot(x-pf, o)/dot(o,o)*o);
-            ret = min(ret, d);
-        }
-    
-    d = ret;
-    z = pf;
-}
-
-void dbox3(in vec3 x, in vec3 b, out float d)
-{
-  	vec3 da = abs(x) - b;
-  	d = length(max(da,0.0)) + min(max(da.x,max(da.y,da.z)),0.0);
-}
-
-// Compute distance to regular polygon
-void dpolygon(in vec2 x, in float N, out float d)
-{
-    d = 2.0*pi/N;
-    float t = mod(acos(x.x/length(x)), d)-0.5*d;
-    d = -0.5+length(x)*cos(t)/cos(0.5*d);
-}
-
-// Distance to circle
-void dcircle(in vec2 x, out float d)
-{
-    d = length(x)-1.0;
-}
-
-// Distance to line segment
-void dlinesegment(in vec2 x, in vec2 p1, in vec2 p2, out float d)
-{
-    vec2 da = p2-p1;
-    d = length(x-mix(p1, p2, clamp(dot(x-p1, da)/dot(da,da),0.,1.)));
-}
-
-// 2D rotational matrix
-void rot(in float phi, out mat2 m)
-{
-    vec2 cs = vec2(cos(phi), sin(phi));
-    m = mat2(cs.x, -cs.y, cs.y, cs.x);
-}
-
-// Distance to pig ear
-void dear(in vec2 x, out float d)
-{
-    d = abs(2.*x.y)
-        -.95+smoothstep(0.,.5,clamp(abs(x.x),0.,1.))
-        -.5*min(-abs(x.x),.01);
-}
-
-// Distance to a triangle
-void dtriangle(in vec2 x, in vec2 p0, in vec2 p1, in vec2 p2, out float d)
-{
-    vec2 d1 = c.xz*(p1-p0).yx, d2 = c.xz*(p2-p1).yx, d3 = c.xz*(p0-p2).yx;
-    d = -min(
-        dot(p0-x,d1)/length(d1),
-        min(
-            dot(p1-x,d2)/length(d2),
-            dot(p2-x,d3)/length(d3)
-        )
-    );
-}
-
-// Distance to schnappsgirls logo in hexagon
-void dschnappsgirls(in vec2 x, out float d)
-{
-    dpolygon(.5*x,6.0,d);
-    float da, d0;
-    
-    // Dress
-    dtriangle(x, vec2(-.1,-.3), vec2(.5,-.3), vec2(.2, .6), d0);
-    dlinesegment(x, vec2(-.1,.325), vec2(.5,.325), da);
-    stroke(da,.06,da);
-    d0 = max(d0,-da);
-    
-    // Head
-    dcircle(7.*(x-vec2(.2,.5)), da);
-    d0 = max(d0, -da+.5);
-    d0 = min(d0, da/7.);
-    
-    // Legs
-    dlinesegment(x, vec2(.125,-.3), vec2(.125,-.6), da);
-    stroke(da, .06, da);
-    d0 = min(d0, da);
-    dlinesegment(x, vec2(.275,-.3), vec2(.275,-.6), da);
-    stroke(da, .06, da);
-    d0 = min(d0, da);
-    
-    // Shoulders
-    dlinesegment(x, vec2(0.05,.25), vec2(.35,.25), da);
-    stroke(da, .085, da);
-    d0 = min(d0, da);
-    
-    // Arms
-    dlinesegment(x, vec2(.385,.25), vec2(.5, -.1), da);
-    stroke(da, .055, da);
-    d0 = min(d0, da);
-    dlinesegment(x, vec2(.017,.25), vec2(-.1, -.1), da);
-    stroke(da, .055, da);
-    d0 = min(d0, da);
-    
-    // Glass
-    dtriangle(x, vec2(-.6,.3), vec2(-.4,.1), vec2(-.2,.3), da);
-    stroke(da, .0125, da);
-    d0 = min(d0, da);
-    dlinesegment(x, vec2(-.4,.15), vec2(-.4,-.1), da);
-    stroke(da, .0125, da);
-    d0 = min(d0, da);
-    dtriangle(x, vec2(-.5,-.15), vec2(-.3,-.15), vec2(-.4,-.1), da);
-    d0 = min(d0, da);
-    
-    // Liquid
-    dtriangle(x, vec2(-.55,.25), vec2(-.4,.1), vec2(-.25,.25), da);
-    d0 = min(d0, da);
-    
-    // Salad
-    dlinesegment(x, vec2(-.4,.1), vec2(-.2,.5), da);
-    stroke(da, .01, da);
-    d0 = min(d0, da);
-    dcircle(24.*(x-vec2(-.3,.3)), da);
-    d0 = min(d0, da/24.);
-    dcircle(24.*(x-vec2(-.25,.4)), da);
-    d0 = min(d0, da/24.);
-    
-    d = max(d, -d0);
-}
-
-// Distance to spacepigs logo in hexagon
-void dspacepigs(in vec2 x, out float d)
-{
-    dpolygon(.5*x,6.0,d);
-    float da, d0;
-    
-    // Head
-    dcircle(2.5*x,d0);
-    d0 /= 2.5;
-    
-    // Ears
-    dear(vec2(2.,5.)*x-vec2(.8,1.3), da);
-    d0 = min(d0,da/10.);
-    dear(vec2(2.,5.)*x+vec2(.8,-1.3), da);
-    d0 = min(d0,da/10.);
-    
-    // Nose
-    dcircle(6.*x-vec2(0.,-.5),da);
-    d0 = max(d0,-da/6.);
-    dcircle(24.*x-vec2(-1.5,-2.),da);
-    d0 = min(d0,da/24.);
-    dcircle(24.*x-vec2(1.5,-2.),da);
-    d0 = min(d0,da/24.);
-    
-    // Eyes
-    dcircle(16.*x-vec2(-3.5,2.5),da);
-    d0 = max(d0,-da/16.);
-    dcircle(16.*x-vec2(3.5,2.5),da);
-    d0 = max(d0,-da/16.);
-    dcircle(24.*x-vec2(-5.,3.5),da);
-    d0 = min(d0,da/24.);
-    dcircle(24.*x-vec2(5.,3.5),da);
-    d0 = min(d0,da/24.);
-    
-    d = max(d, -d0);
-}
-
-// Distance to kewlers logo in hexagon
-void dkewlers(in vec2 x, out float d)
-{
-    dpolygon(.5*x,6.0,d);
-    float da, d0;
-    
-    x *= 1.2;
-    
-    dbox(x-vec2(0.,-.3),vec2(.6,.1),d0);
-    dbox(x-vec2(-.5,-.0),vec2(.1,.25),da);
-    d0 = min(d0,da);
-    dbox(x-vec2(-.5+1./3.,.25),vec2(.1,.5),da);
-    d0 = min(d0,da);
-    dbox(x-vec2(-.5+2./3.,-.0),vec2(.1,.25),da);
-    d0 = min(d0,da);
-    dbox(x-vec2(.5,-.0),vec2(.1,.25),da);
-    d0 = min(d0,da);
-    
-    d = max(d, -d0);
-}
-
-// Distance to farbrausch logo in hexagon
-void dfarbrausch(in vec2 x, out float d)
-{
-    dpolygon(.5*x,6.0,d);
-    float da, d0;
-    
-    x += vec2(.1,0.);
-    x *= 1.2;
-    
-    dlinesegment(x,vec2(-.65,.05),vec2(-.5,.05),d0);
-    dlinesegment(x,vec2(-.5,.05),vec2(-.2,-.49),da);
-    d0 = min(d0, da);
-    dlinesegment(x,vec2(-.2,-.49),vec2(-.0,-.49),da);
-    d0 = min(d0, da);
-    dlinesegment(x,vec2(-.0,-.49),vec2(-.27,.0),da);
-    d0 = min(d0, da);
-    dlinesegment(x,vec2(-.07,0.),vec2(-.27,.0),da);
-    d0 = min(d0, da);
-    dlinesegment(x,vec2(.2,-.49),vec2(-.07,.0),da);
-    d0 = min(d0, da);
-    dlinesegment(x,vec2(.4,-.49),vec2(.13,.0),da);
-    d0 = min(d0, da);
-    dlinesegment(x,vec2(.4,-.49),vec2(.2,-.49),da);
-    d0 = min(d0, da);
-    dlinesegment(x,vec2(.33,0.),vec2(.13,.0),da);
-    d0 = min(d0, da);
-    dlinesegment(x,vec2(.33,0.),vec2(.51,-.33),da);
-    d0 = min(d0, da);
-    dlinesegment(x,vec2(.6,-.15),vec2(.51,-.33),da);
-    d0 = min(d0, da);
-    dlinesegment(x,vec2(.53,0.),vec2(.6,-.15),da);
-    d0 = min(d0, da);
-    dlinesegment(x,vec2(.7,0.),vec2(.53,.0),da);
-    d0 = min(d0, da);
-    dlinesegment(x,vec2(.7,0.),vec2(.68,-.04),da);
-    d0 = min(d0, da);
-    dpolygon(5.*(x+vec2(.3,.65)),6.,da);
-    d0 = min(d0, da/5.);
-    dpolygon(5.*(x+vec2(-.5,.65)),6.,da);
-    d0 = min(d0, da/5.);
-    
-    stroke(d0,.035, d0);
-    d = max(d, -d0);
-}
-
-// Distance to haujobb logo in hexagon
-void dhaujobb(in vec2 x, out float d)
-{
-    dpolygon(.5*x,6.0,d);
-    float da, d0;
-    mat2 m;
-	rot(.3,m);
-    x = 1.1*x*m;
-    x.x *= 1.1;
-        
-    x += vec2(-.05,.2);
-    
-    // Left leg
-    dbox(x+.35*c.xx,vec2(.1,.05),d0);
-    dbox(x+vec2(.3,.25),vec2(.05,.15),da);
-    d0 = min(d0,da);
-    dbox(x+vec2(.2,.15),vec2(.1,.05),da);
-    d0 = min(d0,da);
-    dbox(x+vec2(.15,.05),vec2(.05,.15),da);
-    d0 = min(d0,da);
-    
-    // Right leg
-    dbox(x-vec2(.65,.35),vec2(.05,.15),da);
-    d0 = min(d0,da);
-
-    // Torso
-    rot(.2, m);
-    dbox(m*(x-vec2(.25,.15)),vec2(.45,.05),da);
-    d0 = min(d0,da);
-    dbox(m*(x-vec2(-.15,.35)),vec2(.45,.05),da);
-    d0 = min(d0,da);
-    rot(pi/8.,m);
-    dbox(m*(x-vec2(.0,.25)),vec2(.1,.15),da);
-    d0 = min(d0,da);
-    
-    // Penis
-    dbox(m*(x-vec2(.1,-.0)),vec2(.025,.1),da);
-    d0 = min(d0,da);
-    
-    // Left hand
-    rot(.3,m);
-    dbox(m*(x-vec2(.235,.535)),vec2(.035,.15),da);
-    d0 = min(d0,da);
-    dbox(m*(x-vec2(.225,.7)),vec2(.075,.025),da);
-    d0 = min(d0,da);
-    
-    // Right hand
-    rot(-.2,m);
-    dbox(m*(x+vec2(.585,-.2)),vec2(.0375,.1),da);
-    d0 = min(d0,da);
-    
-    // Head
-    dcircle(6.*(x-vec2(-.15,.58)),da);
-    d0 = min(d0,da/6.);
-    
-    d0 -= .05*(abs(x.x)+abs(x.y)-.2);
-    d = max(d,-d0);
-}
-
-// Distance to mercury logo in hexagon
-void dmercury(in vec2 x, out float d)
-{
-    dpolygon(.5*x,6.0,d);
-    float da;
-
-    x += .1*c.yx;
-
-    // Upper part
-    dbox(x-.35*c.yx,vec2(.4,.35), da);
-    d = max(d, -da);
-    dbox(x-.7*c.yx, vec2(.2,.2), da);
-    d = min(d,da);
-    dbox(x-.25*c.yx,vec2(.2,.05),da);
-    d = min(d,da);
-    
-    // Lower part
-    dbox(x+.2*c.yx,vec2(.1,.4),da);
-    d = max(d, -da);
-    dbox(x+.2*c.yx, vec2(.4,.1),da);
-    d = max(d, -da);
-}
+void rand(in vec2 x, out float n);
+void hash31(in float p, out vec3 d);
+void lfnoise(in vec2 t, out float n);
+void dbox(in vec2 x, in vec2 b, out float d);
+void stroke(in float d0, in float s, out float d);
+void zextrude(in float z, in float d2d, in float h, out float d);
+void add(in vec2 sda, in vec2 sdb, out vec2 sdf);
+void smoothmin(in float a, in float b, in float k, out float dst);
+void dbox3(in vec3 x, in vec3 b, out float d);
+void dschnappsgirls(in vec2 x, out float d);
+void dspacepigs(in vec2 x, out float d);
+void dkewlers(in vec2 x, out float d);
+void dfarbrausch(in vec2 x, out float d);
+void dhaujobb(in vec2 x, out float d);
+void dmercury(in vec2 x, out float d);
 
 vec2 ind, indc;
 void scene(in vec3 x, out vec2 sdf)
@@ -532,40 +90,9 @@ void scene(in vec3 x, out vec2 sdf)
     float xi = (x.x-dx)/tsize;
     dbox3(vec3(dx, abs(x.y)-.1, dz), vec3(.48*tsize, .0005, .48*tsize), d);
     add(sdf, vec2(d, 4.), sdf);
-    smoothmin(sdf.x, d, .001, sdf.x);
+    smoothmin(sdf.x, d, .002, sdf.x);
     indc = vec2(xi, zi);
-    
-    // Tentacles
-    /*
-    // Generate Block coordinates
-    tsize = .02;
-    vec2 xz = mod(x.xz, tsize)-.5*tsize,
-        xzi = (x.xz-xz)/tsize;
-    
-    // Determine lower and upper rotation
-    vec2 rotation;
-    rand(xzi, rotation.x);
-    rand(xzi-1337., rotation.y);
-    rotation = pi*floor(4.*rotation)/2.;
-    
-    // Determine graph
-    float graph;
-    rand(xzi-2337., graph);
-    
-    vec2 lower = vec2(-.5*tsize, 0.),
-        upper = vec2(-.5*tsize, 0.);
-    mat2 Rlower = mat2(cos(rotation.x), sin(rotation.x), -sin(rotation.x), cos(rotation.x)),
-        Rupper = mat2(cos(rotation.y), sin(rotation.y), -sin(rotation.y), cos(rotation.y));
-    
-    lower = Rlower * lower;
-    upper = Rupper * upper;
-    
-    if(graph < 1./3.)
-    {
-        
-    }
-*/
-    
+
     // Logos
     tsize = .25;
     float tw = .0005;
@@ -617,20 +144,7 @@ void scene(in vec3 x, out vec2 sdf)
 
 }
 
-void normal(in vec3 x, out vec3 n)
-{
-    const float dx = 1.e-4;
-    vec2 s, na;
-    
-    scene(x,s);
-    scene(x+dx*c.xyy, na);
-    n.x = na.x;
-    scene(x+dx*c.yxy, na);
-    n.y = na.x;
-    scene(x+dx*c.yyx, na);
-    n.z = na.x;
-    n = normalize(n-s.x);
-}
+void normal(in vec3 x, out vec3 n, in float dx);
 
 float sm(float d)
 {
@@ -679,7 +193,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     
     if(i < N)
     {
-        normal(x,n);
+        normal(x,n, 5.e-4);
         vec3 l = mix(1.5,.2,abs(pow(sin(2.*2.*pi*(x.z-.05*iTime)), 2.)))*n;//normalize(x-.1*c.yxy);
        
 		if(s.y == 2.)
@@ -719,7 +233,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
                 //d += s.x;
             }
             
-            normal(x,n);
+            normal(x,n, 5.e-4);
         	vec3 l = mix(1.5,.2,abs(pow(sin(4.*2.*pi*(x.z-.05*iTime)), 2.)))*n;//normalize(x-.1*c.yxy);
        
             vec3 c1;

@@ -1,5 +1,6 @@
 #version 130
-void dcircle(in vec2 x, in float R, out float d)
+
+void dcircle(in vec2 x, out float d)
 {
-    d = abs(length(x)-R);
+    d = length(x)-1.0;
 }

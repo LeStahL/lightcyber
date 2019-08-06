@@ -28,7 +28,6 @@ uniform float iFader5;
 uniform float iFader6;
 uniform float iFader7;
 
-
 // Global constants
 const float pi = acos(-1.);
 const vec3 c = vec3(1.0, 0.0, -1.0);
@@ -36,161 +35,24 @@ float a = 1.0;
 
 float iScale, nbeats;
 
-void rand(in vec2 x, out float n)
-{
-    x += 400.;
-    n = fract(sin(dot(sign(x)*abs(x) ,vec2(12.9898,78.233)))*43758.5453);
-}
-
-void lfnoise(in vec2 t, out float n)
-{
-    vec2 i = floor(t);
-    t = fract(t);
-    t = smoothstep(c.yy, c.xx, t);
-    vec2 v1, v2;
-    rand(i, v1.x);
-    rand(i+c.xy, v1.y);
-    rand(i+c.yx, v2.x);
-    rand(i+c.xx, v2.y);
-    v1 = c.zz+2.*mix(v1, v2, t.y);
-    n = mix(v1.x, v1.y, t.x);
-}
-
-//distance to spline with parameter t
-float dist3(vec3 p0,vec3 p1,vec3 p2,vec3 x,float t)
-{
-    t = clamp(t, 0., 1.);
-    return length(x-pow(1.-t,2.)*p0-2.*(1.-t)*t*p1-t*t*p2);
-}
-
-//minimum dist3ance to spline
-void dspline3(in vec3 x, in vec3 p0, in vec3 p1, in vec3 p2, out float ds)
-{
-    //coefficients for 0 = t^3 + a * t^2 + b * t + c
-    vec3 E = x-p0, F = p2-2.*p1+p0, G = p1-p0,
-    	ai = vec3(3.*dot(G,F), 2.*dot(G,G)-dot(E,F), -dot(E,G))/dot(F,F);
-
-	//discriminant and helpers
-    float tau = ai.x/3., p = ai.y-tau*ai.x, q = - tau*(tau*tau+p)+ai.z, dis = q*q/4.+p*p*p/27.;
-    
-    //triple real root
-    if(dis > 0.) 
-    {
-        vec2 ki = -.5*q*c.xx+sqrt(dis)*c.xz, ui = sign(ki)*pow(abs(ki), c.xx/3.);
-        ds = dist3(p0,p1,p2,x,ui.x+ui.y-tau);
-        return;
-    }
-    
-    //three dist3inct real roots
-    float fac = sqrt(-4./3.*p), arg = acos(-.5*q*sqrt(-27./p/p/p))/3.;
-    vec3 t = c.zxz*fac*cos(arg*c.xxx+c*pi/3.)-tau;
-    ds = min(
-        dist3(p0,p1,p2,x, t.x),
-        min(
-            dist3(p0,p1,p2,x,t.y),
-            dist3(p0,p1,p2,x,t.z)
-        )
-    );
-}
-
-void dbox3(in vec3 x, in vec3 b, out float d)
-{
-  vec3 da = abs(x) - b;
-  d = length(max(da,0.0))
-         + min(max(da.x,max(da.y,da.z)),0.0);
-}
-
-void dlinesegment3(in vec3 x, in vec3 p1, in vec3 p2, out float d)
-{
-    vec3 da = p2-p1;
-    d = length(x-mix(p1, p2, clamp(dot(x-p1, da)/dot(da,da),0.,1.)));
-}
-
-// Stroke
-void stroke(in float d0, in float s, out float d)
-{
-    d = abs(d0)-s;
-}
-
-// Extrusion
-void zextrude(in float z, in float d2d, in float h, out float d)
-{
-    vec2 w = vec2(-d2d, abs(z)-0.5*h);
-    d = length(max(w,0.0));
-}
+void rand(in vec2 x, out float n);
+void lfnoise(in vec2 t, out float n);
+void dspline3(in vec3 x, in vec3 p0, in vec3 p1, in vec3 p2, out float ds);
+void dbox3(in vec3 x, in vec3 b, out float d);
+void dlinesegment3(in vec3 x, in vec3 p1, in vec3 p2, out float d);
+void stroke(in float d0, in float s, out float d);
+void zextrude(in float z, in float d2d, in float h, out float d);
 
 float sm(float d)
 {
     return smoothstep(1.5/iResolution.y, -1.5/iResolution.y, d);
 }
 
-// iq's smooth minimum
-void smoothmin(in float a, in float b, in float k, out float dst)
-{
-    float h = max( k-abs(a-b), 0.0 )/k;
-    dst = min( a, b ) - h*h*h*k*(1.0/6.0);
-}
-
-void add(in vec2 sda, in vec2 sdb, out vec2 sdf)
-{
-    sdf = mix(sda, sdb, step(sdb.x, sda.x));
-}  
-
-void dvoronoi(in vec2 x, out float d, out vec2 z)
-{
-    float n;
-    lfnoise(x-iTime*c.xy, n);
-    
-    vec2 y = floor(x);
-       float ret = 1.;
-    vec2 pf=c.yy, p;
-    float df=10.;
-    
-    for(int i=-1; i<=1; i+=1)
-        for(int j=-1; j<=1; j+=1)
-        {
-            p = y + vec2(float(i), float(j));
-            float pa;
-            rand(p, pa);
-            p += pa;
-            
-            d = length(x-p);
-            
-            if(d < df)
-            {
-                df = d;
-                pf = p;
-            }
-        }
-    for(int i=-1; i<=1; i+=1)
-        for(int j=-1; j<=1; j+=1)
-        {
-            p = y + vec2(float(i), float(j));
-            float pa;
-            rand(p, pa);
-            p += pa;
-            
-            vec2 o = p - pf;
-            d = length(.5*o-dot(x-pf, o)/dot(o,o)*o);
-            ret = min(ret, d);
-        }
-    
-    d = ret;
-    z = pf;
-}
-
-void dbox(in vec2 x, in vec2 b, out float d)
-{
-    vec2 da = abs(x)-b;
-    d = length(max(da,c.yy)) + min(max(da.x,da.y),0.0);
-}
-
-void rot3(in vec3 p, out mat3 rot)
-{
-    rot = mat3(c.xyyy, cos(p.x), sin(p.x), 0., -sin(p.x), cos(p.x))
-        *mat3(cos(p.y), 0., -sin(p.y), c.yxy, sin(p.y), 0., cos(p.y))
-        *mat3(cos(p.z), -sin(p.z), 0., sin(p.z), cos(p.z), c.yyyx);
-}
+void smoothmin(in float a, in float b, in float k, out float dst);
+void add(in vec2 sda, in vec2 sdb, out vec2 sdf);
+void dvoronoi(in vec2 x, out float d, out vec2 z);
+void dbox(in vec2 x, in vec2 b, out float d);
+void rot3(in vec3 p, out mat3 rot);
 
 vec2 ind=c.yy;
 
@@ -199,25 +61,8 @@ void scene(in vec3 x, out vec2 sdf)
     
     float d,
         s = .1;
-    /*
-    vec2 x2 = mod(x.xz,s)-.5*s;
-	
-	
-    ind = (x.xz - x2)/s;
-    dbox(x2, .5*s*c.xx, d);
-    zextrude(x.y+.4, -d-.005, .05, d);
-    d = max(x.y,d);
-    d = abs(d);
-    sdf = vec2(d,2.);
-    */
+
     sdf = c.xy;
-    //sdf = vec2(x.y+.3, -2.);
-    
-    /**
-    mat3 RR;
-    rot3(-pi/4.*c.yxy, RR);
-    x = RR * x;
-    //*/
     
     for(float size = .0; size <= .5; size += .025)
     {
@@ -239,26 +84,10 @@ void scene(in vec3 x, out vec2 sdf)
         }
         
         add(sdf, sda, sdf);
-        
-        
     }   
-    
-    //add(sdf, vec2(x.x+.5,1.), sdf);
 }  
 
-void normal(in vec3 x, out vec3 n, in float dx)
-{
-    vec2 s, na;
-    
-    scene(x,s);
-    scene(x+dx*c.xyy, na);
-    n.x = na.x;
-    scene(x+dx*c.yxy, na);
-    n.y = na.x;
-    scene(x+dx*c.yyx, na);
-    n.z = na.x;
-    n = normalize(n-s.x);
-}
+void normal(in vec3 x, out vec3 n, in float dx);
 
 void colorize(in vec2 x, out vec3 col)
 {
@@ -305,7 +134,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
         vec4 dn = 100.*c.xyyy;
         
-
         dn = mix(dn, vec4(tlo.x,c.xyy), float(all(lessThan(abxlo,size.yz)))*step(tlo.x,dn.x));
         dn = mix(dn, vec4(tlo.y,c.yxy), float(all(lessThan(abylo,size.xz)))*step(tlo.y,dn.x));
         dn = mix(dn, vec4(tlo.z,c.yyx), float(all(lessThan(abzlo,size.xy)))*step(tlo.z,dn.x));
@@ -432,15 +260,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     col = mix(col, c.yyy, smoothstep(2., 3., d));
     
     col *= 1.2;
-    //col = .3*sqrt(col);
-    
-
     col *= col;
-    
-    
-//     col = mix(col, .4*col, clamp(length(col)/sqrt(3.),0.,1.));
-//     col = mix(col, col/.4, 1.-clamp(length(col)/sqrt(3.),0.,1.));
-
     
     col *= col*col;
     
