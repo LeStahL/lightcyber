@@ -734,11 +734,20 @@ void draw()
     }
     else if(t < t_end)
     {
-        glUseProgram(bloodcells_program);
-        glUniform1f(bloodcells_iTime_location, t-99.31);
-        glUniform2f(bloodcells_iResolution_location, w, h);
+        glUseProgram(greet_program);
+        glUniform1f(greet_iTime_location, t-99.31);
+        glUniform2f(greet_iResolution_location, w, h);
       
 #ifdef MIDI
+        glUniform1f(greet_iFader0_location, fader0);
+        glUniform1f(greet_iFader1_location, fader1);
+        glUniform1f(greet_iFader2_location, fader2);
+        glUniform1f(greet_iFader3_location, fader3);
+        glUniform1f(greet_iFader4_location, fader4);
+        glUniform1f(greet_iFader5_location, fader5);
+        glUniform1f(greet_iFader6_location, fader6);
+        glUniform1f(greet_iFader7_location, fader7);
+        
         if(override_index == 3) 
         {
             select_button(override_index);

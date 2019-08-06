@@ -392,11 +392,11 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
     if(s.y != 3.)
     {
-        col = mix(length(col)/sqrt(3.)*c.xxx, col, .3);
+        col = mix(length(col)/sqrt(3.)*c.xxx, col, mix(.3,1.,iScale));
     }
     
     col = mix(col,cv,.8);
-    col = mix(col, c.yyy,smoothstep(1.,5.,d));
+    col = mix(col, c.yyy, smoothstep(1.,5.,d));
 
     fragColor = vec4(clamp(col,0.,1.),1.0);
 }	
