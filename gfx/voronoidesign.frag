@@ -281,6 +281,10 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     vec2 uv = ( fragCoord -.5* iResolution.xy) / iResolution.y, 
         s;
     
+    nbeats = mod(iTime, 60./29.);
+    iScale = nbeats-30./29.;
+    iScale = smoothstep(-5./29., 0., iScale)*(1.-smoothstep(0., 15./29., iScale));
+    
     uv *= 2.;
     
     vec3 col = c.yyy, 
@@ -388,7 +392,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
     if(s.y != 3.)
     {
-        col = length(col)/sqrt(3.)*c.xxx;
+        col = mix(length(col)/sqrt(3.)*c.xxx, col, .3);
     }
     
     col = mix(col,cv,.8);
