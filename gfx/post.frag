@@ -244,7 +244,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord_ )
         float bound = sqrt(iFSAA)-1.;
     //     bound = mix(bound, 4., smoothstep(66.27,67.27,iTime)*(1.-smoothstep(81.76,82.76,iTime)));
         
-        if((iTime > 66.27 && iTime < 82.76) || (iTime > 120.0 && iTime < 136.0))
+        //if((iTime > 66.27 && iTime < 82.76) || (iTime > 120.0 && iTime < 136.0))
+        if(iTime > 0.)
         {
             for(float i = -.5*bound; i<=.5*bound; i+=1.)
                 for(float j=-.5*bound; j<=.5*bound; j+=1.)

@@ -1843,6 +1843,152 @@ const char *greet_source = "/* Gross Gloss by Team210 - 64k intro by Team210 at 
 "    mainImage(gl_FragColor, gl_FragCoord.xy);\n"
 "}\n"
 "\0";
+const char *evoke_source = "/* Lightcyber by Team210 - 64k intro by Team210 at Solskogen 2k19\n"
+"* Copyright (C) 2019  Alexander Kraus <nr4@z10.info>\n"
+"*\n"
+"* This program is free software: you can redistribute it and/or modify\n"
+"* it under the terms of the GNU General Public License as published by\n"
+"* the Free Software Foundation, either version 3 of the License, or\n"
+"* (at your option) any later version.\n"
+"*\n"
+"* This program is distributed in the hope that it will be useful,\n"
+"* but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+"* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+"* GNU General Public License for more details.\n"
+"*\n"
+"* You should have received a copy of the GNU General Public License\n"
+"* along with this program.  If not, see <https://www.gnu.org/licenses/>.\n"
+"*/\n"
+"\n"
+"#version 130\n\n"
+"\n"
+"uniform float iTime;\n"
+"uniform vec2 iResolution;\n"
+"uniform float iFader0;\n"
+"uniform float iFader1;\n"
+"uniform float iFader2;\n"
+"uniform float iFader3;\n"
+"uniform float iFader4;\n"
+"uniform float iFader5;\n"
+"uniform float iFader6;\n"
+"uniform float iFader7;\n"
+"\n"
+"// Global constants\n"
+"const float pi = acos(-1.);\n"
+"const vec3 c = vec3(1.0, 0.0, -1.0);\n"
+"float a = 1.0;\n"
+"\n"
+"float iScale, nbeats;\n"
+"\n"
+"void rand(in vec2 x, out float n);\n"
+"void dbox(in vec2 x, in vec2 b, out float d);\n"
+"void stroke(in float d0, in float s, out float d);\n"
+"void devoke(in vec2 x, out float d)\n"
+"{\n"
+"    x.x += .225;\n"
+"    x *= 1.1;\n"
+"    \n"
+"    // o\n"
+"    d = length(x+.35*c.xy)-.1;\n"
+"    stroke(d,.06,d);\n"
+"    \n"
+"    // I\n"
+"    float da;\n"
+"    dbox(x+.1*c.xy, vec2(.05, .25), da);\n"
+"    d = min(d, da);\n"
+"    \n"
+"    x = 2.*x - vec2(.4,-.2);\n"
+"    // Mercury\n"
+"    // Upper part\n"
+"    dbox(x-.35*c.yx,vec2(.4,.35), da);\n"
+"    d = min(d,da);\n"
+"    dbox(x-.7*c.yx, vec2(.2,.2), da);\n"
+"    d = max(d,-da);\n"
+"    dbox(x-.25*c.yx,vec2(.2,.05),da);\n"
+"    d = max(d,-da);\n"
+"    \n"
+"    // Lower part\n"
+"    dbox(x+.1*c.yx,vec2(.1,.2),da);\n"
+"    d = min(d,da);\n"
+"    dbox(x+.2*c.yx, vec2(.4,.1),da);\n"
+"    d = min(d,da);\n"
+"    \n"
+"    x = .5*(x + vec2(.4,-.2));\n"
+"    \n"
+"    // E\n"
+"    // Right\n"
+"    dbox(x-.9*c.xy, vec2(.05, .25), da);\n"
+"    d = min(d,da);\n"
+"    \n"
+"    // Top/bot\n"
+"    dbox(vec2(x.x-.7, abs(x.y)-.2), vec2(.2, .05), da);\n"
+"    d = min(d,da);\n"
+"    \n"
+"    // Middle\n"
+"    dbox(x-.7*c.xy, vec2(.2, .05), da);\n"
+"    d = min(d,da);\n"
+"    \n"
+"    // Appendix\n"
+"    dbox(vec2(x.x-.95,x.y+.2), vec2(.05,.05), da);\n"
+"    d = min(d,da);\n"
+"    \n"
+"    stroke(d,.001,d);\n"
+"}\n"
+"\n"
+"float sm(float d)\n"
+"{\n"
+"    return smoothstep(1.5/iResolution.y, -1.5/iResolution.y, d);\n"
+"}\n"
+"\n"
+"void mainImage( out vec4 fragColor, in vec2 fragCoord )\n"
+"{\n"
+"    a = iResolution.x/iResolution.y;\n"
+"    \n"
+"    nbeats = mod(iTime, 60./29.);\n"
+"    iScale = nbeats-30./29.;\n"
+"    iScale = smoothstep(-5./29., 0., iScale)*(1.-smoothstep(0., 15./29., iScale));\n"
+"    \n"
+"    vec2 uv = fragCoord/iResolution.yy-0.5*vec2(a, 1.0), \n"
+"        s;\n"
+"    vec3 col = vec3(0.20,0.01,0.14), \n"
+"        o = c.yyx,\n"
+"        r = c.xyy, \n"
+"        u = c.yxy,\n"
+"        t = c.yyy, \n"
+"        dir,\n"
+"        n,\n"
+"        x;\n"
+"    float d, i, ra;\n"
+"    t = uv.x * r + uv.y * u;\n"
+"    dir = normalize(t-o);\n"
+"\n"
+"    for(i=mix(0., 1.4, smoothstep(0., 1., iTime)); i>=0.; i -= .01)\n"
+"    {\n"
+"        rand(i*c.xx, ra);\n"
+"        \n"
+"		d = -(o.z-.2+i)/dir.z;\n"
+"        x = o + d * dir;\n"
+"        \n"
+"        devoke(x.xy, s.x);\n"
+"        s.x -= .01*iScale;\n"
+"        \n"
+"        if(ra < .5)\n"
+"        {\n"
+"            vec3 c1 = mix(mix(vec3(0.75,0.24,0.31), vec3(1.00,0.87,0.57), smoothstep(1.25,1.4,1.4-i)),vec3(0.20,0.01,0.14),i/1.4);\n"
+"	        col = mix(col, c1, sm(s.x));\n"
+"            col = mix(col, mix(col,vec3(.7,.45,.3), mix(.02,.1,iScale)), sm(s.x/64.));\n"
+"        }\n"
+"    }\n"
+"    \n"
+"    col = mix(col, c.yyy, clamp((d-2.-(o.z-.2)/dir.z)/4.,0.,1.));\n"
+"    fragColor = vec4(clamp(col,0.,1.),1.0);\n"
+"}\n"
+"\n"
+"void main()\n"
+"{\n"
+"    mainImage(gl_FragColor, gl_FragCoord.xy);\n"
+"}\n"
+"\0";
 void Loadrand()
 {
     int rand_size = strlen(rand_source);
@@ -2237,7 +2383,7 @@ void LoadSymbols()
     Loaddmercury();
     updateBar();
 }
-int voronoidesign_program, voronoidesign_handle, groundboxes_program, groundboxes_handle, graffiti_program, graffiti_handle, greet_program, greet_handle;
+int voronoidesign_program, voronoidesign_handle, groundboxes_program, groundboxes_handle, graffiti_program, graffiti_handle, greet_program, greet_handle, evoke_program, evoke_handle;
 int voronoidesign_iTime_location;
 voronoidesign_iResolution_location;
 voronoidesign_iFader0_location;
@@ -2278,7 +2424,17 @@ greet_iFader4_location;
 greet_iFader5_location;
 greet_iFader6_location;
 greet_iFader7_location;
-const int nprograms = 4;
+int evoke_iTime_location;
+evoke_iResolution_location;
+evoke_iFader0_location;
+evoke_iFader1_location;
+evoke_iFader2_location;
+evoke_iFader3_location;
+evoke_iFader4_location;
+evoke_iFader5_location;
+evoke_iFader6_location;
+evoke_iFader7_location;
+const int nprograms = 5;
 
 void Loadvoronoidesign()
 {
@@ -2459,6 +2615,42 @@ void Loadgreet()
     progress += .2/(float)nprograms;
 }
 
+void Loadevoke()
+{
+    int evoke_size = strlen(evoke_source);
+    evoke_handle = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(evoke_handle, 1, (GLchar **)&evoke_source, &evoke_size);
+    glCompileShader(evoke_handle);
+#ifdef DEBUG
+    printf("---> evoke Shader:\n");
+    debug(evoke_handle);
+    printf(">>>>\n");
+#endif
+    evoke_program = glCreateProgram();
+    glAttachShader(evoke_program,evoke_handle);
+    glAttachShader(evoke_program,rand_handle);
+    glAttachShader(evoke_program,dbox_handle);
+    glAttachShader(evoke_program,stroke_handle);
+    glLinkProgram(evoke_program);
+#ifdef DEBUG
+    printf("---> evoke Program:\n");
+    debugp(evoke_program);
+    printf(">>>>\n");
+#endif
+    glUseProgram(evoke_program);
+    evoke_iTime_location = glGetUniformLocation(evoke_program, "iTime");
+    evoke_iResolution_location = glGetUniformLocation(evoke_program, "iResolution");
+    evoke_iFader0_location = glGetUniformLocation(evoke_program, "iFader0");
+    evoke_iFader1_location = glGetUniformLocation(evoke_program, "iFader1");
+    evoke_iFader2_location = glGetUniformLocation(evoke_program, "iFader2");
+    evoke_iFader3_location = glGetUniformLocation(evoke_program, "iFader3");
+    evoke_iFader4_location = glGetUniformLocation(evoke_program, "iFader4");
+    evoke_iFader5_location = glGetUniformLocation(evoke_program, "iFader5");
+    evoke_iFader6_location = glGetUniformLocation(evoke_program, "iFader6");
+    evoke_iFader7_location = glGetUniformLocation(evoke_program, "iFader7");
+    progress += .2/(float)nprograms;
+}
+
 void LoadPrograms()
 {
     Loadvoronoidesign();
@@ -2468,6 +2660,8 @@ void LoadPrograms()
     Loadgraffiti();
     updateBar();
     Loadgreet();
+    updateBar();
+    Loadevoke();
     updateBar();
 }
 #endif
