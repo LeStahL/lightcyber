@@ -1635,7 +1635,7 @@ const char *greet_source = "/* Gross Gloss by Team210 - 64k intro by Team210 at 
 "    tsize = .25;\n"
 "    float tw = .0005;\n"
 "    dz = mod(x.z-.5*tsize, tsize)-.5*tsize;\n"
-"    zi = floor((x.z-dz)/tsize);\n"
+"    zi = round((x.z-dz)/tsize);\n"
 "    zi = mod(zi, 6.);\n"
 "    if(zi < .5)\n"
 "    {\n"

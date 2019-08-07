@@ -97,7 +97,7 @@ void scene(in vec3 x, out vec2 sdf)
     tsize = .25;
     float tw = .0005;
     dz = mod(x.z-.5*tsize, tsize)-.5*tsize;
-    zi = floor((x.z-dz)/tsize);
+    zi = round((x.z-dz)/tsize);
     zi = mod(zi, 6.);
     if(zi < .5)
     {
