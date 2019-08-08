@@ -38,7 +38,7 @@ for symbol_file in symbol_files:
     with open("symbols/"+symbol_file, "rt") as f:
         symbol_code = f.read()
         f.close()
-    symbol_codes += [ Compressor.compress(symbol_code).replace('\n', '\\n\"\n\"').replace('#version 130', '#version 130\\n')  + "\\0"]
+    symbol_codes += [ Compressor.compress(symbol_code).replace('\"','\\\"').replace('\n', '\\n\"\n\"').replace('#version 130', '#version 130\\n')  + "\\0"]
 
 # Parse command line args
 parser = argparse.ArgumentParser(description='Team210 symbol packer.')
@@ -66,7 +66,7 @@ for inputfile in rest:
         input_source = f.read()
         f.close()
     #print(input_source)
-    scene_sources += [ Compressor.compress(input_source).replace('\n', '\\n\"\n\"').replace('#version 130', '#version 130\\n') + "\\0" ]
+    scene_sources += [ Compressor.compress(input_source).replace('\"','\\\"').replace('\n', '\\n\"\n\"').replace('#version 130', '#version 130\\n') + "\\0" ]
     input_source_lines = input_source.split('\n')
     input_source_lines = [ l + "\n" for l in input_source_lines ]
     #print(input_source_lines)
@@ -92,6 +92,7 @@ for inputfile in rest:
                 modified_line = modified_line.replace(types, '')
             scene_uniform_list += modified_line.split()
     scene_uniform_lists += [ scene_uniform_list ]
+    print(scene_uniform_list)
     
 header_source += "int "
 for i in range(len(symbol_list)-1):
@@ -130,9 +131,9 @@ header_source += scene_names[-1] + "_program, " + scene_names[-1] + "_handle;\n"
 for i in range(len(scene_names)):
     header_source += "int "
     scene_name = scene_names[i]
-    scene_unifom_list = scene_uniform_lists[i]
-    for j in range(len(scene_uniform_list)):
-        header_source += scene_name + "_" + scene_unifom_list[j] + "_location;\n"
+    for j in range(len(scene_uniform_lists[i])-1):
+        header_source += scene_name + "_" + scene_uniform_lists[i][j] + "_location,"
+    header_source += scene_name + "_" + scene_uniform_lists[i][-1] + "_location;\n"
 
 # Add program loader
 nprograms = len(scene_names)

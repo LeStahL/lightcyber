@@ -211,14 +211,7 @@ int
     logo210_handle,
 
 	// Text
-	text_time_location,
-	text_resolution_location,
-	text_font_width_location,
-	text_channel0_location,
-	text_font_location,
-	font_texture_handle,
-	text_program,
-	text_handle;
+	font_texture_handle;
     
 double mx, my;
 

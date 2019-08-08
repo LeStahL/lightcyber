@@ -549,29 +549,6 @@ unsigned long __stdcall LoadLogo210Thread( void * lpParam)
 
 unsigned long __stdcall LoadTextThread(void * lpParam)
 {
-    int text_size = strlen(text_frag);
-    text_handle = glCreateShader(GL_FRAGMENT_SHADER);
-    text_program = glCreateProgram();
-    glShaderSource(text_handle, 1, (GLchar **)&text_frag, &text_size);
-    glCompileShader(text_handle);
-    printf("---> Text shader:\n");
-#ifdef DEBUG
-    debug(text_handle);
-#endif
-    glAttachShader(text_program, text_handle);
-    glLinkProgram(text_program);
-    printf("---> Text program:\n");
-#ifdef DEBUG
-    debugp(text_program);
-#endif
-    glUseProgram(text_program);
-    text_time_location =  glGetUniformLocation(text_program, TEXT_VAR_ITIME);
-    text_resolution_location = glGetUniformLocation(text_program, TEXT_VAR_IRESOLUTION);
-    text_font_location= glGetUniformLocation(text_program, TEXT_VAR_IFONT);
-    text_font_width_location = glGetUniformLocation(text_program, TEXT_VAR_IFONTWIDTH);
-    text_channel0_location = glGetUniformLocation(text_program, TEXT_VAR_ICHANNEL0);
-    printf("++++ Text shader created.\n");
-    
     // Initialize font texture
     printf("font texture width is: %d\n", font_texture_size); // TODO: remove
     glGenTextures(1, &font_texture_handle);
@@ -837,11 +814,11 @@ void draw()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     
     glUseProgram(text_program);
-    glUniform2f(text_resolution_location, w, h);
-    glUniform1f(text_font_width_location, font_texture_size);
-    glUniform1f(text_time_location, t);
-    glUniform1i(text_channel0_location, 0);
-    glUniform1i(text_font_location, 1);
+    glUniform2f(text_iResolution_location, w, h);
+    glUniform1f(text_iFontWidth_location, font_texture_size);
+    glUniform1f(text_iTime_location, t);
+    glUniform1i(text_iChannel0_location, 0);
+    glUniform1i(text_iFont_location, 1);
     
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, first_pass_texture);
