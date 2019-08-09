@@ -29,12 +29,9 @@ import font
 #     nlines
 #     for line in lines
 #         x1 y1 x2 y2
-#     ncircles
-#     for circle in circles
-#         xc yc r
-#     ncirclesegments
-#     for segment in circlesegments
-#         xc yc r phi0 phi1
+#     nsmoothlines
+#     for line in smoothlines
+#         x1 y1 x2 y2
 # nstrings
 # for string in nstrings
 #     offset
@@ -84,7 +81,7 @@ for char in ordinals:
     glyph = font.glyph(char)
     
     # Pack number of lines
-    lines = glyph[2]
+    lines = glyph[0]
     texture += struct.pack(fmt, float(len(lines)))
     
     # Pack lines
@@ -92,23 +89,14 @@ for char in ordinals:
         for i in range(4):
             texture += struct.pack(fmt, float(line[i]))
             
-    # Pack number of circles
-    circles = glyph[0]
-    texture += struct.pack(fmt, float(len(circles)))
+    # Pack number of smoothlines
+    smoothlines = glyph[1]
+    texture += struct.pack(fmt, float(len(smoothlines)))
     
-    # Pack circles
-    for circle in circles:
-        for i in range(3):
-            texture += struct.pack(fmt, float(circle[i]))
-            
-    # Pack number of circle segments
-    segments = glyph[1]
-    texture += struct.pack(fmt, float(len(segments)))
-    
-    # Pack segments
-    for segment in segments:
-        for i in range(5):
-            texture += struct.pack(fmt, float(segment[i]))
+    # Pack smoothlines
+    for line in smoothlines:
+        for i in range(4):
+            texture += struct.pack(fmt, float(line[i]))
 
 print("Packing string database.")
 # Pack the string database index

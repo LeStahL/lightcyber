@@ -1,31 +1,3 @@
-# Endeavor by Team210 - 64k intro by Team210 at Revision 2k19
-# Copyright (C) 2018  Alexander Kraus <nr4@z10.info>
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-import numpy
-
-# Specification of data:
-# line: [x1, y1, x2, y2 ]
-# smooth line: [x1, y1, x2, y2 ]
-
-# Glyph data
-def glyph(char):
-    pi = numpy.pi;
-    lines = []
-    smoothlines = []
-    lines = []
     if char == 'a':
         lines = [[-.65,-.75,-.65,.75],[.65,0.,.65,.75],[-.65,.75,.65,.75],[-.65,0.,.65,0.]]
         smoothlines = [[-.75,-.75,-.75,0.],[.75,0.,.75,-.75]]
@@ -131,9 +103,6 @@ def glyph(char):
     elif char == '9':
         lines = [[.75,.75,-.65,.75],[.75,0.,-.65,0.],[.75,-.75,.75,.75],[-.65,0.,-.65,.75]]
         smoothlines = [[.65,-.1,.65,-.75]]
-    elif char == '0':
-        lines = [[-.75,-.75,.75,-.75],[-.75,.75,.75,.75],[-.75,-.75,-.75,.75],[.75,-.75,.75,.75]]
-        smoothlines = [[.65,-.1,.65,-.65]]
     elif char == '!':
         lines = [[0.,-.25,0.,.75],[0.,-.65,0.,-.75]]
         smoothlines = [[.1,-.65,.1,-.75],[.1,-.25,.1,.0]]
@@ -152,12 +121,3 @@ def glyph(char):
     elif char == '-':
         lines = [[-.5,0.,.5,0.]]
         smoothlines = [[-.4,-.1,.4,-.1]]
-        
-    return [ lines, smoothlines ]
-        
-# Length of glyph data in texture (for building index with offsets)
-def pack_length(char):
-    gly = glyph(char)
-    lines = gly[0]
-    smoothlines = gly[1]
-    return 2 + len(lines)*4 + len(smoothlines)*4

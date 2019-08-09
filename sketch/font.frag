@@ -341,6 +341,160 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     d = min(d, da);
     */
     
+    /* 1
+    dlinesegment(uv, vec2(0.,-.75), vec2(0., .75), da);
+    d = min(d, da);
+    */
+    
+    /* 2
+    dlinesegment(uv, vec2(-.75,-.75), vec2(.75, -.75), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(-.75,.75), vec2(.75, .75), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(.75,.0), vec2(.75, .75), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(-.75,.5), vec2(-.75, .75), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(-.75,.0), vec2(-.75, -.75), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(-.75,.0), vec2(.75, .0), da);
+    d = min(d, da);
+    */
+    
+    /* 3
+    dlinesegment(uv, vec2(-.75,-.75), vec2(.65, -.75), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(-.75,-.75), vec2(-.75, -.5), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(-.75,.75), vec2(.65, .75), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(-.75,.75), vec2(-.75, .5), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(.65,-.75), vec2(.65, .75), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(-.25,0.), vec2(.65, 0.), da);
+    d = min(d, da);
+    */
+    
+    /* 4
+    dlinesegment(uv, vec2(.55,-.75), vec2(.55, .75), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(-.75,.0), vec2(.75, .0), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(-.75,.0), vec2(-.75, .75), da);
+    d = min(d, da);
+    */
+    
+    /* 5
+    dlinesegment(uv, vec2(-.75,.75), vec2(.75, .75), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(-.75,-.75), vec2(.75, -.75), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(.75,.0), vec2(.75, -.75), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(-.75,-.5), vec2(-.75, -.75), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(-.75,.0), vec2(-.75, .75), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(-.75,.0), vec2(.75, .0), da);
+    d = min(d, da);
+    */
+    
+    /* 6
+    dlinesegment(uv, vec2(-.75,.75), vec2(.75, .75), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(-.75,-.75), vec2(.75, -.75), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(.75,.0), vec2(.75, -.75), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(-.75,-.75), vec2(-.75, .75), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(-.75,.0), vec2(.75, .0), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(.75,.5), vec2(.75, .75), da);
+    d = min(d, da);
+    */
+    
+    /* 7
+    dlinesegment(uv, vec2(.75,-.75), vec2(.75, .75), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(.75,.75), vec2(-.75, .75), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(.75,.0), vec2(.25, .0), da);
+    d = min(d, da);
+    */
+    
+    /* 8
+    dlinesegment(uv, vec2(-.65,.75), vec2(.65, .75), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(-.75,-.75), vec2(.75, -.75), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(-.75,0.), vec2(.75, 0.), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(-.75,-.75), vec2(-.75, .0), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(.65,0.), vec2(.65,.75), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(-.65,0.), vec2(-.65,.75), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(.75,0.), vec2(.75,-.75), da);
+    d = min(d, da);
+    */
+    
+    /* 9
+    dlinesegment(uv, vec2(.75,.75), vec2(-.65, .75), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(.75,0.), vec2(-.65, 0.), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(.75,-.75), vec2(.75, .75), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(-.65,0.), vec2(-.65,.75), da);
+    d = min(d, da);
+    */
+    
+    /* !
+    dlinesegment(uv, vec2(0.,-.25), vec2(0., .75), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(0.,-.65), vec2(0., -.75), da);
+    d = min(d, da);
+    */
+    
+    /* ?
+    dlinesegment(uv, vec2(-.65,.75), vec2(.75,.75), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(-.65,.75), vec2(-.65,.5), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(.75,.0), vec2(.75,.75), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(.75,.0), vec2(-.25,.0), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(-.25,.0), vec2(-.25,-.25), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(-.25,-.65), vec2(-.25,-.75), da);
+    d = min(d, da);
+    */
+    
+    /* .
+    dlinesegment(uv, vec2(0.,-.55), vec2(0., -.65), da);
+    d = min(d, da);
+    */
+    
+    /* ,
+    dlinesegment(uv, vec2(.1,-.55), vec2(.1, -.65), da);
+    d = min(d, da);
+    */
+    
+    /* :
+    dlinesegment(uv, vec2(0.,-.35), vec2(0., -.45), da);
+    d = min(d, da);
+    dlinesegment(uv, vec2(0.,.35), vec2(0., .45), da);
+    d = min(d, da);
+    */
+    
+    /* -
+    dlinesegment(uv, vec2(-.5,0.), vec2(.5, 0.), da);
+    d = min(d, da);
+    */
     
     
     stroke(d,.1,d);
@@ -481,7 +635,88 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     da = min(da, db);
     */
     
+    /* 1
+    dlinesegment(uv, vec2(-.1,-.75), vec2(-.1,0.), db);
+    da = min(da, db);
+    */
     
+    /* 2
+    dlinesegment(uv, vec2(-.65,-.65), vec2(-.65,-.1), db);
+    da = min(da, db);
+    */
+    
+    /* 3
+    dlinesegment(uv, vec2(.75,-.75), vec2(.75,-.05), db);
+    da = min(da, db);
+    */
+    
+    /* 4
+    dlinesegment(uv, vec2(.45,-.75), vec2(.45,-.1), db);
+    da = min(da, db);
+    */
+    
+    /* 5
+    dlinesegment(uv, vec2(.65,-.65), vec2(.65,-.1), db);
+    da = min(da, db);
+    */
+    
+    /* 6
+    dlinesegment(uv, vec2(.65,-.65), vec2(.65,-.1), db);
+    da = min(da, db);
+    */
+    
+    /* 7
+    dlinesegment(uv, vec2(.65,-.75), vec2(.65,-.1), db);
+    da = min(da, db);
+    */
+    
+    /* 8
+    dlinesegment(uv, vec2(.65,-.1), vec2(.65,-.65), db);
+    da = min(da, db);
+    */
+    
+    /* 9
+    dlinesegment(uv, vec2(.65,-.1), vec2(.65,-.75), db);
+    da = min(da, db);
+    */
+    
+    /* !
+    dlinesegment(uv, vec2(.1,-.65), vec2(.1,-.75), db);
+    da = min(da, db);
+    dlinesegment(uv, vec2(.1,-.25), vec2(.1,.0), db);
+    da = min(da, db);
+    */
+    
+    /* ?
+    dlinesegment(uv, vec2(-.15,-.65), vec2(-.15,-.75), db);
+    da = min(da, db);
+    dlinesegment(uv, vec2(-.15,-.25), vec2(-.15,-.1), db);
+    da = min(da, db);
+    */
+    
+    /* .
+    dlinesegment(uv, vec2(.1,-.55), vec2(.1,-.65), db);
+    da = min(da, db);
+    */
+    
+    /* ,
+    dlinesegment(uv, vec2(.0,-.55), vec2(.0,-.65), db);
+    da = min(da, db);
+    dlinesegment(uv, vec2(.15,-.65), vec2(.15,-.75), db);
+    da = min(da, db);
+    */
+    
+    /* :
+    dlinesegment(uv, vec2(.1,-.35), vec2(.1,-.45), db);
+    da = min(da, db);
+    dlinesegment(uv, vec2(.1,.35), vec2(.1,.45), db);
+    da = min(da, db);
+    */
+    
+    /* -
+    dlinesegment(uv, vec2(-.4,-.1), vec2(.4, -.1), da);
+    d = min(d, da);
+    */
     
     stroke(da, .1, da);
     smoothmin(d,da,.1,d);
