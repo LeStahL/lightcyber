@@ -2,8 +2,8 @@
 #ifndef SYMBOLIZE_H
 #define SYMBOLIZE_H
 
-extern float progress;int dsmoothvoronoi_handle, rand_handle, hash31_handle, lfnoise_handle, mfnoise_handle, dbox_handle, dlinesegment3_handle, stroke_handle, zextrude_handle, add_handle, smoothmin_handle, dspline3_handle, dvoronoi_handle, normal_handle, dbox3_handle, rot3_handle, dtriangle_handle, dlinesegment_handle, dpolygon_handle, rot_handle, dcircle_handle, dschnappsgirls_handle, dspacepigs_handle, dkewlers_handle, dfarbrausch_handle, dhaujobb_handle, dmercury_handle, rshort_handle, rfloat_handle, drhomboid_handle, dcirclesegment_handle, dglyph_handle, dstring_handle, dfloat_handle, window_handle, progressbar_handle;
-const int nsymbols = 36;
+extern float progress;int dsmoothvoronoi_handle, rand_handle, hash31_handle, lfnoise_handle, mfnoise_handle, dbox_handle, dlinesegment3_handle, stroke_handle, zextrude_handle, add_handle, smoothmin_handle, dspline3_handle, dvoronoi_handle, normal_handle, dbox3_handle, rot3_handle, dtriangle_handle, dlinesegment_handle, dpolygon_handle, rot_handle, dcircle_handle, dschnappsgirls_handle, dspacepigs_handle, dkewlers_handle, dfarbrausch_handle, dhaujobb_handle, dmercury_handle, rshort_handle, rfloat_handle, drhomboid_handle, dcirclesegment_handle, dglyph_handle, dstring_handle, dfloat_handle, dint_handle, window_handle, progressbar_handle;
+const int nsymbols = 37;
 const char *dsmoothvoronoi_source = "#version 130\n\n"
 "\n"
 "uniform float iTime;\n"
@@ -918,6 +918,53 @@ const char *dfloat_source = "#version 130\n\n"
 "    dglyph(x+.7*size*c.xy-2.*index*size*c.xy, 48.+ca, .7*size, db);\n"
 "    d = min(d, db);\n"
 "    index += 1.;\n"
+"    \n"
+"    dst = d;\n"
+"}\n"
+"\0";
+const char *dint_source = "#version 130\n\n"
+"\n"
+"const vec3 c = vec3(1.,0.,-1.);\n"
+"\n"
+"void dglyph(in vec2 x, in float ordinal, in float size, out float dst);\n"
+"\n"
+"void dint(in vec2 x, in float num, in float size, in float ndigits, out float dst)\n"
+"{\n"
+"    float d = 1., index = 0.;\n"
+"    \n"
+"    // Determine sign and output it if present\n"
+"    float sign = sign(num), exp = 0.;\n"
+"    if(sign<0.)\n"
+"    {\n"
+"        float da;\n"
+"        dglyph(x, 45., .7*size, da);\n"
+"        d = min(d, da);\n"
+"        index += 1.;\n"
+"        num *= -1.;\n"
+"    }\n"
+"    \n"
+"    // The first power of ten that floors num to anything not zero is the exponent\n"
+"    for(exp = -15.; exp < 15.; exp += 1.)\n"
+"        if(floor(num*pow(10.,exp)) != 0.)\n"
+"            break;\n"
+"    exp *= -1.;\n"
+"    // Determine the significand and output it\n"
+"    for(float i = ndigits; i >= 0.; i -= 1.)\n"
+"    {\n"
+"        float po = pow(10.,i);\n"
+"        float ca = floor(num/po);\n"
+"        if(ca == 0.) \n"
+"        {\n"
+"            index += 1.;\n"
+"            continue;\n"
+"        }\n"
+"        num -= ca*po;\n"
+"        \n"
+"        float da;\n"
+"        dglyph(x+.7*size*c.xy-2.*index*size*c.xy, 48.+ca, .7*size, da);\n"
+"        d = min(d, da);\n"
+"        index += 1.;\n"
+"    }\n"
 "    \n"
 "    dst = d;\n"
 "}\n"
@@ -2601,6 +2648,7 @@ const char *text_source = "/* Endeavor by Team210 - 64k intro by Team210 at Revi
 "void dstring(in vec2 x, in float ordinal, in float size, out float dst);\n"
 "void dfloat(in vec2 x, in float num, in float size, out float dst);\n"
 "void smoothmin(in float a, in float b, in float k, out float dst);\n"
+"void dint(in vec2 x, in float num, in float size, in float ndigits, out float dst);\n"
 "\n"
 "// Fixme: remove vec4 technique in favor of separate distance\n"
 "// void blendadd(in vec4 src1, in vec4 src2, in float tlo, in float thi, out vec4 dst)\n"
@@ -2727,11 +2775,20 @@ const char *text_source = "/* Endeavor by Team210 - 64k intro by Team210 at Revi
 "    // Add Static text\n"
 "    dstring((uv-.45*vec2(-.85*a,1.)), 3., .02, d); // Team210\n"
 "\n"
-"    new.gba = mix(new.gba, mix(new.gba, c.xxx, .8), sm(d));\n"
+"    new.gba = mix(new.gba, mix(new.gba, c.xxx, .5), sm(d));\n"
 "    \n"
 "    stroke(d-.002, .001, d);\n"
 "    new.gba = mix(new.gba, vec3(1.00,0.40,0.39), sm(d));\n"
 "\n"
+"    if(iTime < 5.)\n"
+"    {\n"
+"        float ind = mix(100000., 2., clamp(iTime/3.,0.,1));\n"
+"        dint(uv, ind, .02, 6., d);\n"
+"        new.gba = mix(new.gba, mix(new.gba, vec3(1.00,0.87,0.57), .5), sm(d));\n"
+"        stroke(d-.002, .001, d);\n"
+"        new.gba = mix(new.gba, c.xxx, sm(d));\n"
+"    }\n"
+"    \n"
 "//     \n"
 "    // Display time\n"
 "    /*\n"
@@ -3262,6 +3319,19 @@ void Loaddfloat()
 #endif
     progress += .2/(float)nsymbols;
 }
+void Loaddint()
+{
+    int dint_size = strlen(dint_source);
+    dint_handle = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(dint_handle, 1, (GLchar **)&dint_source, &dint_size);
+    glCompileShader(dint_handle);
+#ifdef DEBUG
+    printf("---> dint Shader:\n");
+    debug(dint_handle);
+    printf(">>>>\n");
+#endif
+    progress += .2/(float)nsymbols;
+}
 void Loadwindow()
 {
     int window_size = strlen(window_source);
@@ -3358,6 +3428,8 @@ void LoadSymbols()
     Loaddstring();
     updateBar();
     Loaddfloat();
+    updateBar();
+    Loaddint();
     updateBar();
     Loadwindow();
     updateBar();
@@ -3672,6 +3744,7 @@ void Loadtext()
     glAttachShader(text_program,dstring_handle);
     glAttachShader(text_program,dfloat_handle);
     glAttachShader(text_program,smoothmin_handle);
+    glAttachShader(text_program,dint_handle);
     glAttachShader(text_program,window_handle);
     glAttachShader(text_program,progressbar_handle);
     glAttachShader(text_program,dvoronoi_handle);

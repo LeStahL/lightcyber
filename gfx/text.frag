@@ -42,6 +42,7 @@ void dglyph(in vec2 x, in float ordinal, in float size, out float dst);
 void dstring(in vec2 x, in float ordinal, in float size, out float dst);
 void dfloat(in vec2 x, in float num, in float size, out float dst);
 void smoothmin(in float a, in float b, in float k, out float dst);
+void dint(in vec2 x, in float num, in float size, in float ndigits, out float dst);
 
 // Fixme: remove vec4 technique in favor of separate distance
 // void blendadd(in vec4 src1, in vec4 src2, in float tlo, in float thi, out vec4 dst)
@@ -168,11 +169,20 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     // Add Static text
     dstring((uv-.45*vec2(-.85*a,1.)), 3., .02, d); // Team210
 
-    new.gba = mix(new.gba, mix(new.gba, c.xxx, .8), sm(d));
+    new.gba = mix(new.gba, mix(new.gba, c.xxx, .5), sm(d));
     
     stroke(d-.002, .001, d);
     new.gba = mix(new.gba, vec3(1.00,0.40,0.39), sm(d));
 
+    if(iTime < 5.)
+    {
+        float ind = mix(100000., 2., clamp(iTime/3.,0.,1));
+        dint(uv, ind, .02, 6., d);
+        new.gba = mix(new.gba, mix(new.gba, vec3(1.00,0.87,0.57), .5), sm(d));
+        stroke(d-.002, .001, d);
+        new.gba = mix(new.gba, c.xxx, sm(d));
+    }
+    
 //     
     // Display time
     /*
