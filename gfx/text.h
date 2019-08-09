@@ -203,7 +203,7 @@ const char * text_frag =
 "        dstring(uv+dx-2.*9.*.02*c.xy, 4., .02, da);\n"
 "        d = min(d, da);\n"
 "            \n"
-"        new.gba = mix(new.gba, mix(new.gba, vec3(1.00,0.87,0.57), .8), sm(d));\n"
+"        new.gba = mix(new.gba, mix(new.gba, vec3(1.00,0.87,0.57), .7), sm(d));\n"
 "        stroke(d-.002, .001, d);\n"
 "        new.gba = mix(new.gba, c.xxx, sm(d));\n"
 "        \n"

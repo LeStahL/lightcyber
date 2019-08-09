@@ -199,7 +199,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         dstring(uv+dx-2.*9.*.02*c.xy, 4., .02, da);
         d = min(d, da);
             
-        new.gba = mix(new.gba, mix(new.gba, vec3(1.00,0.87,0.57), .8), sm(d));
+        new.gba = mix(new.gba, mix(new.gba, vec3(1.00,0.87,0.57), .7), sm(d));
         stroke(d-.002, .001, d);
         new.gba = mix(new.gba, c.xxx, sm(d));
         
