@@ -635,7 +635,7 @@ void draw()
         }
         else if(override_index == 2)
         {
-            t = t_now + 5.;
+            t = t_now + 8.;
         }
         else if(override_index == 3)
         {
@@ -655,7 +655,7 @@ void draw()
         }
     }
     
-    if(t < 5.)
+    if(t < 8.)
     {
         glUseProgram(evoke_program);
         glUniform1f(evoke_iTime_location, t);

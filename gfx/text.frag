@@ -174,13 +174,36 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     stroke(d-.002, .001, d);
     new.gba = mix(new.gba, vec3(1.00,0.40,0.39), sm(d));
 
-    if(iTime < 5.)
+    if(iTime < 6.)
     {
-        float ind = mix(100000., 2., clamp(iTime/3.,0.,1));
-        dint(uv, ind, .02, 6., d);
-        new.gba = mix(new.gba, mix(new.gba, vec3(1.00,0.87,0.57), .5), sm(d));
+        vec2 dx = (.25*a+.3*c.xy)*c.xy;
+        if(iTime < 3.)
+        {
+            float ind = mix(100000., 2., clamp(iTime/3.,0.,1));
+            dint(uv+dx*c.xy, ind, .02, 6., d);
+        }
+        else if(iTime < 4.)
+        {
+            dint(uv+dx, 2., .02, 6., d);
+        }
+        else if(iTime < 5.)
+        {
+            dint(uv+dx, 1., .02, 6., d);
+        }
+        else if(iTime < 6.)
+        {
+            dint(uv+dx, 0., .02, 6., d);
+        }
+        
+        float da;
+        dstring(uv+dx-2.*9.*.02*c.xy, 4., .02, da);
+        d = min(d, da);
+            
+        new.gba = mix(new.gba, mix(new.gba, vec3(1.00,0.87,0.57), .8), sm(d));
         stroke(d-.002, .001, d);
         new.gba = mix(new.gba, c.xxx, sm(d));
+        
+        
     }
     
 //     
