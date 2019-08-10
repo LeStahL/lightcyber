@@ -163,21 +163,27 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     vec4 old = vec4(-1.,texture(iChannel0, fragCoord/iResolution.xy).rgb), 
     new = old; // Scene
     
-    // Add overlay
-    colorize(2.*(c.xz*uv-.45*vec2(-a,1.)-12.*c.xy), new.gba);
-    new.gba = mix(old.gba, mix(old.gba, new.gba,.4), step(5.e-2,length(new.gba)));
+    if(uv.y < -.3)
+    {
+        // Add overlay
+        colorize(2.*(c.xz*uv-.45*vec2(-a,1.)-12.*c.xy), new.gba);
+        new.gba = mix(old.gba, mix(old.gba, new.gba,.4), smoothstep(3.e-2, 5.e-2,length(new.gba)));
+    }
     
-    // Add Static text
-    dstring((uv-.45*vec2(-.85*a,1.)), 3., .02, d); // Team210
+    if(uv.y > .4)
+    {
+        // Add Static text
+        dstring((uv-.45*vec2(-.85*a,1.)), 3., .02, d); // Team210
 
-    new.gba = mix(new.gba, mix(new.gba, c.xxx, .5), sm(d));
-    
-    stroke(d-.002, .001, d);
-    new.gba = mix(new.gba, vec3(1.00,0.40,0.39), sm(d));
+        new.gba = mix(new.gba, mix(new.gba, c.xxx, .5), sm(d));
+        
+        stroke(d-.002, .001, d);
+        new.gba = mix(new.gba, vec3(1.00,0.40,0.39), sm(d));
 
-    // Add time overlay
-    dtime((uv-.45*vec2(1.*a,1.05)), iTime, .01, d);
-    new.gba = mix(new.gba, c.xxx, sm(d));
+        // Add time overlay
+        dtime((uv-.45*vec2(1.*a,1.05)), iTime, .01, d);
+        new.gba = mix(new.gba, c.xxx, sm(d));
+    }
     
     if(iTime < 6.)
     {
