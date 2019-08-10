@@ -121,7 +121,8 @@ void scene2(in vec3 x, out vec2 sdf)
     lfnoise(4.*(yi-.5*iTime), n);
     lfnoise(12.*vec2(n,1.)*yi-(.8+.2*n)*c.xy, n);
     n *= iScale;
-    sdf = vec2(length(y-.05*n*c.yyx)-.5*size, 1.);
+    //sdf = vec2(length(y-.05*n*c.yyx)-.5*size, 1.);
+    sdf = vec2(length(y-.05*n*c.yyx)-mix(.05,1.,length(texture(iChannel0, yi/vec2(a,1.)).rgb)/sqrt(3.))*size, 1.);
 }
 
 void normal2(in vec3 x, out vec3 n, in float dx)
