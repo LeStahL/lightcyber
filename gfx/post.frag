@@ -26,12 +26,17 @@ out vec4 gl_FragColor;
 
 const float pi = acos(-1.);
 const vec3 c = vec3(1.,0.,-1.);
+float a = 1.0;
+
+float size = .005;
 
 float nbeats;
 float iScale;
 
 void rand(in vec2 x, out float n);
+void lfnoise(in vec2 t, out float n);
 void stroke(in float d0, in float s, out float d);
+void dvoronoi(in vec2 x, out float d, out vec2 z);
 float sm(float d)
 {
     return smoothstep(1.5/iResolution.y, -1.5/iResolution.y, d);
@@ -104,12 +109,45 @@ void scene(in vec3 x, out vec2 sdf)
     sdf.y = mix(sdf.y, 2., step(d, sdf.x));
 }
 
+void scene2(in vec3 x, out vec2 sdf)
+{
+    float v = 0.;
+    vec2 vi = c.yy;
+    dvoronoi(x.xy/size, v, vi);
+    vec3 y = vec3(x.xy-vi*size, x.z);
+    vec2 yi = vi*size;
+    
+    float n = 0.;
+    lfnoise(4.*(yi-.5*iTime), n);
+    lfnoise(12.*vec2(n,1.)*yi-(.8+.2*n)*c.xy, n);
+    n *= iScale;
+    sdf = vec2(length(y-.05*n*c.yyx)-.5*size, 1.);
+}
+
+void normal2(in vec3 x, out vec3 n, in float dx)
+{
+    vec2 s, na;
+    
+    scene2(x,s);
+    scene2(x+dx*c.xyy, na);
+    n.x = na.x;
+    scene2(x+dx*c.yxy, na);
+    n.y = na.x;
+    scene2(x+dx*c.yyx, na);
+    n.z = na.x;
+    n = normalize(n-s.x);
+}
+
 void normal(in vec3 x, out vec3 n, in float dx);
 void mainImage( out vec4 fragColor, in vec2 fragCoord_ )
 {
     vec2 fragCoord = fragCoord_;
     float a = iResolution.x/iResolution.y;
     vec2 uv = fragCoord/iResolution.yy-0.5*vec2(a, 1.0);
+    
+    nbeats = mod(iTime, 60./29.);
+    iScale = nbeats-30./29.;
+    iScale = smoothstep(-5./29., 0., iScale)*(1.-smoothstep(0., 15./29., iScale));
     
     vec3 col = vec3(0.);
     float delta = 0.;
@@ -120,7 +158,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord_ )
     
     float d;
     vec2 s;
-    vec3 o, r, u, t, size, dir, x, n;
+    vec3 o, r, u, t, ssize, dir, x, n;
     vec2 uv2 = 10.*(uv-vec2(-.45*a,.45));
     o = R * c.yyx;
 	r = c.xyy; 
@@ -132,18 +170,20 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord_ )
     t = R * t;
     dir = normalize(t-o);
 
-    size = .2*c.xxx;
+    ssize = .2*c.xxx;
 
-	vec3 tlo = min((size-o)/dir,(-size-o)/dir); // Select 3 visible planes
+	vec3 tlo = min((ssize-o)/dir,(-ssize-o)/dir); // Select 3 visible planes
     vec2 abxlo = abs(o.yz + tlo.x*dir.yz),
         abylo = abs(o.xz + tlo.y*dir.xz),
         abzlo = abs(o.xy + tlo.z*dir.xy);
 
     vec4 dn = 100.*c.xyyy;
 
-    dn = mix(dn, vec4(tlo.x,c.xyy), float(all(lessThan(abxlo,size.yz)))*step(tlo.x,dn.x));
-    dn = mix(dn, vec4(tlo.y,c.yxy), float(all(lessThan(abylo,size.xz)))*step(tlo.y,dn.x));
-    dn = mix(dn, vec4(tlo.z,c.yyx), float(all(lessThan(abzlo,size.xy)))*step(tlo.z,dn.x));
+    dn = mix(dn, vec4(tlo.x,c.xyy), float(all(lessThan(abxlo,ssize.yz)))*step(tlo.x,dn.x));
+    dn = mix(dn, vec4(tlo.y,c.yxy), float(all(lessThan(abylo,ssize.xz)))*step(tlo.y,dn.x));
+    dn = mix(dn, vec4(tlo.z,c.yyx), float(all(lessThan(abzlo,ssize.xy)))*step(tlo.z,dn.x));
+    
+    uv = (fragCoord)/iResolution.xy*vec2(a,1.);
     
     d = dn.r;
     if(d<=2.)
@@ -186,26 +226,93 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord_ )
     }
     else
     {
-
+        /*
         float bound = sqrt(iFSAA)-1.;
-    //     bound = mix(bound, 4., smoothstep(66.27,67.27,iTime)*(1.-smoothstep(81.76,82.76,iTime)));
+
+        for(float i = -.5*bound; i<=.5*bound; i+=1.)
+            for(float j=-.5*bound; j<=.5*bound; j+=1.)
+            {
+                col += texture(iChannel0, fragCoord/iResolution.xy+vec2(i,j)*3./max(bound, 1.)/iResolution.xy).xyz;
+            }
+        col /= iFSAA;
+        */
         
-        //if((iTime > 66.27 && iTime < 82.76) || (iTime > 120.0 && iTime < 136.0))
-        if(iTime > 0.)
+        iScale = nbeats-30./29.;
+        iScale = smoothstep(-5./29., 0., iScale)*(1.-smoothstep(15./29., 35./29., iScale));
+        float lscale = iScale;
+        
+        size = mix(0., size, lscale);
+        
+        if(lscale > 0.)
         {
+            col = c.yyy;
+            
+            o = c.yyx+.5*vec3(cos(iTime), sin(iTime),0.);
+            r = c.xyy;
+            u = c.yxy;
+            t = c.yyy;
+            dir = c.yyy;
+            n = c.yyy;
+            x = c.yyy;
+            N = 200;
+            t = uv.x * r + uv.y * u;
+            dir = normalize(t-o);
+
+            d = -(o.z-.05-.5*size)/dir.z;
+            
+            for(i = 0; i<N; ++i)
+            {
+                x = o + d * dir;
+                scene2(x,s);
+                if(s.x < 1.e-4)break;
+                
+                if(x.z<-.05-.5*size)
+                {
+                    col = c.yyy;
+                    i = N;
+                    break;
+                }
+                d += min(s.x,1.e-3);
+                //d += s.x;
+            }
+            
+            if(i < N)
+            {
+                normal2(x,n, 5.e-4);
+                vec3 l = normalize(x+.5*n);
+            
+                if(s.y == 1.)
+                {
+                    float v;
+                    vec2 vi;
+                    dvoronoi(x.xy/size, v, vi);
+                    vec3 y = vec3(x.xy-vi*size, x.z);
+                    vec2 yi = vi*size;
+                    
+                    float bound = sqrt(iFSAA)-1.;
+
+                    for(float i = -.5*bound; i<=.5*bound; i+=1.)
+                        for(float j=-.5*bound; j<=.5*bound; j+=1.)
+                        {
+                            col += texture(iChannel0, yi/vec2(a,1.)+vec2(i,j)*3./max(bound, 1.)/iResolution.xy).xyz;
+                        }
+                    col /= iFSAA;   
+                    
+                    col = .4*col
+                        + .9*col * abs(dot(l,n))
+                        + .6*col * pow(abs(dot(reflect(-l,n),dir)),3.);
+                }
+            }
+            else col = c.yyy;
+        }
+        else
+        {
+            float bound = sqrt(iFSAA)-1.;
+
             for(float i = -.5*bound; i<=.5*bound; i+=1.)
                 for(float j=-.5*bound; j<=.5*bound; j+=1.)
                 {
                     col += texture(iChannel0, fragCoord/iResolution.xy+vec2(i,j)*3./max(bound, 1.)/iResolution.xy).xyz;
-                }
-            col /= iFSAA;
-        }
-        else
-        {
-            for(float i = -.5*bound; i<=.5*bound; i+=1.)
-                for(float j=-.5*bound; j<=.5*bound; j+=1.)
-                {
-                    col += texture(iChannel0, fragCoord/iResolution.xy+vec2(i,j)*mix(3.,15.,2.*abs(fragCoord.y/iResolution.y-.5))*exp(-abs(1.e-2*length(fragCoord.xy)/iResolution.y-.5))/max(bound, 1.)/iResolution.xy).xyz;
                 }
             col /= iFSAA;
         }
@@ -214,7 +321,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord_ )
     // Scan lines
     col += vec3(0., 0.05, 0.1)*sin(uv.y*1050.+ 5.*iTime);
     
-    fragColor = vec4(col,1.0);
+    fragColor = vec4(clamp(col,0.,1.),1.0);
 }
 
 void main()

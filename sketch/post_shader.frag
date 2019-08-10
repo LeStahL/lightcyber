@@ -70,13 +70,8 @@ float sm(float d)
     return smoothstep(1.5/iResolution.y, -1.5/iResolution.y, d);
 }
 
-void scene(in vec3 x, out vec2 sdf)
+void scene2(in vec3 x, out vec2 sdf)
 {
-    /*
-    vec3 y = vec3(mod(x.xy,size)-.5*size, x.z);
-    vec2 yi = x.xy-y.xy;
-	*/
-    
     float v;
     vec2 vi;
     dvoronoi(x.xy/size, v, vi);
@@ -89,18 +84,18 @@ void scene(in vec3 x, out vec2 sdf)
     sdf = vec2(length(y-.05*n*c.yyx)-.5*size, 1.);
 }
 
-void normal(in vec3 x, out vec3 n, in float dx)
+void normal2(in vec3 x, out vec3 n, in float dx)
 {
     vec2 s, na;
     
-    scene(x,s);
-    scene(x+dx*c.xyy, na);
+    scene2(x,s);
+    scene2(x+dx*c.xyy, na);
     n.x = na.x;
-    scene(x+dx*c.yxy, na);
+    scene2(x+dx*c.yxy, na);
     n.y = na.x;
-    scene(x+dx*c.yyx, na);
+    scene2(x+dx*c.yyx, na);
     n.z = na.x;
-    n = normalize(n-s.x);
+    n = normal2ize(n-s.x);
 }
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
@@ -120,14 +115,14 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     int N = 300,
         i;
     t = uv.x * r + uv.y * u;
-    dir = normalize(t-o);
+    dir = normal2ize(t-o);
 
     float d = -(o.z-.05-.5*size)/dir.z;
     
     for(i = 0; i<N; ++i)
     {
      	x = o + d * dir;
-        scene(x,s);
+        scene2(x,s);
         if(s.x < 1.e-4)break;
         
         if(x.z<-.05-.5*size)
@@ -142,8 +137,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     
     if(i < N)
     {
-        normal(x,n, 5.e-4);
-        vec3 l = normalize(x+.5*n);
+        normal2(x,n, 5.e-4);
+        vec3 l = normal2ize(x+.5*n);
        
 		if(s.y == 1.)
         {
