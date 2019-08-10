@@ -30,42 +30,16 @@ const vec3 c = vec3(1.,0.,-1.);
 float nbeats;
 float iScale;
 
-void rand(in vec2 x, out float n)
-{
-    x += 400.;
-    n = fract(sin(dot(sign(x)*abs(x) ,vec2(12.9898,78.233)))*43758.5453);
-}
-
-// Stroke
-void stroke(in float d0, in float s, out float d)
-{
-    d = abs(d0)-s;
-}
-
+void rand(in vec2 x, out float n);
+void stroke(in float d0, in float s, out float d);
 float sm(float d)
 {
     return smoothstep(1.5/iResolution.y, -1.5/iResolution.y, d);
 }
 
-void rot3(in vec3 p, out mat3 rot)
-{
-    rot = mat3(c.xyyy, cos(p.x), sin(p.x), 0., -sin(p.x), cos(p.x))
-        *mat3(cos(p.y), 0., -sin(p.y), c.yxy, sin(p.y), 0., cos(p.y))
-        *mat3(cos(p.z), -sin(p.z), 0., sin(p.z), cos(p.z), c.yyyx);
-}
-
-void dbox3(in vec3 x, in vec3 b, out float d)
-{
-  vec3 da = abs(x) - b;
-  d = length(max(da,0.0))
-         + min(max(da.x,max(da.y,da.z)),0.0);
-}
-
-void add(in vec2 sda, in vec2 sdb, out vec2 sdf)
-{
-    sdf = mix(sda, sdb, step(sdb.x, sda.x));
-}
-
+void rot3(in vec3 p, out mat3 rot);
+void dbox3(in vec3 x, in vec3 b, out float d);
+void add(in vec2 sda, in vec2 sdb, out vec2 sdf);
 mat3 R;
 void scene(in vec3 x, out vec2 sdf)
 {
@@ -130,20 +104,7 @@ void scene(in vec3 x, out vec2 sdf)
     sdf.y = mix(sdf.y, 2., step(d, sdf.x));
 }
 
-void normal(in vec3 x, out vec3 n, in float dx)
-{
-    vec2 s, na;
-    
-    scene(x,s);
-    scene(x+dx*c.xyy, na);
-    n.x = na.x;
-    scene(x+dx*c.yxy, na);
-    n.y = na.x;
-    scene(x+dx*c.yyx, na);
-    n.z = na.x;
-    n = normalize(n-s.x);
-}
-
+void normal(in vec3 x, out vec3 n, in float dx);
 void mainImage( out vec4 fragColor, in vec2 fragCoord_ )
 {
     vec2 fragCoord = fragCoord_;
