@@ -43,6 +43,7 @@ void dstring(in vec2 x, in float ordinal, in float size, out float dst);
 void dfloat(in vec2 x, in float num, in float size, out float dst);
 void smoothmin(in float a, in float b, in float k, out float dst);
 void dint(in vec2 x, in float num, in float size, in float ndigits, out float dst);
+void dtime(in vec2 x, in float num, in float size, out float dst);
 
 // Fixme: remove vec4 technique in favor of separate distance
 // void blendadd(in vec4 src1, in vec4 src2, in float tlo, in float thi, out vec4 dst)
@@ -174,6 +175,10 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     stroke(d-.002, .001, d);
     new.gba = mix(new.gba, vec3(1.00,0.40,0.39), sm(d));
 
+    // Add time overlay
+    dtime((uv-.45*vec2(1.*a,1.05)), iTime, .01, d);
+    new.gba = mix(new.gba, c.xxx, sm(d));
+    
     if(iTime < 6.)
     {
         vec2 dx = (.25*a+.3*c.xy)*c.xy;
