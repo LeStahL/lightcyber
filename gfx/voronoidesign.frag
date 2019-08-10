@@ -159,7 +159,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     v1 = abs(v1)-.01;
     cv = mix(cv, c.yyy, sm(v1));
     v1 = abs(v1-.01)-.005;
-    cv = mix(cv, /*vec3(0.76,0.20,0.13)*/c.xxx, sm(v1));
+    cv = mix(cv, c.xxx, sm(v1));
     vs(x,s);
     vs(x+dx*c.xyy, na);
     n.x = na.x;

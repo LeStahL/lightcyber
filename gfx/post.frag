@@ -186,22 +186,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord_ )
     }
     else
     {
-    /*
-    if(iTime > 66.27 && iTime < 82.76) // blend in to caleidoscope
-    {
-        n = vec2(7.,1.);
-        float phi = abs(mod(atan(uv.y, uv.x),pi/n.x)-.5*pi/n.x);
-        uv = length(uv)*vec2(cos(phi+2.*pi), sin(phi+2.*pi));
-        fragCoord = mix(fragCoord, (uv + .5*vec2(a,1.))*iResolution.yy, smoothstep(66.27,67.27,iTime)*(1.-smoothstep(81.76,82.76,iTime)));
-    }
-    else if(iTime > 120.0 && iTime < 136.0) // blend in to caleidoscope
-    {
-        n = vec2(7.,1.);
-        float phi = abs(mod(atan(uv.y, uv.x),pi/n.x)-.5*pi/n.x);
-        uv = length(uv)*vec2(cos(phi+2.*pi), sin(phi+2.*pi));
-        fragCoord = mix(fragCoord, (uv + .5*vec2(a,1.))*iResolution.yy, smoothstep(120.,121.,iTime)*(1.-smoothstep(135.,136.,iTime)));
-    }*/
-    
+
         float bound = sqrt(iFSAA)-1.;
     //     bound = mix(bound, 4., smoothstep(66.27,67.27,iTime)*(1.-smoothstep(81.76,82.76,iTime)));
         

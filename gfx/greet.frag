@@ -180,13 +180,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
      	x = o + d * dir;
         scene(x,s);
         if(s.x < 1.e-4)break;
-        /*
-        if(x.z<-.05)
-        {
-            col = .2*c.xxx;
-            i = N;
-            break;
-        }*/
         d += min(s.x,3.e-2);
         //d += s.x;
     }
@@ -222,13 +215,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
                 x = o + d * dir;
                 scene(x,s);
                 if(s.x < 1.e-4)break;
-                /*
-                if(x.z<-.05)
-                {
-                    col = .2*c.xxx;
-                    i = N;
-                    break;
-                }*/
                 d += min(s.x,3.e-1);
                 //d += s.x;
             }

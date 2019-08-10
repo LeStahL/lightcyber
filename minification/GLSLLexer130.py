@@ -42,6 +42,7 @@ class GLSLLexer130:
         self.rules += [ Rule.Rule("mat2", "MAT2") ]
         self.rules += [ Rule.Rule("mat3", "MAT3") ]
         self.rules += [ Rule.Rule("mat4", "MAT4") ]
+        self.rules += [ Rule.Rule("break", "BREAK") ]
         self.rules += [ Rule.Rule("sampler2D", "SAMPLER2D") ]
         self.rules += [ Rule.Rule(";", "SEMICOLON") ]
         self.rules += [ Rule.Rule(",", "COLON") ]

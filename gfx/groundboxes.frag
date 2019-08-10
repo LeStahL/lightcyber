@@ -99,7 +99,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     a = iResolution.x/iResolution.y;
     
     mat3 RR;
-    rot3(/*-pi/4.*c.yxy*/.2*iTime*vec3(1.1,1.4,1.6), RR);
+    rot3(.2*iTime*vec3(1.1,1.4,1.6), RR);
     
     nbeats = mod(iTime, 60./29.);
     iScale = nbeats-30./29.;

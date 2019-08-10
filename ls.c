@@ -520,11 +520,13 @@ void draw()
     if(t > t_end)
         ExitProcess(0);
     
+#ifdef MIDI
     if(time_dial != 0 ||  time_fine_dial != 0 || time_very_fine_dial != 0)
     {
         t = t_now + (.9*time_dial+.09*time_fine_dial+.01*time_very_fine_dial) * t_end;
         scene_override = 0;
     }
+#endif
     
     if(scene_override)
     {
