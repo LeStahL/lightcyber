@@ -49,7 +49,7 @@ add_custom_target(symbolization
 )
 
 if(MSVC)
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:demo /SUBSYSTEM:Windows  /OPT:REF  /OPT:ICF=10 /VERBOSE /NODEFAULTLIB")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:demo /SUBSYSTEM:Windows  /OPT:REF  /OPT:ICF=10 /VERBOSE /NODEFAULTLIB /MANIFEST:NO ")
 endif()
 
 add_executable(lightcyber ls.c )
@@ -62,7 +62,7 @@ target_include_directories(lightcyber SYSTEM PRIVATE "${OPENGL_INCLUDE_DIR}")
 target_link_libraries(lightcyber OpenGL::GL)
 
 if(MSVC)
-    target_compile_options(lightcyber PRIVATE /Gy /O1 /fp:fast /GR- /GS- /MT)
+    target_compile_options(lightcyber PRIVATE /Gy /O1 /fp:fast /GR- /GS- /MT )
 
     if (MSVC_VERSION GREATER_EQUAL 1910) # VS2017
         target_link_libraries(lightcyber Winmm.lib User32.lib ucrt.lib msvcrt.lib vcruntime.lib ucrt.lib)
