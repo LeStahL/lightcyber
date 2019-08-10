@@ -239,7 +239,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     col = mix(col,cv,.8);
     col = mix(col, c.yyy, smoothstep(1.,5.,d));
     
-    col *= mix(1.,15.,mix(.28,.88, iScale));
+    col *= mix(1.,15.,mix(.28,.88, 0.*iScale));
     col *= col;
     
     col = mix(col, .01*col, smoothstep(-.6,-1.,uv.y));

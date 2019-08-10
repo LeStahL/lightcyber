@@ -235,15 +235,15 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     float nn;
     lfnoise(12.*(x.z-1.3*iTime)*c.xx, nn);
     
-    col *=mix(1.1,2.6,mix(.5+.5*nn,1.,iScale));
+    col *=mix(1.1,2.6,mix(.5+.5*nn,1.,0.*iScale));
     col *= col;
     col = clamp(col, 0., 1.);
     if(col == c.xxx) col = c.yyy;
     
 //     col = mix(col,c.yyy, .1);
     
-    col = mix(col, mix(col, length(col)/sqrt(3.)*c.xxx, .7), iScale);
-    col = mix(col, 1.7*1.7*col*col, iScale);
+//     col = mix(col, mix(col, length(col)/sqrt(3.)*c.xxx, .7), iScale);
+//     col = mix(col, 1.7*1.7*col*col, iScale);
     
     fragColor = vec4(clamp(col,0.,1.),1.0);
 }
