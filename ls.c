@@ -269,56 +269,6 @@ void load_demo()
 	load_resolution_location = glGetUniformLocation(load_program, LOAD_VAR_IRESOLUTION);
 	printf("++++ Loading bar created.\n");
 
-	// Load post processing shader
-	printf("++++ Creating Post Shader.\n");
-	int post_size = strlen(post_frag);
-	post_handle = glCreateShader(GL_FRAGMENT_SHADER);
-	post_program = glCreateProgram();
-	glShaderSource(post_handle, 1, (GLchar **)&post_frag, &post_size);
-	glCompileShader(post_handle);
-	printf("---> Post shader:\n");
-#ifdef DEBUG
-	debug(post_handle);
-#endif
-	glAttachShader(post_program, post_handle);
-	glLinkProgram(post_program);
-	printf("---> Post Program:\n");
-#ifdef DEBUG
-	debugp(post_program);
-#endif
-	glUseProgram(post_program);
-	post_channel0_location = glGetUniformLocation(post_program, POST_VAR_ICHANNEL0);
-	post_fsaa_location = glGetUniformLocation(post_program, POST_VAR_IFSAA);
-	post_resolution_location = glGetUniformLocation(post_program, POST_VAR_IRESOLUTION);
-    post_time_location = glGetUniformLocation(post_program, POST_VAR_ITIME);
-	printf("++++ Post shader created.\n");
-
-//     // Load ui shader
-// 	printf("++++ Creating Ui Shader.\n");
-// 	int ui_size = strlen(ui_frag);
-// 	ui_handle = glCreateShader(GL_FRAGMENT_SHADER);
-// 	ui_program = glCreateProgram();
-// 	glShaderSource(ui_handle, 1, (GLchar **)&ui_frag, &ui_size);
-// 	glCompileShader(ui_handle);
-// 	printf("---> Ui shader:\n");
-// #ifdef DEBUG
-// 	debug(ui_handle);
-// #endif
-// 	glAttachShader(ui_program, ui_handle);
-// 	glLinkProgram(ui_program);
-// 	printf("---> Ui Program:\n");
-// #ifdef DEBUG
-// 	debugp(ui_program);
-// #endif
-// 	glUseProgram(ui_program);
-// 	ui_channel0_location = glGetUniformLocation(ui_program, UI_VAR_ICHANNEL0);
-// 	ui_resolution_location = glGetUniformLocation(ui_program, UI_VAR_IRESOLUTION);
-//     ui_time_location = glGetUniformLocation(ui_program, UI_VAR_ITIME);
-//     ui_maxtime_location = glGetUniformLocation(ui_program, UI_VAR_IMAXTIME);
-//     ui_mouse_location = glGetUniformLocation(ui_program, UI_VAR_IMOUSE);
-//     ui_playing_location = glGetUniformLocation(ui_program, UI_VAR_IPLAYING);
-// 	printf("++++ Ui shader created.\n");
-    
 	// Create framebuffer for rendering first pass to
 	glGenFramebuffers(1, &first_pass_framebuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, first_pass_framebuffer);
@@ -372,11 +322,6 @@ void load_demo()
 	// Load music shader
 	LoadMusicThread(0);
 	updateBar();
-
-	// Load Logo 210 shader
-//     LoadDecayingfactoryThread(0);
-//     updateBar();
-//     SwapBuffers(hdc);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	LoadSymbols();
@@ -520,33 +465,6 @@ unsigned long __stdcall LoadMusicThread( void *lpParam)
     return 0;
 }
 
-unsigned long __stdcall LoadLogo210Thread( void * lpParam)
-{
-    int logo210_size = strlen(logo210_frag);
-    logo210_handle = glCreateShader(GL_FRAGMENT_SHADER);
-    logo210_program = glCreateProgram();
-    glShaderSource(logo210_handle, 1, (GLchar **)&logo210_frag, &logo210_size);
-    glCompileShader(logo210_handle);
-    printf("---> Logo 210 shader:\n");
-#ifdef DEBUG
-    debug(logo210_handle);
-#endif
-    glAttachShader(logo210_program, logo210_handle);
-    glLinkProgram(logo210_program);
-    printf("---> Logo 210 program:\n");
-#ifdef DEBUG
-    debugp(logo210_program);
-#endif
-    glUseProgram(logo210_program);
-    logo210_time_location =  glGetUniformLocation(logo210_program, LOGO210_VAR_ITIME);
-    logo210_resolution_location = glGetUniformLocation(logo210_program, LOGO210_VAR_IRESOLUTION);
-    printf("++++ Logo 210 shader created.\n");
-    
-    progress += .1/NSHADERS;
-    
-    return 0;
-}
-
 unsigned long __stdcall LoadTextThread(void * lpParam)
 {
     // Initialize font texture
@@ -577,7 +495,7 @@ void quad()
 
 void updateBar()
 {
-    glBindFramebuffer(GL_FRAMEBUFFER, first_pass_framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
     
     // Render first pass
     glViewport(0,0,w,h);
@@ -590,25 +508,6 @@ void updateBar()
     
     quad();
     
-    // Render second pass (Post processing) to screen
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glViewport(0,0,w,h);
-    
-    glUseProgram(post_program);
-    glUniform2f(post_resolution_location, w, h);
-    glUniform1f(post_fsaa_location, fsaa);
-    glUniform1i(post_channel0_location, 0);
-    glUniform1f(post_time_location, 0.);
-    
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, first_pass_texture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-    
-    quad();
-    
-    glBindTexture(GL_TEXTURE_2D, 0);
-
 	flip_buffers();
 }
 
@@ -799,10 +698,10 @@ void draw()
 
     // Render post processing to buffer
     glUseProgram(post_program);
-    glUniform2f(post_resolution_location, w, h);
-    glUniform1f(post_fsaa_location, fsaa);
-    glUniform1i(post_channel0_location, 0);
-    glUniform1f(post_time_location, t);
+    glUniform2f(post_iResolution_location, w, h);
+    glUniform1f(post_iFSAA_location, fsaa);
+    glUniform1i(post_iChannel0_location, 0);
+    glUniform1f(post_iTime_location, t);
     
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, first_pass_texture);
@@ -829,24 +728,7 @@ void draw()
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, font_texture_size, font_texture_size, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
     
     quad();
-    
-//     // render ui to screen
-//     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-//     
-//     glUseProgram(ui_program);
-//     glUniform1f(ui_time_location, t);
-//     glUniform1f(ui_maxtime_location, t_end);
-//     glUniform2f(ui_mouse_location, mx, h-my);
-//     glUniform2f(ui_resolution_location, w, h);
-//     glUniform1f(ui_playing_location, paused?0.:1.);
-//     glUniform1i(ui_channel0_location, 0);
-//     
-//     glActiveTexture(GL_TEXTURE0);
-//     glBindTexture(GL_TEXTURE_2D, first_pass_texture);
-//     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-// 
-//     quad();
-    
+
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 

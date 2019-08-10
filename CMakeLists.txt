@@ -35,13 +35,6 @@ else()
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/minification/
         COMMAND "${Python3_EXECUTABLE}" shader-compressor.py  -o "${PROJECT_SOURCE_DIR}/sfx.h" "${PROJECT_SOURCE_DIR}/sfx.frag" --no-minification
         COMMAND "${Python3_EXECUTABLE}" shader-compressor.py -o "${PROJECT_SOURCE_DIR}/gfx/load.h" "${PROJECT_SOURCE_DIR}/gfx/load.frag" --no-minification
-        COMMAND "${Python3_EXECUTABLE}" shader-compressor.py -o "${PROJECT_SOURCE_DIR}/gfx/post.h" "${PROJECT_SOURCE_DIR}/gfx/post.frag" --no-minification
-        COMMAND "${Python3_EXECUTABLE}" shader-compressor.py -o "${PROJECT_SOURCE_DIR}/gfx/ui.h" "${PROJECT_SOURCE_DIR}/gfx/ui.frag" --no-minification
-        COMMAND "${Python3_EXECUTABLE}" shader-compressor.py -o "${PROJECT_SOURCE_DIR}/gfx/logo210.h" "${PROJECT_SOURCE_DIR}/gfx/logo210.frag" --no-minification
-        
-        
-#         COMMAND "${Python3_EXECUTABLE}" shader-compressor.py -o "${PROJECT_SOURCE_DIR}/gfx/decayingfactory.h" "${PROJECT_SOURCE_DIR}/gfx/decayingfactory.frag" --no-minification
-        COMMAND "${Python3_EXECUTABLE}" shader-compressor.py -o "${PROJECT_SOURCE_DIR}/gfx/text.h" "${PROJECT_SOURCE_DIR}/gfx/text.frag" --no-minification
     )
 endif()
 
@@ -52,7 +45,7 @@ add_custom_target(texture_packing
 
 add_custom_target(symbolization
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/gfx/
-    COMMAND "${Python3_EXECUTABLE}" symbolize.py voronoidesign.frag groundboxes.frag graffiti.frag greet.frag evoke.frag canal.frag text.frag -o symbols.h
+    COMMAND "${Python3_EXECUTABLE}" symbolize.py voronoidesign.frag groundboxes.frag graffiti.frag greet.frag evoke.frag canal.frag text.frag post.frag -o symbols.h
 )
 
 if(MSVC)

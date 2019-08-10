@@ -143,14 +143,6 @@ int
     fader_5_value,
     fader_6_value,
     fader_7_value,
-    fader_0_location,
-    fader_1_location,
-    fader_2_location,
-    fader_3_location,
-    fader_4_location,
-    fader_5_location,
-    fader_6_location,
-    fader_7_location,
     
     dial_0_value,
     dial_1_value,
@@ -181,34 +173,10 @@ int
     load_resolution_location,
     load_time_location,
     load_progress_location,
-
-    // Post processing
-    post_handle,
-    post_program,
-    post_resolution_location,
-    post_fsaa_location,
-    post_channel0_location,
-    post_time_location,
-
-    // Ui shader
-    ui_handle,
-    ui_program,
-    ui_time_location,
-    ui_maxtime_location,
-    ui_mouse_location,
-    ui_playing_location,
-    ui_resolution_location,
-    ui_channel0_location,
-
+    
     // Antialiasing
     fsaa = 25,
     txaa = 1,
-
-    // Logo
-    logo210_time_location,
-    logo210_resolution_location,
-    logo210_program,
-    logo210_handle,
 
 	// Text
 	font_texture_handle;
@@ -263,7 +231,6 @@ float t_load_end = 0.;
 
 void load_demo();
 unsigned long __stdcall LoadMusicThread(void *lpParam);
-unsigned long __stdcall LoadLogo210Thread(void * lpParam);
 unsigned long __stdcall LoadTextThread(void * lpParam);
 void quad();
 void updateBar();
@@ -287,32 +254,7 @@ void draw();
 #define LOAD_VAR_IPROGRESS "iProgress"
 #define LOAD_VAR_IRESOLUTION "iResolution"
 
-#include "gfx/logo210.h"
-#define LOGO210_VAR_IRESOLUTION "iResolution"
-#define LOGO210_VAR_ITIME "iTime"
-
-#include "gfx/post.h"
-#define POST_VAR_IFSAA "iFSAA"
-#define POST_VAR_IRESOLUTION "iResolution"
-#define POST_VAR_ICHANNEL0 "iChannel0"
-#define POST_VAR_ITIME "iTime"
-
-#include "gfx/ui.h"
-#define UI_VAR_ITIME "iTime"
-#define UI_VAR_IMAXTIME "iMaxTime"
-#define UI_VAR_IMOUSE "iMouse"
-#define UI_VAR_IPLAYING "iPlaying"
-#define UI_VAR_IRESOLUTION "iResolution"
-#define UI_VAR_ICHANNEL0 "iChannel0"
-
 #include "gfx/symbols.h"
-
-#include "gfx/text.h"
-#define TEXT_VAR_IRESOLUTION "iResolution"
-#define TEXT_VAR_ITIME "iTime"
-#define TEXT_VAR_IFONT "iFont"
-#define TEXT_VAR_IFONTWIDTH "iFontWidth"
-#define TEXT_VAR_ICHANNEL0 "iChannel0"
 
 #ifdef WIN32
 #	include "pal_win32.h"
