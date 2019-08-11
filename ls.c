@@ -536,7 +536,7 @@ void draw()
         }
         else if(override_index == 2)
         {
-            t = t_now + 16.;
+            t = t_now + 12.;
         }
         else if(override_index == 3)
         {
@@ -556,7 +556,7 @@ void draw()
         }
     }
     
-    if(t < 16.)
+    if(t < 12.)
     {
         glUseProgram(evoke_program);
         glUniform1f(evoke_iTime_location, t);
@@ -582,7 +582,7 @@ void draw()
     else if(t < 49.655)
     {
         glUseProgram(graffiti_program);
-        glUniform1f(graffiti_iTime_location, t);
+        glUniform1f(graffiti_iTime_location, t-12.);
         glUniform2f(graffiti_iResolution_location, w, h);
         
 #ifdef MIDI

@@ -158,7 +158,23 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     }
     
     col = mix(col, c.yyy, clamp((d-2.-(o.z-.2)/dir.z)/4.,0.,1.));
-
+    
+    // Blend to voronoi background
+    vec3 c1 = c.yyy;
+    float v, v2;
+    vec2 ind, ind2;
+    lfnoise((iTime-12.)*c.xx, ind2.x);
+    lfnoise((iTime-12.)*c.xx-1337., ind2.y);
+    dvoronoi(12.*(uv-.03*ind2), v, ind);
+    rand(ind, ra);
+    stroke(-v, .05, v);
+    v = -v;
+    c1 = mix(c1, .3*ra*mix( .5*vec3(1.00,0.40,0.39), .05*c.xxx, clamp(tanh(1.5*length(uv)),0.,1.)), sm(v));
+    
+    c1 *= mix(1.,13., smoothstep(0.,1., clamp((iTime-11.), 0., 1.)));
+    
+    col = mix(col, c1, smoothstep(0.,1., clamp((iTime-11.),0.,1.)));
+    
     fragColor = vec4(clamp(col,0.,1.),1.0);
 }
 

@@ -101,6 +101,7 @@ void add(in vec2 sda, in vec2 sdb, out vec2 sdf);
 
 void scene(in vec3 x, out vec2 sdf)
 {
+    
     x.x += .3*iTime;
     x *= 2.;
     
@@ -114,6 +115,8 @@ void scene(in vec3 x, out vec2 sdf)
     mat3 RR;
     rot3(1.3*mix(.2,1.5, .5+.5*n.x)*n.z * c.xyy, RR);
     x = RR * x;
+    
+    x.z = abs(x.z);
     
     float d, da, db;
     
@@ -285,6 +288,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         stroke(-v, .05, v);
         v = -v;
         col = mix(col, .3*ra*mix( .5*vec3(1.00,0.40,0.39), .05*c.xxx, clamp(tanh(1.5*length(uv)),0.,1.)), sm(v));
+        col *= mix(13.,1.,smoothstep(0.,.5,clamp((iTime-6.),0.,1.)));
     }
     
     fragColor = vec4(clamp(col,0.,1.),1.0);

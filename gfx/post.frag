@@ -316,9 +316,9 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord_ )
         iScale = nbeats-30./29.;
         iScale = smoothstep(-5./29., 0., iScale)*(1.-smoothstep(0./29., 35./29., iScale));
 //         lscale = iScale;
-        lscale = 0.;
+        lscale = smoothstep(0.,.5,clamp((iTime-10.),0.,1.))*(1.-smoothstep(0.,.5,clamp((iTime-18.),0.,1.)));
         
-        rscale = iScale;
+//         rscale = iScale;
         rscale = 0.;
         size = mix(.005, .01, rscale);
         size = mix(0., size, max(rscale, lscale));
