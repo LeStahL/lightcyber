@@ -161,15 +161,15 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     
     float d;
 
-    vec4 old = c.yyy, 
-        new = c.yyy;
+    vec4 old = c.yyyy, 
+        new = c.yyyy;
     
     float bound = sqrt(iFSAA)-1.;
 
     for(float i = -.5*bound; i<=.5*bound; i+=1.)
         for(float j=-.5*bound; j<=.5*bound; j+=1.)
         {
-            old.gba += texture(iChannel0, fragCoord/iResolution.xy+vec2(i,j)*3./max(bound, 1.)/iResolution.xy).xyz;
+            old.gba += texture(iChannel0, (fragCoord+vec2(i,j)*3./max(bound, 1.))/iResolution.xy).xyz;
         }
     old.gba /= iFSAA;
     

@@ -236,7 +236,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord_ )
     iScale = nbeats-30./29.;
     iScale = smoothstep(-5./29., 0., iScale)*(1.-smoothstep(0., 15./29., iScale));
     
-    vec3 col = vec3(0.);
+    vec3 col = texture(iChannel0, fragCoord_/iResolution).rgb;
     float delta = 0.;
 //     vec2 n = c.yy;
     
