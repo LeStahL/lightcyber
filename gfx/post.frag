@@ -440,17 +440,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord_ )
             }
             else col = c.yyy;
         }
-        else
-        {
-            float bound = sqrt(iFSAA)-1.;
-
-            for(float i = -.5*bound; i<=.5*bound; i+=1.)
-                for(float j=-.5*bound; j<=.5*bound; j+=1.)
-                {
-                    col += texture(iChannel0, fragCoord/iResolution.xy+vec2(i,j)*3./max(bound, 1.)/iResolution.xy).xyz;
-                }
-            col /= iFSAA;
-        }
     }
     
     // Scan lines

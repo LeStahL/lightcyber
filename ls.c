@@ -720,6 +720,7 @@ void draw()
     glUniform1f(text_iTime_location, t);
     glUniform1i(text_iChannel0_location, 0);
     glUniform1i(text_iFont_location, 1);
+    glUniform1f(text_iFSAA_location, fsaa);
     
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, first_pass_texture);

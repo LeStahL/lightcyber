@@ -20,6 +20,7 @@
 uniform float iFontWidth, iTime;
 uniform vec2 iResolution;
 uniform sampler2D iChannel0, iFont;
+uniform float iFSAA;
 
 out vec4 gl_FragColor;
 
@@ -160,8 +161,19 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     
     float d;
 
-    vec4 old = vec4(-1.,texture(iChannel0, fragCoord/iResolution.xy).rgb), 
-    new = old; // Scene
+    vec4 old = c.yyy, 
+        new = c.yyy;
+    
+    float bound = sqrt(iFSAA)-1.;
+
+    for(float i = -.5*bound; i<=.5*bound; i+=1.)
+        for(float j=-.5*bound; j<=.5*bound; j+=1.)
+        {
+            old.gba += texture(iChannel0, fragCoord/iResolution.xy+vec2(i,j)*3./max(bound, 1.)/iResolution.xy).xyz;
+        }
+    old.gba /= iFSAA;
+    
+    new = old;
     
     if(uv.y < -.3 && iTime > 12.)
     {
@@ -269,12 +281,29 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         
         dlinesegment(vec2(uv.x+.75,uv.y-.35+.06), -.015*c.xy, .25*c.xy, db);
         stroke(db, .001, db);
+        da = min(da, db);
         
         // No more partycoding this time
-        dstring(vec2(uv.x+.75,uv.y-.35+.02), 5., .01, db);
+        dstring(vec2(uv.x+.75,uv.y+.35), 5., .015, db);
         da = min(da, db);
         
+        // Yeah. sure.
+        dstring(vec2(uv.x-.2,uv.y+.35), 6., .015, db);
+        float dc;
+        dbox(vec2(uv.x-.2-.12,uv.y+.35), vec2(.165, .015), dc);
+        db = max(dc,-db);
         da = min(da, db);
+        
+        // well, that worked.
+        dstring(vec2(uv.x+.75,uv.y+.4),7., .015, db);
+        da = min(da, db);
+        
+        // not
+        dstring(vec2(uv.x-.2,uv.y+.4), 8., .015, db);
+        dbox(vec2(uv.x-.2-.12,uv.y+.4), vec2(.165, .015), dc);
+        db = max(dc,-db);
+        da = min(da, db);
+        
         
         new.gba = mix(new.gba, vec3(0.75,0.24,0.30), sm(da));
     }

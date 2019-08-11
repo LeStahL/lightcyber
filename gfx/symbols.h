@@ -2699,6 +2699,7 @@ const char *text_source = "/* Endeavor by Team210 - 64k intro by Team210 at Revi
 "uniform float iFontWidth, iTime;\n"
 "uniform vec2 iResolution;\n"
 "uniform sampler2D iChannel0, iFont;\n"
+"uniform float iFSAA;\n"
 "\n"
 "out vec4 gl_FragColor;\n"
 "\n"
@@ -2839,8 +2840,19 @@ const char *text_source = "/* Endeavor by Team210 - 64k intro by Team210 at Revi
 "    \n"
 "    float d;\n"
 "\n"
-"    vec4 old = vec4(-1.,texture(iChannel0, fragCoord/iResolution.xy).rgb), \n"
-"    new = old; // Scene\n"
+"    vec4 old = c.yyy, \n"
+"        new = c.yyy;\n"
+"    \n"
+"    float bound = sqrt(iFSAA)-1.;\n"
+"\n"
+"    for(float i = -.5*bound; i<=.5*bound; i+=1.)\n"
+"        for(float j=-.5*bound; j<=.5*bound; j+=1.)\n"
+"        {\n"
+"            old.gba += texture(iChannel0, fragCoord/iResolution.xy+vec2(i,j)*3./max(bound, 1.)/iResolution.xy).xyz;\n"
+"        }\n"
+"    old.gba /= iFSAA;\n"
+"    \n"
+"    new = old;\n"
 "    \n"
 "    if(uv.y < -.3 && iTime > 12.)\n"
 "    {\n"
@@ -2948,12 +2960,29 @@ const char *text_source = "/* Endeavor by Team210 - 64k intro by Team210 at Revi
 "        \n"
 "        dlinesegment(vec2(uv.x+.75,uv.y-.35+.06), -.015*c.xy, .25*c.xy, db);\n"
 "        stroke(db, .001, db);\n"
+"        da = min(da, db);\n"
 "        \n"
 "        // No more partycoding this time\n"
-"        dstring(vec2(uv.x+.75,uv.y-.35+.02), 5., .01, db);\n"
+"        dstring(vec2(uv.x+.75,uv.y+.35), 5., .015, db);\n"
 "        da = min(da, db);\n"
 "        \n"
+"        // Yeah. sure.\n"
+"        dstring(vec2(uv.x-.2,uv.y+.35), 6., .015, db);\n"
+"        float dc;\n"
+"        dbox(vec2(uv.x-.2-.12,uv.y+.35), vec2(.165, .015), dc);\n"
+"        db = max(dc,-db);\n"
 "        da = min(da, db);\n"
+"        \n"
+"        // well, that worked.\n"
+"        dstring(vec2(uv.x+.75,uv.y+.4),7., .015, db);\n"
+"        da = min(da, db);\n"
+"        \n"
+"        // not\n"
+"        dstring(vec2(uv.x-.2,uv.y+.4), 8., .015, db);\n"
+"        dbox(vec2(uv.x-.2-.12,uv.y+.4), vec2(.165, .015), dc);\n"
+"        db = max(dc,-db);\n"
+"        da = min(da, db);\n"
+"        \n"
 "        \n"
 "        new.gba = mix(new.gba, vec3(0.75,0.24,0.30), sm(da));\n"
 "    }\n"
@@ -3407,17 +3436,6 @@ const char *post_source = "/* Endeavor by Team210 - 64k intro by Team210 at Revi
 "                }\n"
 "            }\n"
 "            else col = c.yyy;\n"
-"        }\n"
-"        else\n"
-"        {\n"
-"            float bound = sqrt(iFSAA)-1.;\n"
-"\n"
-"            for(float i = -.5*bound; i<=.5*bound; i+=1.)\n"
-"                for(float j=-.5*bound; j<=.5*bound; j+=1.)\n"
-"                {\n"
-"                    col += texture(iChannel0, fragCoord/iResolution.xy+vec2(i,j)*3./max(bound, 1.)/iResolution.xy).xyz;\n"
-"                }\n"
-"            col /= iFSAA;\n"
 "        }\n"
 "    }\n"
 "    \n"
@@ -4013,7 +4031,7 @@ int graffiti_iTime_location,graffiti_iResolution_location,graffiti_iFader0_locat
 int greet_iTime_location,greet_iResolution_location,greet_iFader0_location,greet_iFader1_location,greet_iFader2_location,greet_iFader3_location,greet_iFader4_location,greet_iFader5_location,greet_iFader6_location,greet_iFader7_location;
 int evoke_iTime_location,evoke_iResolution_location,evoke_iFader0_location,evoke_iFader1_location,evoke_iFader2_location,evoke_iFader3_location,evoke_iFader4_location,evoke_iFader5_location,evoke_iFader6_location,evoke_iFader7_location;
 int canal_iTime_location,canal_iResolution_location,canal_iFader0_location,canal_iFader1_location,canal_iFader2_location,canal_iFader3_location,canal_iFader4_location,canal_iFader5_location,canal_iFader6_location,canal_iFader7_location;
-int text_iFontWidth_location,text_iTime_location,text_iResolution_location,text_iChannel0_location,text_iFont_location;
+int text_iFontWidth_location,text_iTime_location,text_iResolution_location,text_iChannel0_location,text_iFont_location,text_iFSAA_location;
 int post_iFSAA_location,post_iResolution_location,post_iChannel0_location,post_iTime_location;
 const int nprograms = 8;
 
@@ -4335,6 +4353,7 @@ void Loadtext()
     text_iResolution_location = glGetUniformLocation(text_program, "iResolution");
     text_iChannel0_location = glGetUniformLocation(text_program, "iChannel0");
     text_iFont_location = glGetUniformLocation(text_program, "iFont");
+    text_iFSAA_location = glGetUniformLocation(text_program, "iFSAA");
     progress += .2/(float)nprograms;
 }
 
