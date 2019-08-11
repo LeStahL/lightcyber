@@ -28,10 +28,12 @@ const float pi = acos(-1.);
 const vec3 c = vec3(1.,0.,-1.);
 float a = 1.0;
 
-float size = .005;
+float lscale, rscale;
+float size;
 
 float nbeats;
 float iScale;
+
 
 void rand(in vec2 x, out float n);
 void lfnoise(in vec2 t, out float n);
@@ -40,6 +42,28 @@ void dvoronoi(in vec2 x, out float d, out vec2 z);
 float sm(float d)
 {
     return smoothstep(1.5/iResolution.y, -1.5/iResolution.y, d);
+}
+
+float dot2( in vec3 v ) { return dot(v,v); }
+
+// Adapted from https://www.shadertoy.com/view/4sXXRN
+void dtriangle3(in vec3 p,  in vec3 v1, in vec3 v2, in vec3 v3, out float dst)
+{
+    vec3 v21 = v2 - v1; vec3 p1 = p - v1;
+    vec3 v32 = v3 - v2; vec3 p2 = p - v2;
+    vec3 v13 = v1 - v3; vec3 p3 = p - v3;
+    vec3 nor = cross( v21, v13 );
+
+    dst = sqrt( (sign(dot(cross(v21,nor),p1)) + 
+                  sign(dot(cross(v32,nor),p2)) + 
+                  sign(dot(cross(v13,nor),p3))<2.0) 
+                  ?
+                  min( min( 
+                  dot2(v21*clamp(dot(v21,p1)/dot2(v21),0.0,1.0)-p1), 
+                  dot2(v32*clamp(dot(v32,p2)/dot2(v32),0.0,1.0)-p2) ), 
+                  dot2(v13*clamp(dot(v13,p3)/dot2(v13),0.0,1.0)-p3) )
+                  :
+                  dot(nor,p1)*dot(nor,p1)/dot2(nor) );
 }
 
 void rot3(in vec3 p, out mat3 rot);
@@ -139,6 +163,68 @@ void normal2(in vec3 x, out vec3 n, in float dx)
     n = normalize(n-s.x);
 }
 
+void scene3(in vec3 x, out vec2 sdf)
+{
+    vec3 y = vec3(mod(x.xy,2.*size)-size, x.z);
+    vec2 yi = x.xy-y.xy;
+    float ss = mix(.0,.05,size/.01);
+    
+    vec2 p0 = .8*size*c.xx,
+        p1 = .8*size*c.zx,
+        p2 = .8*size*c.xz;
+    
+    vec2 ind;
+    
+    float y0, y1, y2;
+    lfnoise(4.e1*(yi+p0-.5e-4*iTime), y0);
+    lfnoise(12.e1*vec2(y0,1.)*(yi+p0)-1.e-4*(.8+.2*y0)*iTime*c.xy, y0);
+    lfnoise(4.e1*(yi+p1-.5e-4*iTime), y1);
+    lfnoise(12.e1*vec2(y1,1.)*(yi+p1)-1.e-4*(.8+.2*y1)*iTime*c.xy, y1);
+    lfnoise(4.e1*(yi+p2-.5e-4*iTime), y2);
+    lfnoise(12.e1*vec2(y2,1.)*(yi+p2)-1.e-4*(.8+.2*y2)*iTime*c.xy, y2);
+    y0 *= ss;
+    y1 *= ss;
+    y2 *= ss;
+    
+    dtriangle3(y, vec3(p0,y0), vec3(p1,y1), vec3(p2,y2), sdf.x);
+    
+    float d;
+    vec2 p3 = .8*size*c.zz,
+        p4 = .8*size*c.xz,
+        p5 = .8*size*c.zx;
+    
+    float y3, y4, y5;
+    lfnoise(4.e1*(yi+p3-.5e-4*iTime), y3);
+    lfnoise(12.e1*vec2(y3,1.)*(yi+p3)-1.e-4*(.8+.2*y3)*iTime*c.xy, y3);
+    lfnoise(4.e1*(yi+p4-.5e-4*iTime), y4);
+    lfnoise(12.e1*vec2(y4,1.)*(yi+p4)-1.e-4*(.8+.2*y4)*iTime*c.xy, y4);
+    lfnoise(4.e1*(yi+p5-.5e-4*iTime), y5);
+    lfnoise(12.e1*vec2(y5,1.)*(yi+p5)-1.e-4*(.8+.2*y5)*iTime*c.xy, y5);
+    y3 *= ss;
+    y4 *= ss;
+    y5 *= ss;
+    
+    dtriangle3(y, vec3(p3,y3), vec3(p4,y4), vec3(p5,y5), d);
+    sdf.x = min(sdf.x, d);
+
+    stroke(sdf.x, .1*size, sdf.x);
+    sdf.y = 1.;
+}
+
+void normal3(in vec3 x, out vec3 n, in float dx)
+{
+    vec2 s, na;
+    
+    scene3(x,s);
+    scene3(x+dx*c.xyy, na);
+    n.x = na.x;
+    scene3(x+dx*c.yxy, na);
+    n.y = na.x;
+    scene3(x+dx*c.yyx, na);
+    n.z = na.x;
+    n = normalize(n-s.x);
+}
+
 void normal(in vec3 x, out vec3 n, in float dx);
 void mainImage( out vec4 fragColor, in vec2 fragCoord_ )
 {
@@ -227,23 +313,16 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord_ )
     }
     else
     {
-        /*
-        float bound = sqrt(iFSAA)-1.;
-
-        for(float i = -.5*bound; i<=.5*bound; i+=1.)
-            for(float j=-.5*bound; j<=.5*bound; j+=1.)
-            {
-                col += texture(iChannel0, fragCoord/iResolution.xy+vec2(i,j)*3./max(bound, 1.)/iResolution.xy).xyz;
-            }
-        col /= iFSAA;
-        */
-        
         iScale = nbeats-30./29.;
-        iScale = smoothstep(-5./29., 0., iScale)*(1.-smoothstep(15./29., 35./29., iScale));
-        float lscale = iScale;
+        iScale = smoothstep(-5./29., 0., iScale)*(1.-smoothstep(0./29., 35./29., iScale));
+//         lscale = iScale;
+        lscale = 0.;
         
-        size = mix(0., size, lscale);
-        
+        rscale = iScale;
+//         rscale = 0.;
+        size = mix(.005, .01, rscale);
+        size = mix(0., size, max(rscale, lscale));
+     
         if(lscale > 0.)
         {
             col = c.yyy;
@@ -302,6 +381,61 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord_ )
                     col = .4*col
                         + .9*col * abs(dot(l,n))
                         + .6*col * pow(abs(dot(reflect(-l,n),dir)),3.);
+                }
+            }
+            else col = c.yyy;
+        }
+        else if(rscale > 0.)
+        {
+            col = c.yyy;
+            
+            o = c.yyx+.5*vec3(cos(iTime), sin(iTime),0.);
+            r = c.xyy;
+            u = c.yxy;
+            t = c.yyy;
+            dir = c.yyy;
+            n = c.yyy;
+            x = c.yyy;
+            N = 300;
+            t = uv.x * r + uv.y * u;
+            dir = normalize(t-o);
+
+            d = -(o.z-.05-.5*size)/dir.z;
+            
+            for(i = 0; i<N; ++i)
+            {
+                x = o + d * dir;
+                scene3(x,s);
+                if(s.x < 1.e-4)break;
+                
+                if(x.z<-.05-.5*size)
+                {
+                    col = c.yyy;
+                    i = N;
+                    break;
+                }
+                d += min(s.x,1.e-3);
+                //d += s.x;
+            }
+            
+            if(i < N)
+            {
+                normal3(x,n, 5.e-4);
+                vec3 l = normalize(x+.5*n);
+            
+                if(s.y == 1.)
+                {
+                    vec3 y = vec3(mod(x.xy,size)-.5*size, x.z);
+                    vec2 yi = x.xy-y.xy;
+                    
+                    col = texture(iChannel0, yi/vec2(a,1.)).rgb;
+                    
+//                     col = .7*c.xxy;
+                    
+                    col = .4*col
+                        + .9*col * abs(dot(l,n))
+                        + .6*col * pow(abs(dot(reflect(-l,n),dir)),3.);
+                    
                 }
             }
             else col = c.yyy;
