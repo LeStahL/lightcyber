@@ -274,8 +274,10 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         
         if(abs(b1i.y) <= 1. && b1i.x >= 0. && b1i.x <= 10.)
         {
-            // X
-            dglyph(b1, 51., .008, db);
+            // random letter
+            lfnoise(b1i-12.*iTime, db);
+            db = 97.+mod(floor(26.*(.5+.5*db)),26.);
+            dglyph(b1, db, .008, db);
             da = min(da, db);
         }
         
@@ -307,7 +309,27 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         
         new.gba = mix(new.gba, vec3(0.75,0.24,0.30), sm(da));
     }
-    
+    else if(iTime < 25.)
+    {
+        float da = length(uv)-.45, db;
+        
+        // Lightcyber
+        dstring((uv+.3*c.xy), 2., .0415, db);
+        db -= .001;
+        da = max(da, -db);
+        da = mix(1., da, smoothstep(0.,.5,clamp(iTime-18.5, 0., 1.))*(1.-smoothstep(0.,.5,clamp(iTime-22.,0.,1.))));
+        new.gba = mix(new.gba, vec3(1.00,0.40,0.39), sm(da));
+        
+        // Team210
+        da = length(uv - .3*c.xx)-.2, db;
+        dstring(2.*(uv+.075*c.xy-.3*c.xx), 3., .0415, db);
+        db -= .001;
+//         da = max(da, -db);
+        da = mix(1., da, smoothstep(0.,.5,clamp(iTime-19.5, 0., 1.))*(1.-smoothstep(0.,.5,clamp(iTime-22.,0.,1.))));
+        db = mix(1., db, smoothstep(0.,.5,clamp(iTime-19.5, 0., 1.))*(1.-smoothstep(0.,.5,clamp(iTime-22.,0.,1.))));
+        new.gba = mix(new.gba, vec3(1.00,0.40,0.39)*vec3(1.00,0.40,0.39), sm(da));
+        new.gba = mix(new.gba, c.yyy, sm(db));
+    }
     fragColor = vec4(new.gba, 1.);
 }
 
