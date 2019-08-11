@@ -319,7 +319,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord_ )
         lscale = 0.;
         
         rscale = iScale;
-//         rscale = 0.;
+        rscale = 0.;
         size = mix(.005, .01, rscale);
         size = mix(0., size, max(rscale, lscale));
      
@@ -389,7 +389,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord_ )
         {
             col = c.yyy;
             
-            o = c.yyx+.5*vec3(cos(iTime), sin(iTime),0.);
+            o = c.yyx+.5*vec3(-1., -1.,0.);
             r = c.xyy;
             u = c.yxy;
             t = c.yyy;

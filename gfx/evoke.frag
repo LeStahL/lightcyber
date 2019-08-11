@@ -38,6 +38,10 @@ float iScale, nbeats;
 void rand(in vec2 x, out float n);
 void dbox(in vec2 x, in vec2 b, out float d);
 void stroke(in float d0, in float s, out float d);
+void dlinesegment(in vec2 x, in vec2 p1, in vec2 p2, out float d);
+void lfnoise(in vec2 t, out float n);
+void dvoronoi(in vec2 x, out float d, out vec2 z);
+
 void devoke(in vec2 x, out float d)
 {
     x.x += .225;
@@ -90,6 +94,20 @@ void devoke(in vec2 x, out float d)
     stroke(d,.001,d);
 }
 
+void dstripe(in vec2 x, out float d)
+{
+    dlinesegment(x-a*mix(-.4*c.xy, .4*c.xy, clamp(iTime/6.,0.,1.)), -.5*c.yx, .5*c.yx, d);
+    d -= .005;
+    float dd;
+    vec2 vi;
+    dvoronoi(5.*x, dd, vi);
+    vi = x-vi/5.;
+    dd = abs(length(vi)-.002)-.001;
+    d = min(d,dd);
+    stroke(d,.001,d);
+    d = mix(1.,d, clamp(iTime, 0., 1.));
+}
+
 float sm(float d)
 {
     return smoothstep(1.5/iResolution.y, -1.5/iResolution.y, d);
@@ -117,25 +135,30 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     t = uv.x * r + uv.y * u;
     dir = normalize(t-o);
 
-    for(i=mix(0., 1.4, smoothstep(0., 1., iTime)); i>=0.; i -= .01)
+    for(i=1.4; i>=0.; i -= .01)
     {
-        rand(i*c.xx, ra);
+        lfnoise(102.*i*c.xx-mix(102.,0.,smoothstep(0.,1.,clamp(iTime-6.,0.,1.)))*iTime, ra);
+        ra = .5+.5*ra;
         
 		d = -(o.z-.2+i)/dir.z;
         x = o + d * dir;
         
+        float da;
+        dstripe(x.xy, da);
         devoke(x.xy, s.x);
+        s.x = mix(da, s.x, smoothstep(0.,1., clamp(iTime-5.5,0.,1.)));
         s.x -= .01*iScale;
         
         if(ra < .5)
         {
             vec3 c1 = mix(mix(vec3(0.75,0.24,0.31), vec3(1.00,0.87,0.57), smoothstep(1.25,1.4,1.4-i)),vec3(0.20,0.01,0.14),i/1.4);
-	        col = mix(col, c1, sm(s.x));
-            col = mix(col, mix(col,vec3(.7,.45,.3), mix(.02,.1,iScale)), sm(s.x/64.));
+	        if(iTime > 6.)col = mix(col, c1, sm(s.x));
+            col = mix(col, mix(1.1,1.,clamp(-iScale+smoothstep(0.,1.,clamp(iTime-6.,0.,1.)),0.,1.))*mix(col,vec3(.7,.45,.3), mix(.02,.1,iScale)), sm(s.x/64.));
         }
     }
     
     col = mix(col, c.yyy, clamp((d-2.-(o.z-.2)/dir.z)/4.,0.,1.));
+
     fragColor = vec4(clamp(col,0.,1.),1.0);
 }
 

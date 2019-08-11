@@ -163,7 +163,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     vec4 old = vec4(-1.,texture(iChannel0, fragCoord/iResolution.xy).rgb), 
     new = old; // Scene
     
-    if(uv.y < -.3)
+    if(uv.y < -.3 && iTime > 12.)
     {
         // Add overlay
         colorize(2.*(c.xz*uv-.45*vec2(-a,1.)-12.*c.xy), new.gba);
@@ -190,31 +190,93 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         vec2 dx = (.25*a+.3*c.xy)*c.xy;
         if(iTime < 3.)
         {
-            float ind = mix(100000., 2., clamp(iTime/3.,0.,1));
+            float ind = mix(100000., 2., clamp(iTime/3.,0.,1)), da;
             dint(uv+dx*c.xy, ind, .02, 6., d);
+            
+            dstring(uv+dx-2.*9.*.02*c.xy, 4., .02, da);
+            d = min(d, da);
         }
         else if(iTime < 4.)
         {
             dint(uv+dx, 2., .02, 6., d);
+            
+            float da;
+            dstring(uv+dx-2.*9.*.02*c.xy, 4., .02, da);
+            d = min(d, da);
         }
         else if(iTime < 5.)
         {
-            dint(uv+dx, 1., .02, 6., d);
+            dint(uv+dx+.04*c.yx, 1., .02, 6., d);
+         
+            float da;
+            dint(uv+dx, 2., .02, 6., da);
+            d = min(d, da);
+            
+            dstring(uv+dx-2.*9.*.02*c.xy+.04*c.yx, 4., .02, da);
+            d = min(d, da);
         }
         else if(iTime < 6.)
         {
-            dint(uv+dx, 0., .02, 6., d);
+            dint(uv+dx+.08*c.yx, 0., .02, 6., d);
+            
+            float da;
+            dint(uv+dx+.04*c.yx, 1., .02, 6., da);
+            d = min(d, da);
+            
+            dint(uv+dx, 2., .02, 6., da);
+            d = min(d, da);
+            
+            dstring(uv+dx-2.*9.*.02*c.xy+.08*c.yx, 4., .02, da);
+            d = min(d, da);
         }
         
-        float da;
-        dstring(uv+dx-2.*9.*.02*c.xy, 4., .02, da);
-        d = min(d, da);
             
         new.gba = mix(new.gba, mix(new.gba, vec3(1.00,0.87,0.57), .7), sm(d));
         stroke(d-.002, .001, d);
         new.gba = mix(new.gba, c.xxx, sm(d));
+    }
+    
+    else if(iTime < 12. && iTime > 7.)
+    {
+        // EVK
+        float da, db;
+        dbox(vec2(uv.x+.75,uv.y-.35), vec2(.013,.035), da);
+        stroke(da, .002, da);
         
+        // E
+        dglyph(vec2(uv.x+.75,uv.y-.35-.02).yx*c.zx, 101., .01, db);
+        da = min(da, db);
         
+        // V
+        dglyph(vec2(uv.x+.75,uv.y-.35), 118., .01, db);
+        da = min(da, db);
+        
+        // K
+        dglyph(vec2(uv.x+.75,uv.y-.35+.02).yx*c.zx, 107., .01, db);
+        da = min(da, db);
+        
+        // 333 block
+        vec2 b = vec2(uv.x+.75,uv.y-.35+.02)-.01*c.xx-.02*c.xy,
+            b1 = mod(b, .02)-.01,
+            b1i = floor((b-b1)/.02);
+        
+        if(abs(b1i.y) <= 1. && b1i.x >= 0. && b1i.x <= 10.)
+        {
+            // X
+            dglyph(b1, 51., .008, db);
+            da = min(da, db);
+        }
+        
+        dlinesegment(vec2(uv.x+.75,uv.y-.35+.06), -.015*c.xy, .25*c.xy, db);
+        stroke(db, .001, db);
+        
+        // No more partycoding this time
+        dstring(vec2(uv.x+.75,uv.y-.35+.02), 5., .01, db);
+        da = min(da, db);
+        
+        da = min(da, db);
+        
+        new.gba = mix(new.gba, vec3(0.75,0.24,0.30), sm(da));
     }
     
     fragColor = vec4(new.gba, 1.);

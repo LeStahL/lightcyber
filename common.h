@@ -236,7 +236,6 @@ void quad();
 void updateBar();
 void draw();
 
-
 #include "sequence.h"
 
 #include "sfx.h"
