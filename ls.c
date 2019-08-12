@@ -51,9 +51,9 @@ void select_button(int index)
 #define NOTE_ON 0x9
 #define CONTROL_CHANGE 0xB
 
-#define TIME_DIAL 0x30
-#define TIME_FINE_DIAL 0x31
-#define TIME_VERYFINE_DIAL 0x32
+#define TIME_DIAL 0x14
+#define TIME_FINE_DIAL 0x15
+#define TIME_VERYFINE_DIAL 0x16
 
 void CALLBACK MidiInProc_apc40mk2(HMIDIIN hMidiIn, UINT wMsg, DWORD dwInstance, DWORD dwParam1, DWORD dwParam2)
 {
