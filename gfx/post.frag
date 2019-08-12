@@ -316,6 +316,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord_ )
                     + .8 * col * abs(pow(dot(reflect(-l,n),dir),2.));
             }
         }
+        
+        if(iTime < 0.) col = texture(iChannel0, fragCoord_/iResolution).rgb;
     }
     else
     {

@@ -536,30 +536,48 @@ void draw()
         }
         else if(override_index == 2)
         {
-            t = t_now + 12.;
+            t = t_now + 9.5;
         }
         else if(override_index == 3)
         {
-            t = t_now + 49.655;
+            t = t_now + 21.5;
         }
         else if(override_index == 4)
         {
-            t = t_now + 82.76;
+            t = t_now + 49.655;
         }
         else if(override_index == 5)
         {
-            t = t_now + 99.31;
+            t = t_now + 82.76;
         }
         else if(override_index == 6)
+        {
+            t = t_now + 99.31;
+        }
+        else if(override_index == 7)
         {
             t = t_now + 112.;
         }
     }
     
-    if(t < 12.)
+    if(t < 9.5)
+    {
+        glUseProgram(logo210_program);
+        glUniform1f(logo210_iTime_location, t);
+        glUniform2f(logo210_iResolution_location, w, h);
+        
+#ifdef MIDI
+        if(override_index == 0)
+        {
+            select_button(override_index);
+            scene_override = 0;
+        }
+#endif
+    }
+    else if(t < 21.5)
     {
         glUseProgram(evoke_program);
-        glUniform1f(evoke_iTime_location, t);
+        glUniform1f(evoke_iTime_location, t-9.5);
         glUniform2f(evoke_iResolution_location, w, h);
         
 #ifdef MIDI
@@ -572,7 +590,7 @@ void draw()
         glUniform1f(evoke_iFader6_location, fader6);
         glUniform1f(evoke_iFader7_location, fader7);
         
-        if(override_index == 0)
+        if(override_index == 1)
         {
             select_button(override_index);
             scene_override = 0;
@@ -582,7 +600,7 @@ void draw()
     else if(t < 49.655)
     {
         glUseProgram(graffiti_program);
-        glUniform1f(graffiti_iTime_location, t-12.);
+        glUniform1f(graffiti_iTime_location, t-21.5);
         glUniform2f(graffiti_iResolution_location, w, h);
         
 #ifdef MIDI
@@ -595,7 +613,7 @@ void draw()
         glUniform1f(graffiti_iFader6_location, fader6);
         glUniform1f(graffiti_iFader7_location, fader7);
         
-        if(override_index == 1)
+        if(override_index == 2)
         {
             select_button(override_index);
             scene_override = 0;
@@ -618,7 +636,7 @@ void draw()
         glUniform1f(groundboxes_iFader6_location, fader6);
         glUniform1f(groundboxes_iFader7_location, fader7);
         
-        if(override_index == 2) 
+        if(override_index == 3) 
         {
             select_button(override_index);
             scene_override = 0;
@@ -641,7 +659,7 @@ void draw()
         glUniform1f(voronoidesign_iFader6_location, fader6);
         glUniform1f(voronoidesign_iFader7_location, fader7);
         
-        if(override_index == 3) 
+        if(override_index == 4) 
         {
             select_button(override_index);
             scene_override = 0;
@@ -664,7 +682,7 @@ void draw()
         glUniform1f(canal_iFader6_location, fader6);
         glUniform1f(canal_iFader7_location, fader7);
         
-        if(override_index == 4) 
+        if(override_index == 5) 
         {
             select_button(override_index);
             scene_override = 0;
@@ -687,7 +705,7 @@ void draw()
         glUniform1f(greet_iFader6_location, fader6);
         glUniform1f(greet_iFader7_location, fader7);
         
-        if(override_index == 5) 
+        if(override_index == 6) 
         {
             select_button(override_index);
             scene_override = 0;
@@ -703,7 +721,7 @@ void draw()
     glUniform2f(post_iResolution_location, w, h);
     glUniform1f(post_iFSAA_location, fsaa);
     glUniform1i(post_iChannel0_location, 0);
-    glUniform1f(post_iTime_location, t);
+    glUniform1f(post_iTime_location, t-9.5);
     
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, first_pass_texture);
@@ -717,7 +735,7 @@ void draw()
     glUseProgram(text_program);
     glUniform2f(text_iResolution_location, w, h);
     glUniform1f(text_iFontWidth_location, font_texture_size);
-    glUniform1f(text_iTime_location, t);
+    glUniform1f(text_iTime_location, t-9.5);
     glUniform1i(text_iChannel0_location, 0);
     glUniform1i(text_iFont_location, 1);
     glUniform1f(text_iFSAA_location, fsaa);

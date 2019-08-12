@@ -213,7 +213,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         new.gba = mix(new.gba, c.xxx, sm(d));
     }
     
-    if(iTime < 6.)
+    if(iTime < 0.) new.gba = old.gba;
+    else if(iTime < 6.)
     {
         vec2 dx = (.25*a+.3*c.xy)*c.xy;
         if(iTime < 3.)
