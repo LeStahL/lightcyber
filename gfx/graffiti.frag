@@ -213,10 +213,14 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     
     vec2 uv = fragCoord/iResolution.yy-0.5*vec2(a, 1.0), 
         s;
+        
+    float sc2 = smoothstep(0.,2.,clamp((iTime-11.),0.,2.)),
+        sc3 = smoothstep(0.,2.,clamp((iTime-13.), 0.,2.));
+    
     vec3 col = c.yyy, 
-        o = c.yzx,
-        r = c.xyy, 
-        u = normalize(c.yxx),
+        o = mix(mix(c.yzx,c.zyx,sc2),c.zyy+mix(.2,.8,.45)*c.yyx, sc3),
+        r = mix(c.xyy,c.yzy,sc2), 
+        u = normalize(mix(c.yxx,c.xyx,sc2)),
         t = c.yyy, 
         dir,
         n,
