@@ -26,31 +26,10 @@ float a = 1.0;
 
 float nbeats, iScale;
 
-void dbox3(in vec3 x, in vec3 b, out float d)
-{
-  vec3 da = abs(x) - b;
-  d = length(max(da,0.0))
-         + min(max(da.x,max(da.y,da.z)),0.0);
-}
-
-void rot3(in vec3 p, out mat3 rot)
-{
-    rot = mat3(c.xyyy, cos(p.x), sin(p.x), 0., -sin(p.x), cos(p.x))
-        *mat3(cos(p.y), 0., -sin(p.y), c.yxy, sin(p.y), 0., cos(p.y))
-        *mat3(cos(p.z), -sin(p.z), 0., sin(p.z), cos(p.z), c.yyyx);
-}
-
-void stroke(in float d0, in float s, out float d)
-{
-    d = abs(d0)-s;
-}
-
-// Add sdfs
-void add(in vec2 sda, in vec2 sdb, out vec2 sdf)
-{
-    sdf = sda.x<sdb.x?sda:sdb;
-}
-
+void dbox3(in vec3 x, in vec3 b, out float d);
+void rot3(in vec3 p, out mat3 rot);
+void stroke(in float d0, in float s, out float d);
+void add(in vec2 sda, in vec2 sdb, out vec2 sdf);
 void dbox210(in vec3 x, in float size, out vec2 sdf)
 {
     x /= size;
@@ -147,19 +126,7 @@ void scene(in vec3 x, out vec2 sdf)
     stroke(sdf.x,.001, sdf.x);
 }
 
-void normal(in vec3 x, out vec3 n, in float dx)
-{
-    vec2 s, na;
-    
-    scene(x,s);
-    scene(x+dx*c.xyy, na);
-    n.x = na.x;
-    scene(x+dx*c.yxy, na);
-    n.y = na.x;
-    scene(x+dx*c.yyx, na);
-    n.z = na.x;
-    n = normalize(n-s.x);
-}
+void normal(in vec3 x, out vec3 n, in float dx);
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
@@ -258,7 +225,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     
     fragColor = vec4(clamp(col,0.,1.),1.0);
 }
-
 
 void main()
 {

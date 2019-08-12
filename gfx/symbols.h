@@ -3568,31 +3568,10 @@ const char *logo210_source = "/* Fuer Elite - 64k Intro by Team210 at Undergroun
 "\n"
 "float nbeats, iScale;\n"
 "\n"
-"void dbox3(in vec3 x, in vec3 b, out float d)\n"
-"{\n"
-"  vec3 da = abs(x) - b;\n"
-"  d = length(max(da,0.0))\n"
-"         + min(max(da.x,max(da.y,da.z)),0.0);\n"
-"}\n"
-"\n"
-"void rot3(in vec3 p, out mat3 rot)\n"
-"{\n"
-"    rot = mat3(c.xyyy, cos(p.x), sin(p.x), 0., -sin(p.x), cos(p.x))\n"
-"        *mat3(cos(p.y), 0., -sin(p.y), c.yxy, sin(p.y), 0., cos(p.y))\n"
-"        *mat3(cos(p.z), -sin(p.z), 0., sin(p.z), cos(p.z), c.yyyx);\n"
-"}\n"
-"\n"
-"void stroke(in float d0, in float s, out float d)\n"
-"{\n"
-"    d = abs(d0)-s;\n"
-"}\n"
-"\n"
-"// Add sdfs\n"
-"void add(in vec2 sda, in vec2 sdb, out vec2 sdf)\n"
-"{\n"
-"    sdf = sda.x<sdb.x?sda:sdb;\n"
-"}\n"
-"\n"
+"void dbox3(in vec3 x, in vec3 b, out float d);\n"
+"void rot3(in vec3 p, out mat3 rot);\n"
+"void stroke(in float d0, in float s, out float d);\n"
+"void add(in vec2 sda, in vec2 sdb, out vec2 sdf);\n"
 "void dbox210(in vec3 x, in float size, out vec2 sdf)\n"
 "{\n"
 "    x /= size;\n"
@@ -3689,19 +3668,7 @@ const char *logo210_source = "/* Fuer Elite - 64k Intro by Team210 at Undergroun
 "    stroke(sdf.x,.001, sdf.x);\n"
 "}\n"
 "\n"
-"void normal(in vec3 x, out vec3 n, in float dx)\n"
-"{\n"
-"    vec2 s, na;\n"
-"    \n"
-"    scene(x,s);\n"
-"    scene(x+dx*c.xyy, na);\n"
-"    n.x = na.x;\n"
-"    scene(x+dx*c.yxy, na);\n"
-"    n.y = na.x;\n"
-"    scene(x+dx*c.yyx, na);\n"
-"    n.z = na.x;\n"
-"    n = normalize(n-s.x);\n"
-"}\n"
+"void normal(in vec3 x, out vec3 n, in float dx);\n"
 "\n"
 "void mainImage( out vec4 fragColor, in vec2 fragCoord )\n"
 "{\n"
@@ -3797,6 +3764,252 @@ const char *logo210_source = "/* Fuer Elite - 64k Intro by Team210 at Undergroun
 "        \n"
 "    }\n"
 "    col = mix(col,vec3(0.20,0.01,0.14),smoothstep(0.,1.,iTime-7.5));\n"
+"    \n"
+"    fragColor = vec4(clamp(col,0.,1.),1.0);\n"
+"}\n"
+"\n"
+"void main()\n"
+"{\n"
+"    mainImage(gl_FragColor, gl_FragCoord.xy);\n"
+"}\n"
+"\0";
+const char *transbubbles_source = "#version 130\n\n"
+"\n"
+"uniform float iTime;\n"
+"uniform vec2 iResolution;\n"
+"uniform float iFader0;\n"
+"uniform float iFader1;\n"
+"uniform float iFader2;\n"
+"uniform float iFader3;\n"
+"uniform float iFader4;\n"
+"uniform float iFader5;\n"
+"uniform float iFader6;\n"
+"uniform float iFader7;\n"
+"\n"
+"const float pi = acos(-1.);\n"
+"const vec3 c = vec3(1.,0.,-1.);\n"
+"float a = 1.0;\n"
+"\n"
+"float nbeats, iScale;\n"
+"\n"
+"void rand(in vec2 x, out float n)\n"
+"{\n"
+"    x += 400.;\n"
+"    n = fract(sin(dot(sign(x)*abs(x) ,vec2(12.9898,78.233)))*43758.5453);\n"
+"}\n"
+"\n"
+"void dbox3(in vec3 x, in vec3 b, out float d)\n"
+"{\n"
+"  vec3 da = abs(x) - b;\n"
+"  d = length(max(da,0.0))\n"
+"         + min(max(da.x,max(da.y,da.z)),0.0);\n"
+"}\n"
+"\n"
+"void rot3(in vec3 p, out mat3 rot)\n"
+"{\n"
+"    rot = mat3(c.xyyy, cos(p.x), sin(p.x), 0., -sin(p.x), cos(p.x))\n"
+"        *mat3(cos(p.y), 0., -sin(p.y), c.yxy, sin(p.y), 0., cos(p.y))\n"
+"        *mat3(cos(p.z), -sin(p.z), 0., sin(p.z), cos(p.z), c.yyyx);\n"
+"}\n"
+"\n"
+"void stroke(in float d0, in float s, out float d)\n"
+"{\n"
+"    d = abs(d0)-s;\n"
+"}\n"
+"\n"
+"// Creative Commons Attribution-ShareAlike 4.0 International Public License\n"
+"// Created by David Hoskins.\n"
+"// See https://www.shadertoy.com/view/4djSRW\n"
+"void hash13(in vec3 p3, out float d)\n"
+"{\n"
+"	p3  = fract(p3 * .1031);\n"
+"    p3 += dot(p3, p3.yzx + 33.33);\n"
+"    d = fract((p3.x + p3.y) * p3.z);\n"
+"}\n"
+"\n"
+"// Add sdfs\n"
+"void add(in vec2 sda, in vec2 sdb, out vec2 sdf)\n"
+"{\n"
+"    sdf = sda.x<sdb.x?sda:sdb;\n"
+"}\n"
+"\n"
+"// iq's smooth minimum\n"
+"void smoothmin(in float a, in float b, in float k, out float dst)\n"
+"{\n"
+"    float h = max( k-abs(a-b), 0.0 )/k;\n"
+"    dst = min( a, b ) - h*h*h*k*(1.0/6.0);\n"
+"}\n"
+"\n"
+"void dvoronoi3(in vec3 x, out float d, out vec3 z)\n"
+"{\n"
+"    vec3 y = floor(x);\n"
+"    float ret = 1.;\n"
+"    vec3 pf=c.yyy, p;\n"
+"    float df=10.;\n"
+"    \n"
+"    for(int i=-1; i<=1; i+=1)\n"
+"        for(int j=-1; j<=1; j+=1)\n"
+"        {\n"
+"            for(int k=-1; k<=1; k+=1)\n"
+"            {\n"
+"                p = y + vec3(float(i), float(j), float(k));\n"
+"                float pa;\n"
+"                hash13(p, pa);\n"
+"                p += pa;\n"
+"\n"
+"                d = length(x-p);\n"
+"\n"
+"                if(d < df)\n"
+"                {\n"
+"                    df = d;\n"
+"                    pf = p;\n"
+"                }\n"
+"            }\n"
+"        }\n"
+"    for(int i=-1; i<=1; i+=1)\n"
+"        for(int j=-1; j<=1; j+=1)\n"
+"        {\n"
+"            for(int k=-1; k<=1; k+=1)\n"
+"            {\n"
+"                p = y + vec3(float(i), float(j), float(k));\n"
+"                float pa;\n"
+"                hash13(p, pa);\n"
+"                p += pa;\n"
+"\n"
+"                vec3 o = p - pf;\n"
+"                d = length(.5*o-dot(x-pf, o)/dot(o,o)*o);\n"
+"                ret = min(ret, d);\n"
+"            }\n"
+"        }\n"
+"    \n"
+"    d = ret;\n"
+"    z = pf;\n"
+"}\n"
+"\n"
+"vec3 ind;\n"
+"void scene(in vec3 x, out vec2 sdf)\n"
+"{\n"
+"    mat3 R;\n"
+"    rot3(.1*vec3(1.1,1.3,1.5)*iTime, R);\n"
+"    x = R * x;\n"
+"    x.z -= .1*iTime;\n"
+"    \n"
+"    sdf = c.xy;\n"
+"    \n"
+"    float bsize = 2.;\n"
+"    float d, da;\n"
+"    \n"
+"    dvoronoi3(bsize*x, d, ind);\n"
+"    vec3 y = x-ind/bsize;\n"
+"    \n"
+"    float n;\n"
+"    hash13(ind,n);\n"
+"    \n"
+"    //add(sdf, vec2(abs(length(y)-.3)-.001,2.), sdf);\n"
+"	add(sdf, vec2(abs(length(y)-.3)-.001,2.), sdf);\n"
+"}\n"
+"\n"
+"void normal(in vec3 x, out vec3 n, in float dx)\n"
+"{\n"
+"    vec2 s, na;\n"
+"    \n"
+"    scene(x,s);\n"
+"    scene(x+dx*c.xyy, na);\n"
+"    n.x = na.x;\n"
+"    scene(x+dx*c.yxy, na);\n"
+"    n.y = na.x;\n"
+"    scene(x+dx*c.yyx, na);\n"
+"    n.z = na.x;\n"
+"    n = normalize(n-s.x);\n"
+"}\n"
+"\n"
+"void mainImage( out vec4 fragColor, in vec2 fragCoord )\n"
+"{\n"
+"    float a = iResolution.x/iResolution.y;\n"
+"    vec2 uv = fragCoord/iResolution.yy-0.5*vec2(a, 1.0);\n"
+"    \n"
+"    vec3 col = c.yyy;\n"
+"    \n"
+"    float d = 0.;\n"
+"    vec2 s;\n"
+"    vec3 o, t, dir, x, n;\n"
+"    \n"
+"    //mat3 Ra;\n"
+"    //rot3(mix(c.yyy,vec3(-3.*pi/4.,3.*pi/4.,-7.*pi/4.),clamp((iTime-6.)/1.5,0.,1.)), Ra);\n"
+"    //Ra *= mix(1.,-1.,clamp((iTime-6.)/1.5,0.,1.));\n"
+"       \n"
+"    \n"
+"    //o = Ra * mix(mix(mix(c.yyy-.1*c.yxy,c.yyx,clamp(iTime/2.,0.,1.)),10.*c.yyx,clamp((iTime-2.)/2.,0.,1.)), 100.*c.yyx, clamp((iTime-4.)/2.,0.,1.));\n"
+"	o = c.yyx;\n"
+"    t = c.yyy;\n"
+"    int N = 250,\n"
+"        i;\n"
+"    dir = normalize(vec3(uv,-1.));//normalize(t-o);\n"
+"    \n"
+"    for(i = 0; i<N; ++i)\n"
+"    {\n"
+"        x = o + d * dir;\n"
+"        scene(x,s);\n"
+"        if(s.x < 1.e-4)break;\n"
+"        d += s.x;\n"
+"        //d += min(s.x, .1);\n"
+"    }\n"
+"        \n"
+"    if(s.x < 1.e-4)\n"
+"    {\n"
+"        normal(x,n, 2.e-5);\n"
+"        vec3 l = normalize(x+.1*n);\n"
+"        \n"
+"        if(s.y == 2.)\n"
+"        {\n"
+"            col = vec3(0.86,0.21,0.13);\n"
+"            col = .1*col\n"
+"                            + .1*col * abs(dot(l,n))\n"
+"                            + .5 * col * abs(pow(dot(reflect(-l,n),dir),2.));\n"
+"            \n"
+"            vec3 c1 = c.yyy;\n"
+"            for(float fraction = 0.; fraction <= 4.; fraction += 1.)\n"
+"    		{\n"
+"                o = x;\n"
+"                dir = refract(dir,n,.9);\n"
+"                //dir = reflect(dir,n);\n"
+"                d = 1.e-2;\n"
+"\n"
+"                for(i = 0; i<N; ++i)\n"
+"                {\n"
+"                    x = o + d * dir;\n"
+"                    scene(x,s);\n"
+"                    if(s.x < 1.e-4)break;\n"
+"                    d += s.x;\n"
+"                    //d += min(s.x, .01);\n"
+"                }\n"
+"\n"
+"                if(s.x < 1.e-4)\n"
+"                {\n"
+"                    normal(x,n, 2.e-4);\n"
+"                    vec3 l = normalize(x+.1*n);\n"
+"\n"
+"                    if(s.y == 2.)\n"
+"                    {\n"
+"                        //c1 = .7*c.xxx;\n"
+"                        c1 = (fraction == 0.)?vec3(0.86,0.21,0.13):\n"
+"                        	(fraction == 1.)?vec3(0.85,0.80,0.62):\n"
+"                        	(fraction == 2.)?vec3(0.22,0.25,0.25):\n"
+"                        	(fraction == 3.)?vec3(0.16,0.17,0.17):\n"
+"                        vec3(0.12,0.12,0.13);\n"
+"                        c1 = .1*c1\n"
+"                            + .4*c1 * abs(dot(l,n))\n"
+"                            + 5.8 * c1 * abs(pow(dot(reflect(-l,n),dir),2.));\n"
+"                    }\n"
+"					//col = clamp(col, 0., 1.);\n"
+"                    col = mix(col, c1, .15);\n"
+"                }\n"
+"\n"
+"                col = clamp(col, 0., 1.);\n"
+"            }\n"
+"        }\n"
+"        \n"
+"    }\n"
 "    \n"
 "    fragColor = vec4(clamp(col,0.,1.),1.0);\n"
 "}\n"
@@ -4381,7 +4594,7 @@ void LoadSymbols()
     Loadprogressbar();
     updateBar();
 }
-int voronoidesign_program, voronoidesign_handle, groundboxes_program, groundboxes_handle, graffiti_program, graffiti_handle, greet_program, greet_handle, evoke_program, evoke_handle, canal_program, canal_handle, text_program, text_handle, post_program, post_handle, logo210_program, logo210_handle;
+int voronoidesign_program, voronoidesign_handle, groundboxes_program, groundboxes_handle, graffiti_program, graffiti_handle, greet_program, greet_handle, evoke_program, evoke_handle, canal_program, canal_handle, text_program, text_handle, post_program, post_handle, logo210_program, logo210_handle, transbubbles_program, transbubbles_handle;
 int voronoidesign_iTime_location,voronoidesign_iResolution_location,voronoidesign_iFader0_location,voronoidesign_iFader1_location,voronoidesign_iFader2_location,voronoidesign_iFader3_location,voronoidesign_iFader4_location,voronoidesign_iFader5_location,voronoidesign_iFader6_location,voronoidesign_iFader7_location;
 int groundboxes_iTime_location,groundboxes_iResolution_location,groundboxes_iFader0_location,groundboxes_iFader1_location,groundboxes_iFader2_location,groundboxes_iFader3_location,groundboxes_iFader4_location,groundboxes_iFader5_location,groundboxes_iFader6_location,groundboxes_iFader7_location;
 int graffiti_iTime_location,graffiti_iResolution_location,graffiti_iFader0_location,graffiti_iFader1_location,graffiti_iFader2_location,graffiti_iFader3_location,graffiti_iFader4_location,graffiti_iFader5_location,graffiti_iFader6_location,graffiti_iFader7_location;
@@ -4391,7 +4604,8 @@ int canal_iTime_location,canal_iResolution_location,canal_iFader0_location,canal
 int text_iFontWidth_location,text_iTime_location,text_iResolution_location,text_iChannel0_location,text_iFont_location,text_iFSAA_location;
 int post_iFSAA_location,post_iResolution_location,post_iChannel0_location,post_iTime_location;
 int logo210_iTime_location,logo210_iResolution_location;
-const int nprograms = 9;
+int transbubbles_iTime_location,transbubbles_iResolution_location,transbubbles_iFader0_location,transbubbles_iFader1_location,transbubbles_iFader2_location,transbubbles_iFader3_location,transbubbles_iFader4_location,transbubbles_iFader5_location,transbubbles_iFader6_location,transbubbles_iFader7_location;
+const int nprograms = 10;
 
 void Loadvoronoidesign()
 {
@@ -4763,6 +4977,11 @@ void Loadlogo210()
 #endif
     logo210_program = glCreateProgram();
     glAttachShader(logo210_program,logo210_handle);
+    glAttachShader(logo210_program,dbox3_handle);
+    glAttachShader(logo210_program,rot3_handle);
+    glAttachShader(logo210_program,stroke_handle);
+    glAttachShader(logo210_program,add_handle);
+    glAttachShader(logo210_program,normal_handle);
     glLinkProgram(logo210_program);
 #ifdef DEBUG
     printf("---> logo210 Program:\n");
@@ -4772,6 +4991,39 @@ void Loadlogo210()
     glUseProgram(logo210_program);
     logo210_iTime_location = glGetUniformLocation(logo210_program, "iTime");
     logo210_iResolution_location = glGetUniformLocation(logo210_program, "iResolution");
+    progress += .2/(float)nprograms;
+}
+
+void Loadtransbubbles()
+{
+    int transbubbles_size = strlen(transbubbles_source);
+    transbubbles_handle = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(transbubbles_handle, 1, (GLchar **)&transbubbles_source, &transbubbles_size);
+    glCompileShader(transbubbles_handle);
+#ifdef DEBUG
+    printf("---> transbubbles Shader:\n");
+    debug(transbubbles_handle);
+    printf(">>>>\n");
+#endif
+    transbubbles_program = glCreateProgram();
+    glAttachShader(transbubbles_program,transbubbles_handle);
+    glLinkProgram(transbubbles_program);
+#ifdef DEBUG
+    printf("---> transbubbles Program:\n");
+    debugp(transbubbles_program);
+    printf(">>>>\n");
+#endif
+    glUseProgram(transbubbles_program);
+    transbubbles_iTime_location = glGetUniformLocation(transbubbles_program, "iTime");
+    transbubbles_iResolution_location = glGetUniformLocation(transbubbles_program, "iResolution");
+    transbubbles_iFader0_location = glGetUniformLocation(transbubbles_program, "iFader0");
+    transbubbles_iFader1_location = glGetUniformLocation(transbubbles_program, "iFader1");
+    transbubbles_iFader2_location = glGetUniformLocation(transbubbles_program, "iFader2");
+    transbubbles_iFader3_location = glGetUniformLocation(transbubbles_program, "iFader3");
+    transbubbles_iFader4_location = glGetUniformLocation(transbubbles_program, "iFader4");
+    transbubbles_iFader5_location = glGetUniformLocation(transbubbles_program, "iFader5");
+    transbubbles_iFader6_location = glGetUniformLocation(transbubbles_program, "iFader6");
+    transbubbles_iFader7_location = glGetUniformLocation(transbubbles_program, "iFader7");
     progress += .2/(float)nprograms;
 }
 
@@ -4794,6 +5046,8 @@ void LoadPrograms()
     Loadpost();
     updateBar();
     Loadlogo210();
+    updateBar();
+    Loadtransbubbles();
     updateBar();
 }
 #endif
