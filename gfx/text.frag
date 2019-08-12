@@ -175,25 +175,41 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     
     new = old;
     
-    if(uv.y < -.3 && iTime > 12.)
-    {
-        // Add overlay
-        colorize(2.*(c.xz*uv-.45*vec2(-a,1.)-12.*c.xy), new.gba);
-        new.gba = mix(old.gba, mix(old.gba, new.gba,.4), smoothstep(3.e-2, 5.e-2,length(new.gba)));
-    }
+//     if(uv.y < -.3 && iTime > 12.)
+//     {
+//         // Add overlay
+//         colorize(2.*(c.xz*uv-.45*vec2(-a,1.)-12.*c.xy), new.gba);
+//         new.gba = mix(old.gba, mix(old.gba, new.gba,.4), smoothstep(3.e-2, 5.e-2,length(new.gba)));
+//     }
     
     if(uv.y > .4)
     {
+        float da;
+        dstring((uv-.45*vec2(-.55*a,1.+4.*.008)), 9., .004, d);
+        dstring((uv-.45*vec2(-.55*a,1.+2.*.008)), 10., .004, da);
+        d = min(d,da);
+        dstring((uv-.45*vec2(-.55*a,1.)), 11., .004, da);
+        d = min(d,da);
+        dstring((uv-.45*vec2(-.55*a,1.-2.*.008)), 12., .004, da);
+        d = min(d,da);
+        dstring((uv-.45*vec2(-.55*a,1.-4.*.008)), 13., .004, da);
+        d = min(d,da);
+        new.gba = mix(new.gba, mix(new.gba, c.xxx, .5), sm(d));
+        
         // Add Static text
         dstring((uv-.45*vec2(-.85*a,1.)), 3., .02, d); // Team210
-
-        new.gba = mix(new.gba, mix(new.gba, c.xxx, .5), sm(d));
         
         stroke(d-.002, .001, d);
         new.gba = mix(new.gba, vec3(1.00,0.40,0.39), sm(d));
 
         // Add time overlay
         dtime((uv-.45*vec2(1.*a,1.05)), iTime, .01, d);
+        new.gba = mix(new.gba, c.xxx, sm(d));
+        
+        // Add exact millisecond
+        dint(uv-.45*vec2(1.*a,1.0), floor(1.e3*fract(iTime)), .01, 4., d);
+//         new.gba = mix(new.gba, vec3(1.00,0.40,0.39), sm(d));
+        stroke(d-.001, .0005, d);
         new.gba = mix(new.gba, c.xxx, sm(d));
     }
     
@@ -309,7 +325,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         
         new.gba = mix(new.gba, vec3(0.75,0.24,0.30), sm(da));
     }
-    else if(iTime < 25.)
+    else if(iTime < 28.)
     {
         float da = length(uv)-.45, db;
         
@@ -329,6 +345,23 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         db = mix(1., db, smoothstep(0.,.5,clamp(iTime-19.5, 0., 1.))*(1.-smoothstep(0.,.5,clamp(iTime-22.,0.,1.))));
         new.gba = mix(new.gba, vec3(1.00,0.40,0.39)*vec3(1.00,0.40,0.39), sm(da));
         new.gba = mix(new.gba, c.yyy, sm(db));
+        
+        // Graffiti tricks.
+        dstring((uv-vec2(-.75,-.35)).yx*c.xz, 18., .045, db);
+        dstring((uv-vec2(-.65,-.35)).yx*c.xz, 19., .045, da);
+        db = min(db,da);
+        db = mix(1., db, smoothstep(0.,.5,clamp(iTime-24.5, 0., 1.))*(1.-smoothstep(0.,.5,clamp(iTime-28.,0.,1.))));
+        new.gba = mix(new.gba, mix(new.gba, c.xxx, .8), sm(db));
+        
+        stroke(db-.005, .0005, db);
+        new.gba = mix(new.gba, mix(new.gba, vec3(1.00,0.40,0.39), .8), sm(db));
+        
+        // Nice!
+        da = length((uv-vec2(-.6,-.325)).yx*c.xz)-.1;
+        dstring((uv-vec2(-.6,-.35)).yx*c.xz, 20., .015, db);
+        da = max(da, -db);
+        da = mix(1., da, smoothstep(0.,.5,clamp(iTime-25.5, 0., 1.))*(1.-smoothstep(0.,.5,clamp(iTime-28.,0.,1.))));
+        new.gba = mix(new.gba, mix(new.gba, c.xxx, .6), sm(da));
     }
     fragColor = vec4(new.gba, 1.);
 }
