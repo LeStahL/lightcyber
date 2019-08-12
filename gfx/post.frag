@@ -273,6 +273,12 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord_ )
     uv = (fragCoord)/iResolution.xy*vec2(a,1.);
     
     d = dn.r;
+    
+    float nan;
+    lfnoise(iTime*c.xx, nan);
+    nan += .5;
+    if(nan > 0.) d = 3.;
+    
     if(d<=2.)
     {
         x = o + d * dir;
@@ -317,6 +323,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord_ )
         iScale = smoothstep(-5./29., 0., iScale)*(1.-smoothstep(0./29., 35./29., iScale));
 //         lscale = iScale;
         lscale = smoothstep(0.,.5,clamp((iTime-10.),0.,1.))*(1.-smoothstep(0.,.5,clamp((iTime-18.),0.,1.)));
+//         lscale += smoothstep(0.,.5,clamp((iTime-10.),0.,1.))*(1.-smoothstep(0.,.5,clamp((iTime-18.),0.,1.)));
+        
         
 //         rscale = iScale;
         rscale = 0.;
