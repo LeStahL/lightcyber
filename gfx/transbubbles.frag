@@ -103,6 +103,10 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     rot3(.1*vec3(1.1,1.3,1.5)*iTime, R);
     vec3 col = c.yyy;
     
+    nbeats = mod(iTime, 60./29.);
+    iScale = nbeats-30./29.;
+    iScale = smoothstep(-5./29., 0., iScale)*(1.-smoothstep(0., 15./29., iScale));
+    
     float d = 0.;
     vec2 s;
     vec3 o, t, dir, x, n;
@@ -208,6 +212,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
                         c1 = .1*c1
                             + .4*c1 * abs(dot(l,n))
                             + mix(mix(5.8,3.79,mx),4.753,my) * c1 * abs(pow(dot(reflect(-l,n),dir),2.));
+                        c1 = mix(c1, 2.*c1, smoothstep(mix(1.,.6,iScale), 1.02, 1.-abs(dot(n, c.xyy))));
+                        c1 = mix(c1, 2.*c1, smoothstep(mix(1.,.6,iScale), 1.02, abs(dot(n, c.zyy))));
                     }//5.8
 					//col = clamp(col, 0., 1.);
                     col = mix(col, c1, .15);

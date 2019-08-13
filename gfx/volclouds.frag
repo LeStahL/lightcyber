@@ -82,7 +82,7 @@ mat3 R;
 vec3 ind;
 void scene(in vec3 x, out vec2 sdf)
 {
-    //x = R * x;
+    x = R * x;
     
     float n;
     mfnoise3(x-.1*iTime*c.yyx,10.,400.,.25,n);
@@ -144,11 +144,15 @@ void palette1(in float scale, out vec3 col)
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
-    rot3(.3*vec3(1.1,1.3,1.5)*iTime, R);
+    rot3(.01*vec3(1.1,1.3,1.5)*iTime, R);
     
     float a = iResolution.x/iResolution.y;
     vec2 uv = fragCoord/iResolution.yy-0.5*vec2(a, 1.0);
     vec3 col = c.yyy;
+    
+    nbeats = mod(iTime, 60./29.);
+    iScale = nbeats-30./29.;
+    iScale = smoothstep(-5./29., 0., iScale)*(1.-smoothstep(0., 15./29., iScale));
     
     float d = 0.;
     vec2 s;
@@ -171,8 +175,11 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         palette1(-s.x, c1);
         c1 = .1*c1
                             + .1*c1 * abs(dot(l,n))
-                            + mix(1.,10.,iFader0) * c1 * abs(pow(dot(reflect(-l,n),dir),2.));
+                            + 1.354 * c1 * abs(pow(dot(reflect(-l,n),dir),2.));
+    	c1 = mix(c1, 2.*c1, smoothstep(mix(1.,.6,iScale), 1.02, 1.-abs(dot(n, c.xyy))));
+        c1 = mix(c1, 2.*c1, smoothstep(mix(1.,.6,iScale), 1.02, abs(dot(n, c.zyy))));
     	col = mix(col, c1, d*d);
+    	
     }
 
     col *= col;
