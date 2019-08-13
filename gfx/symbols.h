@@ -2,8 +2,8 @@
 #ifndef SYMBOLIZE_H
 #define SYMBOLIZE_H
 
-extern float progress;int dsmoothvoronoi_handle, rand_handle, hash31_handle, lfnoise_handle, mfnoise_handle, dbox_handle, dlinesegment3_handle, stroke_handle, zextrude_handle, add_handle, smoothmin_handle, dspline3_handle, dvoronoi_handle, normal_handle, dbox3_handle, rot3_handle, dtriangle_handle, dlinesegment_handle, dpolygon_handle, rot_handle, dcircle_handle, dschnappsgirls_handle, dspacepigs_handle, dkewlers_handle, dfarbrausch_handle, dhaujobb_handle, dmercury_handle, rshort_handle, rfloat_handle, drhomboid_handle, dcirclesegment_handle, dglyph_handle, dstring_handle, dfloat_handle, dint_handle, dtime_handle, window_handle, progressbar_handle;
-const int nsymbols = 38;
+extern float progress;int dsmoothvoronoi_handle, rand_handle, hash31_handle, lfnoise_handle, mfnoise_handle, dbox_handle, dlinesegment3_handle, stroke_handle, zextrude_handle, add_handle, smoothmin_handle, dspline3_handle, dvoronoi_handle, normal_handle, dbox3_handle, rot3_handle, dtriangle_handle, dlinesegment_handle, dpolygon_handle, rot_handle, dcircle_handle, dschnappsgirls_handle, dspacepigs_handle, dkewlers_handle, dfarbrausch_handle, dhaujobb_handle, dmercury_handle, rshort_handle, rfloat_handle, drhomboid_handle, dcirclesegment_handle, dglyph_handle, dstring_handle, dfloat_handle, dint_handle, dtime_handle, window_handle, progressbar_handle, hash13_handle;
+const int nsymbols = 39;
 const char *dsmoothvoronoi_source = "#version 130\n\n"
 "\n"
 "uniform float iTime;\n"
@@ -1133,6 +1133,16 @@ const char *progressbar_source = "#version 130\n\n"
 "//         box(y, vec2(.5*cellsize, .8*cellsize), c2.x);\n"
 "//         add(col, c2, col);\n"
 "//     }\n"
+"}\n"
+"\0";
+const char *hash13_source = "// Creative Commons Attribution-ShareAlike 4.0 International Public License\n"
+"// Created by David Hoskins.\n"
+"// See https://www.shadertoy.com/view/4djSRW\n"
+"void hash13(in vec3 p3, out float d)\n"
+"{\n"
+"	p3  = fract(p3 * .1031);\n"
+"    p3 += dot(p3, p3.yzx + 33.33);\n"
+"    d = fract((p3.x + p3.y) * p3.z);\n"
 "}\n"
 "\0";
 const char *voronoidesign_source = "/* Gross Gloss by Team210 - 64k intro by Team210 at Solskogen 2k19\n"
@@ -3792,54 +3802,14 @@ const char *transbubbles_source = "#version 130\n\n"
 "\n"
 "float nbeats, iScale;\n"
 "\n"
-"void rand(in vec2 x, out float n)\n"
-"{\n"
-"    x += 400.;\n"
-"    n = fract(sin(dot(sign(x)*abs(x) ,vec2(12.9898,78.233)))*43758.5453);\n"
-"}\n"
-"\n"
-"void dbox3(in vec3 x, in vec3 b, out float d)\n"
-"{\n"
-"  vec3 da = abs(x) - b;\n"
-"  d = length(max(da,0.0))\n"
-"         + min(max(da.x,max(da.y,da.z)),0.0);\n"
-"}\n"
-"\n"
-"void rot3(in vec3 p, out mat3 rot)\n"
-"{\n"
-"    rot = mat3(c.xyyy, cos(p.x), sin(p.x), 0., -sin(p.x), cos(p.x))\n"
-"        *mat3(cos(p.y), 0., -sin(p.y), c.yxy, sin(p.y), 0., cos(p.y))\n"
-"        *mat3(cos(p.z), -sin(p.z), 0., sin(p.z), cos(p.z), c.yyyx);\n"
-"}\n"
-"\n"
-"void stroke(in float d0, in float s, out float d)\n"
-"{\n"
-"    d = abs(d0)-s;\n"
-"}\n"
-"\n"
-"// Creative Commons Attribution-ShareAlike 4.0 International Public License\n"
-"// Created by David Hoskins.\n"
-"// See https://www.shadertoy.com/view/4djSRW\n"
-"void hash13(in vec3 p3, out float d)\n"
-"{\n"
-"	p3  = fract(p3 * .1031);\n"
-"    p3 += dot(p3, p3.yzx + 33.33);\n"
-"    d = fract((p3.x + p3.y) * p3.z);\n"
-"}\n"
-"\n"
-"// Add sdfs\n"
-"void add(in vec2 sda, in vec2 sdb, out vec2 sdf)\n"
-"{\n"
-"    sdf = sda.x<sdb.x?sda:sdb;\n"
-"}\n"
-"\n"
-"// iq's smooth minimum\n"
-"void smoothmin(in float a, in float b, in float k, out float dst)\n"
-"{\n"
-"    float h = max( k-abs(a-b), 0.0 )/k;\n"
-"    dst = min( a, b ) - h*h*h*k*(1.0/6.0);\n"
-"}\n"
-"\n"
+"void rand(in vec2 x, out float n);\n"
+"void lfnoise(in vec2 t, out float n);\n"
+"void dbox3(in vec3 x, in vec3 b, out float d);\n"
+"void rot3(in vec3 p, out mat3 rot);\n"
+"void stroke(in float d0, in float s, out float d);\n"
+"void hash13(in vec3 p3, out float d);\n"
+"void add(in vec2 sda, in vec2 sdb, out vec2 sdf);\n"
+"void smoothmin(in float a, in float b, in float k, out float dst);\n"
 "void dvoronoi3(in vec3 x, out float d, out vec3 z)\n"
 "{\n"
 "    vec3 y = floor(x);\n"
@@ -3886,13 +3856,12 @@ const char *transbubbles_source = "#version 130\n\n"
 "    z = pf;\n"
 "}\n"
 "\n"
+"mat3 R;\n"
 "vec3 ind;\n"
 "void scene(in vec3 x, out vec2 sdf)\n"
 "{\n"
-"    mat3 R;\n"
-"    rot3(.1*vec3(1.1,1.3,1.5)*iTime, R);\n"
 "    x = R * x;\n"
-"    x.z -= .1*iTime;\n"
+"//     x.z -= .1*iTime;\n"
 "    \n"
 "    sdf = c.xy;\n"
 "    \n"
@@ -3907,27 +3876,16 @@ const char *transbubbles_source = "#version 130\n\n"
 "    \n"
 "    //add(sdf, vec2(abs(length(y)-.3)-.001,2.), sdf);\n"
 "	add(sdf, vec2(abs(length(y)-.3)-.001,2.), sdf);\n"
+"	sdf.x = max(sdf.x, -length(x)+.5);\n"
 "}\n"
 "\n"
-"void normal(in vec3 x, out vec3 n, in float dx)\n"
-"{\n"
-"    vec2 s, na;\n"
-"    \n"
-"    scene(x,s);\n"
-"    scene(x+dx*c.xyy, na);\n"
-"    n.x = na.x;\n"
-"    scene(x+dx*c.yxy, na);\n"
-"    n.y = na.x;\n"
-"    scene(x+dx*c.yyx, na);\n"
-"    n.z = na.x;\n"
-"    n = normalize(n-s.x);\n"
-"}\n"
+"void normal(in vec3 x, out vec3 n, in float dx);\n"
 "\n"
 "void mainImage( out vec4 fragColor, in vec2 fragCoord )\n"
 "{\n"
 "    float a = iResolution.x/iResolution.y;\n"
 "    vec2 uv = fragCoord/iResolution.yy-0.5*vec2(a, 1.0);\n"
-"    \n"
+"    rot3(.1*vec3(1.1,1.3,1.5)*iTime, R);\n"
 "    vec3 col = c.yyy;\n"
 "    \n"
 "    float d = 0.;\n"
@@ -3938,7 +3896,7 @@ const char *transbubbles_source = "#version 130\n\n"
 "    //rot3(mix(c.yyy,vec3(-3.*pi/4.,3.*pi/4.,-7.*pi/4.),clamp((iTime-6.)/1.5,0.,1.)), Ra);\n"
 "    //Ra *= mix(1.,-1.,clamp((iTime-6.)/1.5,0.,1.));\n"
 "       \n"
-"    \n"
+"    float mx = clamp((iTime-5.)/.1,0.,1.);\n"
 "    //o = Ra * mix(mix(mix(c.yyy-.1*c.yxy,c.yyx,clamp(iTime/2.,0.,1.)),10.*c.yyx,clamp((iTime-2.)/2.,0.,1.)), 100.*c.yyx, clamp((iTime-4.)/2.,0.,1.));\n"
 "	o = c.yyx;\n"
 "    t = c.yyy;\n"
@@ -3957,12 +3915,12 @@ const char *transbubbles_source = "#version 130\n\n"
 "        \n"
 "    if(s.x < 1.e-4)\n"
 "    {\n"
-"        normal(x,n, 2.e-5);\n"
+"        normal(x,n, 1.e-4);\n"
 "        vec3 l = normalize(x+.1*n);\n"
 "        \n"
 "        if(s.y == 2.)\n"
 "        {\n"
-"            col = vec3(0.86,0.21,0.13);\n"
+"            col = mix(vec3(0.86,0.21,0.13), vec3(0.02,0.46,0.44), mx);\n"
 "            col = .1*col\n"
 "                            + .1*col * abs(dot(l,n))\n"
 "                            + .5 * col * abs(pow(dot(reflect(-l,n),dir),2.));\n"
@@ -3970,10 +3928,16 @@ const char *transbubbles_source = "#version 130\n\n"
 "            vec3 c1 = c.yyy;\n"
 "            for(float fraction = 0.; fraction <= 4.; fraction += 1.)\n"
 "    		{\n"
+"//                 o = x;\n"
+"//                 dir = refract(dir,n,.9);\n"
+"//                 //dir = reflect(dir,n);\n"
+"//                 d = 1.e-2;\n"
 "                o = x;\n"
-"                dir = refract(dir,n,.9);\n"
-"                //dir = reflect(dir,n);\n"
-"                d = 1.e-2;\n"
+"                vec3 ddir = refract(dir,n,.95);\n"
+"                dir = reflect(dir,n);\n"
+"                \n"
+"                dir = mix(ddir, dir, mx);\n"
+"                d = 2.e-2;\n"
 "\n"
 "                for(i = 0; i<N; ++i)\n"
 "                {\n"
@@ -3983,10 +3947,16 @@ const char *transbubbles_source = "#version 130\n\n"
 "                    d += s.x;\n"
 "                    //d += min(s.x, .01);\n"
 "                }\n"
-"\n"
+"                \n"
+"//                 if((R*x).z<-1.)\n"
+"//                 {\n"
+"//                     fragColor = vec4(clamp(col,0.,1.),1.0);\n"
+"//                     return;\n"
+"//                 }\n"
+"                \n"
 "                if(s.x < 1.e-4)\n"
 "                {\n"
-"                    normal(x,n, 2.e-4);\n"
+"                    normal(x,n, 1.e-4);\n"
 "                    vec3 l = normalize(x+.1*n);\n"
 "\n"
 "                    if(s.y == 2.)\n"
@@ -3996,11 +3966,22 @@ const char *transbubbles_source = "#version 130\n\n"
 "                        	(fraction == 1.)?vec3(0.85,0.80,0.62):\n"
 "                        	(fraction == 2.)?vec3(0.22,0.25,0.25):\n"
 "                        	(fraction == 3.)?vec3(0.16,0.17,0.17):\n"
-"                        vec3(0.12,0.12,0.13);\n"
+"                        vec3(0.12,0.12,0.13); // sieht ganz ok aus\n"
+"//                         vec3 c2 = (fraction == 4.)?vec3(0.20,0.15,0.20):\n"
+"//                         	(fraction == 3.)?vec3(0.40,0.30,0.32):\n"
+"//                         	(fraction == 2.)?vec3(0.97,0.48,0.33):\n"
+"//                         	(fraction == 1.)?vec3(1.00,0.59,0.31):\n"
+"//                         vec3(0.65,0.60,0.53);\n"
+"                        vec3 c2 = (fraction == 0.)?vec3(0.99,0.33,0.05):\n"
+"                        	(fraction == 1.)?vec3(0.94,0.94,0.94):\n"
+"                        	(fraction == 2.)?vec3(0.75,0.82,0.88):\n"
+"                        	(fraction == 3.)?vec3(0.25,0.34,0.39):\n"
+"                        vec3(0.17,0.22,0.27);\n"
+"                        c1 = mix(c1,c2, mx);\n"
 "                        c1 = .1*c1\n"
 "                            + .4*c1 * abs(dot(l,n))\n"
-"                            + 5.8 * c1 * abs(pow(dot(reflect(-l,n),dir),2.));\n"
-"                    }\n"
+"                            + mix(5.8,3.79,mx) * c1 * abs(pow(dot(reflect(-l,n),dir),2.));\n"
+"                    }//5.8\n"
 "					//col = clamp(col, 0., 1.);\n"
 "                    col = mix(col, c1, .15);\n"
 "                }\n"
@@ -4514,6 +4495,19 @@ void Loadprogressbar()
 #endif
     progress += .2/(float)nsymbols;
 }
+void Loadhash13()
+{
+    int hash13_size = strlen(hash13_source);
+    hash13_handle = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(hash13_handle, 1, (GLchar **)&hash13_source, &hash13_size);
+    glCompileShader(hash13_handle);
+#ifdef DEBUG
+    printf("---> hash13 Shader:\n");
+    debug(hash13_handle);
+    printf(">>>>\n");
+#endif
+    progress += .2/(float)nsymbols;
+}
 
 void LoadSymbols()
 {
@@ -4592,6 +4586,8 @@ void LoadSymbols()
     Loadwindow();
     updateBar();
     Loadprogressbar();
+    updateBar();
+    Loadhash13();
     updateBar();
 }
 int voronoidesign_program, voronoidesign_handle, groundboxes_program, groundboxes_handle, graffiti_program, graffiti_handle, greet_program, greet_handle, evoke_program, evoke_handle, canal_program, canal_handle, text_program, text_handle, post_program, post_handle, logo210_program, logo210_handle, transbubbles_program, transbubbles_handle;
@@ -5007,6 +5003,15 @@ void Loadtransbubbles()
 #endif
     transbubbles_program = glCreateProgram();
     glAttachShader(transbubbles_program,transbubbles_handle);
+    glAttachShader(transbubbles_program,rand_handle);
+    glAttachShader(transbubbles_program,lfnoise_handle);
+    glAttachShader(transbubbles_program,dbox3_handle);
+    glAttachShader(transbubbles_program,rot3_handle);
+    glAttachShader(transbubbles_program,stroke_handle);
+    glAttachShader(transbubbles_program,hash13_handle);
+    glAttachShader(transbubbles_program,add_handle);
+    glAttachShader(transbubbles_program,smoothmin_handle);
+    glAttachShader(transbubbles_program,normal_handle);
     glLinkProgram(transbubbles_program);
 #ifdef DEBUG
     printf("---> transbubbles Program:\n");

@@ -17,54 +17,14 @@ float a = 1.0;
 
 float nbeats, iScale;
 
-void rand(in vec2 x, out float n)
-{
-    x += 400.;
-    n = fract(sin(dot(sign(x)*abs(x) ,vec2(12.9898,78.233)))*43758.5453);
-}
-
-void dbox3(in vec3 x, in vec3 b, out float d)
-{
-  vec3 da = abs(x) - b;
-  d = length(max(da,0.0))
-         + min(max(da.x,max(da.y,da.z)),0.0);
-}
-
-void rot3(in vec3 p, out mat3 rot)
-{
-    rot = mat3(c.xyyy, cos(p.x), sin(p.x), 0., -sin(p.x), cos(p.x))
-        *mat3(cos(p.y), 0., -sin(p.y), c.yxy, sin(p.y), 0., cos(p.y))
-        *mat3(cos(p.z), -sin(p.z), 0., sin(p.z), cos(p.z), c.yyyx);
-}
-
-void stroke(in float d0, in float s, out float d)
-{
-    d = abs(d0)-s;
-}
-
-// Creative Commons Attribution-ShareAlike 4.0 International Public License
-// Created by David Hoskins.
-// See https://www.shadertoy.com/view/4djSRW
-void hash13(in vec3 p3, out float d)
-{
-	p3  = fract(p3 * .1031);
-    p3 += dot(p3, p3.yzx + 33.33);
-    d = fract((p3.x + p3.y) * p3.z);
-}
-
-// Add sdfs
-void add(in vec2 sda, in vec2 sdb, out vec2 sdf)
-{
-    sdf = sda.x<sdb.x?sda:sdb;
-}
-
-// iq's smooth minimum
-void smoothmin(in float a, in float b, in float k, out float dst)
-{
-    float h = max( k-abs(a-b), 0.0 )/k;
-    dst = min( a, b ) - h*h*h*k*(1.0/6.0);
-}
-
+void rand(in vec2 x, out float n);
+void lfnoise(in vec2 t, out float n);
+void dbox3(in vec3 x, in vec3 b, out float d);
+void rot3(in vec3 p, out mat3 rot);
+void stroke(in float d0, in float s, out float d);
+void hash13(in vec3 p3, out float d);
+void add(in vec2 sda, in vec2 sdb, out vec2 sdf);
+void smoothmin(in float a, in float b, in float k, out float dst);
 void dvoronoi3(in vec3 x, out float d, out vec3 z)
 {
     vec3 y = floor(x);
@@ -111,13 +71,12 @@ void dvoronoi3(in vec3 x, out float d, out vec3 z)
     z = pf;
 }
 
+mat3 R;
 vec3 ind;
 void scene(in vec3 x, out vec2 sdf)
 {
-    mat3 R;
-    rot3(.1*vec3(1.1,1.3,1.5)*iTime, R);
     x = R * x;
-    x.z -= .1*iTime;
+//     x.z -= .1*iTime;
     
     sdf = c.xy;
     
@@ -132,27 +91,16 @@ void scene(in vec3 x, out vec2 sdf)
     
     //add(sdf, vec2(abs(length(y)-.3)-.001,2.), sdf);
 	add(sdf, vec2(abs(length(y)-.3)-.001,2.), sdf);
+	sdf.x = max(sdf.x, -length(x)+.5);
 }
 
-void normal(in vec3 x, out vec3 n, in float dx)
-{
-    vec2 s, na;
-    
-    scene(x,s);
-    scene(x+dx*c.xyy, na);
-    n.x = na.x;
-    scene(x+dx*c.yxy, na);
-    n.y = na.x;
-    scene(x+dx*c.yyx, na);
-    n.z = na.x;
-    n = normalize(n-s.x);
-}
+void normal(in vec3 x, out vec3 n, in float dx);
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
     float a = iResolution.x/iResolution.y;
     vec2 uv = fragCoord/iResolution.yy-0.5*vec2(a, 1.0);
-    
+    rot3(.1*vec3(1.1,1.3,1.5)*iTime, R);
     vec3 col = c.yyy;
     
     float d = 0.;
@@ -163,7 +111,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     //rot3(mix(c.yyy,vec3(-3.*pi/4.,3.*pi/4.,-7.*pi/4.),clamp((iTime-6.)/1.5,0.,1.)), Ra);
     //Ra *= mix(1.,-1.,clamp((iTime-6.)/1.5,0.,1.));
        
-    
+    float mx = clamp((iTime-5.)/.1,0.,1.);
     //o = Ra * mix(mix(mix(c.yyy-.1*c.yxy,c.yyx,clamp(iTime/2.,0.,1.)),10.*c.yyx,clamp((iTime-2.)/2.,0.,1.)), 100.*c.yyx, clamp((iTime-4.)/2.,0.,1.));
 	o = c.yyx;
     t = c.yyy;
@@ -182,12 +130,12 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         
     if(s.x < 1.e-4)
     {
-        normal(x,n, 2.e-5);
+        normal(x,n, 1.e-4);
         vec3 l = normalize(x+.1*n);
         
         if(s.y == 2.)
         {
-            col = vec3(0.86,0.21,0.13);
+            col = mix(vec3(0.86,0.21,0.13), vec3(0.02,0.46,0.44), mx);
             col = .1*col
                             + .1*col * abs(dot(l,n))
                             + .5 * col * abs(pow(dot(reflect(-l,n),dir),2.));
@@ -195,10 +143,16 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
             vec3 c1 = c.yyy;
             for(float fraction = 0.; fraction <= 4.; fraction += 1.)
     		{
+//                 o = x;
+//                 dir = refract(dir,n,.9);
+//                 //dir = reflect(dir,n);
+//                 d = 1.e-2;
                 o = x;
-                dir = refract(dir,n,.9);
-                //dir = reflect(dir,n);
-                d = 1.e-2;
+                vec3 ddir = refract(dir,n,.95);
+                dir = reflect(dir,n);
+                
+                dir = mix(ddir, dir, mx);
+                d = 2.e-2;
 
                 for(i = 0; i<N; ++i)
                 {
@@ -208,10 +162,16 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
                     d += s.x;
                     //d += min(s.x, .01);
                 }
-
+                
+//                 if((R*x).z<-1.)
+//                 {
+//                     fragColor = vec4(clamp(col,0.,1.),1.0);
+//                     return;
+//                 }
+                
                 if(s.x < 1.e-4)
                 {
-                    normal(x,n, 2.e-4);
+                    normal(x,n, 1.e-4);
                     vec3 l = normalize(x+.1*n);
 
                     if(s.y == 2.)
@@ -221,11 +181,22 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
                         	(fraction == 1.)?vec3(0.85,0.80,0.62):
                         	(fraction == 2.)?vec3(0.22,0.25,0.25):
                         	(fraction == 3.)?vec3(0.16,0.17,0.17):
-                        vec3(0.12,0.12,0.13);
+                        vec3(0.12,0.12,0.13); // sieht ganz ok aus
+//                         vec3 c2 = (fraction == 4.)?vec3(0.20,0.15,0.20):
+//                         	(fraction == 3.)?vec3(0.40,0.30,0.32):
+//                         	(fraction == 2.)?vec3(0.97,0.48,0.33):
+//                         	(fraction == 1.)?vec3(1.00,0.59,0.31):
+//                         vec3(0.65,0.60,0.53);
+                        vec3 c2 = (fraction == 0.)?vec3(0.99,0.33,0.05):
+                        	(fraction == 1.)?vec3(0.94,0.94,0.94):
+                        	(fraction == 2.)?vec3(0.75,0.82,0.88):
+                        	(fraction == 3.)?vec3(0.25,0.34,0.39):
+                        vec3(0.17,0.22,0.27);
+                        c1 = mix(c1,c2, mx);
                         c1 = .1*c1
                             + .4*c1 * abs(dot(l,n))
-                            + 5.8 * c1 * abs(pow(dot(reflect(-l,n),dir),2.));
-                    }
+                            + mix(5.8,3.79,mx) * c1 * abs(pow(dot(reflect(-l,n),dir),2.));
+                    }//5.8
 					//col = clamp(col, 0., 1.);
                     col = mix(col, c1, .15);
                 }
