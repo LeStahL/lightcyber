@@ -111,7 +111,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     //rot3(mix(c.yyy,vec3(-3.*pi/4.,3.*pi/4.,-7.*pi/4.),clamp((iTime-6.)/1.5,0.,1.)), Ra);
     //Ra *= mix(1.,-1.,clamp((iTime-6.)/1.5,0.,1.));
        
-    float mx = clamp((iTime-5.)/.1,0.,1.);
+    float mx = clamp((iTime-5.),0.,1.);
     //o = Ra * mix(mix(mix(c.yyy-.1*c.yxy,c.yyx,clamp(iTime/2.,0.,1.)),10.*c.yyx,clamp((iTime-2.)/2.,0.,1.)), 100.*c.yyx, clamp((iTime-4.)/2.,0.,1.));
 	o = c.yyx;
     t = c.yyy;
@@ -149,9 +149,9 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 //                 d = 1.e-2;
                 o = x;
                 vec3 ddir = refract(dir,n,.95);
-                dir = reflect(dir,n);
+                dir = refract(dir,n,.5);//reflect(dir,n);
                 
-                dir = mix(ddir, dir, mx);
+                dir = mix(ddir, dir,mx);
                 d = 2.e-2;
 
                 for(i = 0; i<N; ++i)
@@ -206,7 +206,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         }
         
     }
-    
+    col *= col;
     fragColor = vec4(clamp(col,0.,1.),1.0);
 }
 
