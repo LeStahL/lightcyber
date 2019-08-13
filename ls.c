@@ -548,7 +548,7 @@ void draw()
         }
         else if(override_index == 5)
         {
-            t = t_now + 49.655;
+            t = t_now + 52.5;
         }
         else if(override_index == 6)
         {
@@ -624,7 +624,7 @@ void draw()
         }
 #endif
     }
-    else if(t < 49.655)
+    else if(t < 52.5)
     {
         glUseProgram(transbubbles_program);
         glUniform1f(transbubbles_iTime_location, t-37.5);
@@ -650,7 +650,7 @@ void draw()
     else if(t < 82.76)
     {
         glUseProgram(groundboxes_program);
-        glUniform1f(groundboxes_iTime_location, t-49.655);
+        glUniform1f(groundboxes_iTime_location, t-52.5);
         glUniform2f(groundboxes_iResolution_location, w, h);
         
 #ifdef MIDI

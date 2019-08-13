@@ -111,7 +111,11 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     //rot3(mix(c.yyy,vec3(-3.*pi/4.,3.*pi/4.,-7.*pi/4.),clamp((iTime-6.)/1.5,0.,1.)), Ra);
     //Ra *= mix(1.,-1.,clamp((iTime-6.)/1.5,0.,1.));
        
-    float mx = clamp((iTime-5.),0.,1.);
+    float mx = clamp((iTime-5.),0.,1.), 
+        my = clamp(iTime-10., 0., 1.);
+    float nai;
+    lfnoise(2.*iTime*c.xx, nai);
+    nai = .5*(nai);
     //o = Ra * mix(mix(mix(c.yyy-.1*c.yxy,c.yyx,clamp(iTime/2.,0.,1.)),10.*c.yyx,clamp((iTime-2.)/2.,0.,1.)), 100.*c.yyx, clamp((iTime-4.)/2.,0.,1.));
 	o = c.yyx;
     t = c.yyy;
@@ -148,10 +152,12 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 //                 //dir = reflect(dir,n);
 //                 d = 1.e-2;
                 o = x;
-                vec3 ddir = refract(dir,n,.95);
-                dir = refract(dir,n,.5);//reflect(dir,n);
+                vec3 ddir = refract(dir,n,.95+.05*nai);
+                vec3 dddir = refract(dir,n,.1);
+                dir = refract(dir,n,.5+.05*nai);//reflect(dir,n);
                 
                 dir = mix(ddir, dir,mx);
+                dir = mix(dir,dddir,my);
                 d = 2.e-2;
 
                 for(i = 0; i<N; ++i)
@@ -192,10 +198,16 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
                         	(fraction == 2.)?vec3(0.75,0.82,0.88):
                         	(fraction == 3.)?vec3(0.25,0.34,0.39):
                         vec3(0.17,0.22,0.27);
+                        vec3 c3 = (fraction == 0.)?vec3(1.00,0.55,0.03):
+                        	(fraction == 1.)?vec3(0.84,0.20,0.18):
+                        	(fraction == 2.)?vec3(0.13,0.55,0.57):
+                        	(fraction == 3.)?vec3(0.29,0.22,0.30):
+                        vec3(0.00,0.00,0.00);
                         c1 = mix(c1,c2, mx);
+                        c1 = mix(c1,c3, my);
                         c1 = .1*c1
                             + .4*c1 * abs(dot(l,n))
-                            + mix(5.8,3.79,mx) * c1 * abs(pow(dot(reflect(-l,n),dir),2.));
+                            + mix(mix(5.8,3.79,mx),4.753,my) * c1 * abs(pow(dot(reflect(-l,n),dir),2.));
                     }//5.8
 					//col = clamp(col, 0., 1.);
                     col = mix(col, c1, .15);
