@@ -107,7 +107,26 @@ void normal(in vec3 x, out vec3 n, in float dx)
 void palette1(in float scale, out vec3 col)
 {
     const int N = 5;
-                        
+   
+   const vec3 colors[N] = vec3[N](
+        vec3(0.82,0.27,0.13),
+        vec3(0.85,0.77,0.68),
+        vec3(0.65,0.59,0.55),
+        vec3(0.45,0.29,0.24),
+        vec3(0.85,0.27,0.15)
+    );
+   
+   /*
+    const vec3 colors[N] = vec3[N](
+        vec3(1.00,0.98,0.95),
+        vec3(0.99,0.62,0.53),
+        vec3(0.94,0.26,0.22),
+        vec3(0.78,0.08,0.28),
+        vec3(0.00,0.00,0.00)
+    );
+    */
+    
+    /*
 	const vec3 colors[N] = vec3[N](
        	vec3(0.86,0.21,0.13),
         vec3(0.85,0.80,0.62),
@@ -115,6 +134,7 @@ void palette1(in float scale, out vec3 col)
         vec3(0.16,0.17,0.17),
         vec3(0.12,0.12,0.13)
     );
+    //*/
     
     /*
     const vec3 colors[N] = vec3[N](
