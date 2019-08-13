@@ -108,23 +108,15 @@ void palette1(in float scale, out vec3 col)
 {
     const int N = 5;
    
-   const vec3 colors[N] = vec3[N](
-        vec3(0.82,0.27,0.13),
-        vec3(0.85,0.77,0.68),
-        vec3(0.65,0.59,0.55),
-        vec3(0.45,0.29,0.24),
-        vec3(0.85,0.27,0.15)
-    );
-   
-   /*
+    /*
     const vec3 colors[N] = vec3[N](
-        vec3(1.00,0.98,0.95),
-        vec3(0.99,0.62,0.53),
-        vec3(0.94,0.26,0.22),
-        vec3(0.78,0.08,0.28),
-        vec3(0.00,0.00,0.00)
-    );
-    */
+            vec3(0.82,0.27,0.13),
+            vec3(0.85,0.77,0.68),
+            vec3(0.65,0.59,0.55),
+            vec3(0.45,0.29,0.24),
+            vec3(0.85,0.27,0.15)
+        );
+    //*/
     
     /*
 	const vec3 colors[N] = vec3[N](
@@ -136,16 +128,7 @@ void palette1(in float scale, out vec3 col)
     );
     //*/
     
-    /*
-    const vec3 colors[N] = vec3[N](
-       	vec3(1.00,0.55,0.03),
-        vec3(0.84,0.20,0.18),
-        vec3(0.13,0.55,0.57),
-        vec3(0.29,0.22,0.30),
-        vec3(0.00,0.00,0.00)
-    );
-	//*/
-	/*
+	//*
     const vec3 colors[N] = vec3[N](
        	vec3(0.99,0.33,0.05),
         vec3(0.94,0.94,0.94),
@@ -173,7 +156,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     
 	o = c.yyx;
     t = c.yyy;
-    int N = 80,
+    int N = 50,
         i;
     dir = normalize(vec3(uv,-1.));//normalize(t-o);
     
@@ -188,7 +171,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         palette1(-s.x, c1);
         c1 = .1*c1
                             + .1*c1 * abs(dot(l,n))
-                            + 3.5 * c1 * abs(pow(dot(reflect(-l,n),dir),2.));
+                            + mix(1.,10.,iFader0) * c1 * abs(pow(dot(reflect(-l,n),dir),2.));
     	col = mix(col, c1, d*d);
     }
 

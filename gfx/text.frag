@@ -203,11 +203,11 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         new.gba = mix(new.gba, vec3(1.00,0.40,0.39), sm(d));
 
         // Add time overlay
-        dtime((uv-.45*vec2(1.*a,1.05)), iTime, .01, d);
+        dtime((uv-.45*vec2(.975*a,1.05)), iTime, .01, d);
         new.gba = mix(new.gba, c.xxx, sm(d));
         
         // Add exact millisecond
-        dint(uv-.45*vec2(1.*a,1.0), floor(1.e3*fract(iTime)), .01, 4., d);
+        dint(uv-.45*vec2(.975*a,1.0), floor(1.e3*fract(iTime)), .01, 4., d);
 //         new.gba = mix(new.gba, vec3(1.00,0.40,0.39), sm(d));
         stroke(d-.001, .0005, d);
         new.gba = mix(new.gba, c.xxx, sm(d));
@@ -364,6 +364,13 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         da = mix(1., da, smoothstep(0.,.5,clamp(iTime-25.5, 0., 1.))*(1.-smoothstep(0.,.5,clamp(iTime-28.,0.,1.))));
         new.gba = mix(new.gba, mix(new.gba, c.xxx, .6), sm(da));
     }
+    
+    // 
+    float dc;
+    dbox(uv, .5*vec2(a,1.), dc);
+    stroke(dc, .005, dc);
+    new.gba = mix(new.gba, c.yyy, sm(dc));
+    
     fragColor = vec4(new.gba, 1.);
 }
 
