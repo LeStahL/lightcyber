@@ -184,7 +184,7 @@ int
 double mx, my;
 
 // Demo globals
-#define duration 180.
+#define duration 182.751742
 double t_start = 0.,
     t_now = 0.,
     t_end = duration,

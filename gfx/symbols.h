@@ -3578,6 +3578,14 @@ const char *logo210_source = "/* Fuer Elite - 64k Intro by Team210 at Undergroun
 " \n"
 "uniform float iTime;\n"
 "uniform vec2 iResolution;\n"
+"uniform float iFader0;\n"
+"uniform float iFader1;\n"
+"uniform float iFader2;\n"
+"uniform float iFader3;\n"
+"uniform float iFader4;\n"
+"uniform float iFader5;\n"
+"uniform float iFader6;\n"
+"uniform float iFader7;\n"
 "\n"
 "const float pi = acos(-1.);\n"
 "const vec3 c = vec3(1.,0.,-1.);\n"
@@ -3683,24 +3691,44 @@ const char *logo210_source = "/* Fuer Elite - 64k Intro by Team210 at Undergroun
 "    add(sdf,sda,sdf);\n"
 "    \n"
 "    stroke(sdf.x,.001, sdf.x);\n"
+"    \n"
+"    dbox3(x, 100.*c.xxx, sda.x);\n"
+"    sda.y = 2.;\n"
+"    \n"
+"    add(sdf, sda*c.zx, sdf);\n"
 "}\n"
 "\n"
-"void normal(in vec3 x, out vec3 n, in float dx);\n"
+"void normal(in vec3 x, out vec3 n, in float dx)\n"
+"{\n"
+"    vec2 s, na;\n"
+"    \n"
+"    scene(x,s);\n"
+"    scene(x+dx*c.xyy, na);\n"
+"    n.x = na.x;\n"
+"    scene(x+dx*c.yxy, na);\n"
+"    n.y = na.x;\n"
+"    scene(x+dx*c.yyx, na);\n"
+"    n.z = na.x;\n"
+"    n = normalize(n-s.x);\n"
+"}\n"
 "\n"
 "void mainImage( out vec4 fragColor, in vec2 fragCoord )\n"
 "{\n"
 "    float a = iResolution.x/iResolution.y;\n"
 "    vec2 uv = fragCoord/iResolution.yy-0.5*vec2(a, 1.0);\n"
 "    \n"
-"    vec3 col = c.yyy;\n"
+"    vec3 col = c.xxx;\n"
 "    \n"
 "    float d = 0.;\n"
 "    vec2 s;\n"
 "    vec3 o, t, dir, x, n;\n"
 "    \n"
 "    mat3 Ra;\n"
-"    rot3(mix(c.yyy,vec3(-3.*pi/4.,3.*pi/4.,-7.*pi/4.),clamp((iTime-6.)/1.5,0.,1.)), Ra);\n"
-"    Ra *= mix(1.,-1.,clamp((iTime-6.)/1.5,0.,1.));\n"
+"    rot3(mix(c.yyy,vec3(-5.7884463,2.4242211,0.3463173),clamp((iTime-6.)/1.5,0.,1.)), Ra);\n"
+"    //vec3 a = vec3(uv,-1.);\n"
+"	\n"
+"    //rot3(mix(c.yyy,vec3(-3.*pi/4.,3.*pi/4.,-7.*pi/4.),clamp((iTime-6.)/1.5,0.,1.)), Ra);\n"
+"    //Ra *= mix(1.,-1.,clamp((iTime-6.)/1.5,0.,1.));\n"
 "       \n"
 "    \n"
 "    o = Ra * mix(mix(mix(c.yyy-.1*c.yxy,c.yyx,clamp(iTime/2.,0.,1.)),10.*c.yyx,clamp((iTime-2.)/2.,0.,1.)), 100.*c.yyx, clamp((iTime-4.)/2.,0.,1.));\n"
@@ -3780,10 +3808,11 @@ const char *logo210_source = "/* Fuer Elite - 64k Intro by Team210 at Undergroun
 "        }\n"
 "        \n"
 "    }\n"
-"    col = mix(col,vec3(0.20,0.01,0.14),smoothstep(0.,1.,iTime-7.5));\n"
+"    col = mix(col,vec3(0.20,0.01,0.14),smoothstep(0.,1.,iTime-10.));\n"
 "    \n"
 "    fragColor = vec4(clamp(col,0.,1.),1.0);\n"
 "}\n"
+"\n"
 "\n"
 "void main()\n"
 "{\n"
@@ -4817,7 +4846,7 @@ int evoke_iTime_location,evoke_iResolution_location,evoke_iFader0_location,evoke
 int canal_iTime_location,canal_iResolution_location,canal_iFader0_location,canal_iFader1_location,canal_iFader2_location,canal_iFader3_location,canal_iFader4_location,canal_iFader5_location,canal_iFader6_location,canal_iFader7_location;
 int text_iFontWidth_location,text_iTime_location,text_iResolution_location,text_iChannel0_location,text_iFont_location,text_iFSAA_location;
 int post_iFSAA_location,post_iResolution_location,post_iChannel0_location,post_iTime_location;
-int logo210_iTime_location,logo210_iResolution_location;
+int logo210_iTime_location,logo210_iResolution_location,logo210_iFader0_location,logo210_iFader1_location,logo210_iFader2_location,logo210_iFader3_location,logo210_iFader4_location,logo210_iFader5_location,logo210_iFader6_location,logo210_iFader7_location;
 int transbubbles_iTime_location,transbubbles_iResolution_location,transbubbles_iFader0_location,transbubbles_iFader1_location,transbubbles_iFader2_location,transbubbles_iFader3_location,transbubbles_iFader4_location,transbubbles_iFader5_location,transbubbles_iFader6_location,transbubbles_iFader7_location;
 int volclouds_iTime_location,volclouds_iResolution_location,volclouds_iFader0_location,volclouds_iFader1_location,volclouds_iFader2_location,volclouds_iFader3_location,volclouds_iFader4_location,volclouds_iFader5_location,volclouds_iFader6_location,volclouds_iFader7_location;
 const int nprograms = 11;
@@ -5196,7 +5225,6 @@ void Loadlogo210()
     glAttachShader(logo210_program,rot3_handle);
     glAttachShader(logo210_program,stroke_handle);
     glAttachShader(logo210_program,add_handle);
-    glAttachShader(logo210_program,normal_handle);
     glLinkProgram(logo210_program);
 #ifdef DEBUG
     printf("---> logo210 Program:\n");
@@ -5206,6 +5234,14 @@ void Loadlogo210()
     glUseProgram(logo210_program);
     logo210_iTime_location = glGetUniformLocation(logo210_program, "iTime");
     logo210_iResolution_location = glGetUniformLocation(logo210_program, "iResolution");
+    logo210_iFader0_location = glGetUniformLocation(logo210_program, "iFader0");
+    logo210_iFader1_location = glGetUniformLocation(logo210_program, "iFader1");
+    logo210_iFader2_location = glGetUniformLocation(logo210_program, "iFader2");
+    logo210_iFader3_location = glGetUniformLocation(logo210_program, "iFader3");
+    logo210_iFader4_location = glGetUniformLocation(logo210_program, "iFader4");
+    logo210_iFader5_location = glGetUniformLocation(logo210_program, "iFader5");
+    logo210_iFader6_location = glGetUniformLocation(logo210_program, "iFader6");
+    logo210_iFader7_location = glGetUniformLocation(logo210_program, "iFader7");
     progress += .2/(float)nprograms;
 }
 

@@ -509,6 +509,8 @@ void updateBar()
     quad();
     
 	flip_buffers();
+    
+    glUseProgram(0);
 }
 
 // Pure opengl drawing code, essentially cross-platform
@@ -536,23 +538,23 @@ void draw()
         }
         else if(override_index == 2)
         {
-            t = t_now + 9.5;
+            t = t_now + 11.;
         }
         else if(override_index == 3)
         {
-            t = t_now + 21.5;
+            t = t_now + 23.;
         }
         else if(override_index == 4)
         {
-            t = t_now + 37.5;
+            t = t_now + 39.;
         }
         else if(override_index == 5)
         {
-            t = t_now + 52.5;
+            t = t_now + 54.;
         }
         else if(override_index == 6)
         {
-            t = t_now + 62.5;
+            t = t_now + 64.;
         }
         else if(override_index == 7)
         {
@@ -568,11 +570,20 @@ void draw()
         }
     }
     
-    if(t < 9.5)
+    if(t < 11.)
     {
         glUseProgram(logo210_program);
         glUniform1f(logo210_iTime_location, t);
         glUniform2f(logo210_iResolution_location, w, h);
+        
+        glUniform1f(logo210_iFader0_location, fader0);
+        glUniform1f(logo210_iFader1_location, fader1);
+        glUniform1f(logo210_iFader2_location, fader2);
+        glUniform1f(logo210_iFader3_location, fader3);
+        glUniform1f(logo210_iFader4_location, fader4);
+        glUniform1f(logo210_iFader5_location, fader5);
+        glUniform1f(logo210_iFader6_location, fader6);
+        glUniform1f(logo210_iFader7_location, fader7);
         
 #ifdef MIDI
         if(override_index == 0)
@@ -582,10 +593,10 @@ void draw()
         }
 #endif
     }
-    else if(t < 21.5)
+    else if(t < 23)
     {
         glUseProgram(evoke_program);
-        glUniform1f(evoke_iTime_location, t-9.5);
+        glUniform1f(evoke_iTime_location, t-11);
         glUniform2f(evoke_iResolution_location, w, h);
         
 #ifdef MIDI
@@ -605,10 +616,10 @@ void draw()
         }
 #endif
     }
-    else if(t < 37.5)
+    else if(t < 39)
     {
         glUseProgram(graffiti_program);
-        glUniform1f(graffiti_iTime_location, t-21.5);
+        glUniform1f(graffiti_iTime_location, t-23);
         glUniform2f(graffiti_iResolution_location, w, h);
         
 #ifdef MIDI
@@ -628,10 +639,10 @@ void draw()
         }
 #endif
     }
-    else if(t < 52.5)
+    else if(t < 54)
     {
         glUseProgram(transbubbles_program);
-        glUniform1f(transbubbles_iTime_location, t-37.5);
+        glUniform1f(transbubbles_iTime_location, t-39);
         glUniform2f(transbubbles_iResolution_location, w, h);
         
 #ifdef MIDI
@@ -651,10 +662,10 @@ void draw()
         }
 #endif
     }
-    else if(t < 62.5)
+    else if(t < 64)
     {
         glUseProgram(volclouds_program);
-        glUniform1f(volclouds_iTime_location, t-52.5);
+        glUniform1f(volclouds_iTime_location, t-54);
         glUniform2f(volclouds_iResolution_location, w, h);
         
 #ifdef MIDI
@@ -677,7 +688,7 @@ void draw()
     else if(t < 82.76)
     {
         glUseProgram(groundboxes_program);
-        glUniform1f(groundboxes_iTime_location, t-52.5);
+        glUniform1f(groundboxes_iTime_location, t-54);
         glUniform2f(groundboxes_iResolution_location, w, h);
         
 #ifdef MIDI
@@ -775,7 +786,7 @@ void draw()
     glUniform2f(post_iResolution_location, w, h);
     glUniform1f(post_iFSAA_location, fsaa);
     glUniform1i(post_iChannel0_location, 0);
-    glUniform1f(post_iTime_location, t-9.5);
+    glUniform1f(post_iTime_location, t-11);
     
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, first_pass_texture);
@@ -789,7 +800,7 @@ void draw()
     glUseProgram(text_program);
     glUniform2f(text_iResolution_location, w, h);
     glUniform1f(text_iFontWidth_location, font_texture_size);
-    glUniform1f(text_iTime_location, t-9.5);
+    glUniform1f(text_iTime_location, t-11);
     glUniform1i(text_iChannel0_location, 0);
     glUniform1i(text_iFont_location, 1);
     glUniform1f(text_iFSAA_location, fsaa);
@@ -803,7 +814,6 @@ void draw()
 //     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, font_texture_size, font_texture_size, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
     
     quad();
-
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 

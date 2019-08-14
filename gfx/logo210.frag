@@ -19,6 +19,14 @@
  
 uniform float iTime;
 uniform vec2 iResolution;
+uniform float iFader0;
+uniform float iFader1;
+uniform float iFader2;
+uniform float iFader3;
+uniform float iFader4;
+uniform float iFader5;
+uniform float iFader6;
+uniform float iFader7;
 
 const float pi = acos(-1.);
 const vec3 c = vec3(1.,0.,-1.);
@@ -124,24 +132,44 @@ void scene(in vec3 x, out vec2 sdf)
     add(sdf,sda,sdf);
     
     stroke(sdf.x,.001, sdf.x);
+    
+    dbox3(x, 100.*c.xxx, sda.x);
+    sda.y = 2.;
+    
+    add(sdf, sda*c.zx, sdf);
 }
 
-void normal(in vec3 x, out vec3 n, in float dx);
+void normal(in vec3 x, out vec3 n, in float dx)
+{
+    vec2 s, na;
+    
+    scene(x,s);
+    scene(x+dx*c.xyy, na);
+    n.x = na.x;
+    scene(x+dx*c.yxy, na);
+    n.y = na.x;
+    scene(x+dx*c.yyx, na);
+    n.z = na.x;
+    n = normalize(n-s.x);
+}
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
     float a = iResolution.x/iResolution.y;
     vec2 uv = fragCoord/iResolution.yy-0.5*vec2(a, 1.0);
     
-    vec3 col = c.yyy;
+    vec3 col = c.xxx;
     
     float d = 0.;
     vec2 s;
     vec3 o, t, dir, x, n;
     
     mat3 Ra;
-    rot3(mix(c.yyy,vec3(-3.*pi/4.,3.*pi/4.,-7.*pi/4.),clamp((iTime-6.)/1.5,0.,1.)), Ra);
-    Ra *= mix(1.,-1.,clamp((iTime-6.)/1.5,0.,1.));
+    rot3(mix(c.yyy,vec3(-5.7884463,2.4242211,0.3463173),clamp((iTime-6.)/1.5,0.,1.)), Ra);
+    //vec3 a = vec3(uv,-1.);
+	
+    //rot3(mix(c.yyy,vec3(-3.*pi/4.,3.*pi/4.,-7.*pi/4.),clamp((iTime-6.)/1.5,0.,1.)), Ra);
+    //Ra *= mix(1.,-1.,clamp((iTime-6.)/1.5,0.,1.));
        
     
     o = Ra * mix(mix(mix(c.yyy-.1*c.yxy,c.yyx,clamp(iTime/2.,0.,1.)),10.*c.yyx,clamp((iTime-2.)/2.,0.,1.)), 100.*c.yyx, clamp((iTime-4.)/2.,0.,1.));
@@ -221,10 +249,11 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         }
         
     }
-    col = mix(col,vec3(0.20,0.01,0.14),smoothstep(0.,1.,iTime-7.5));
+    col = mix(col,vec3(0.20,0.01,0.14),smoothstep(0.,1.,iTime-10.));
     
     fragColor = vec4(clamp(col,0.,1.),1.0);
 }
+
 
 void main()
 {
