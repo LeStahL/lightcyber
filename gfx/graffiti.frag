@@ -217,10 +217,9 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         sc3 = 0.;
         
     mat3 R;
-    rot3(vec3(
     
     vec3 col = c.yyy, 
-        o = mix(1.,.1,smoothstep(0.,5.,clamp(iTime-71.,0.,5.)))*c.yzx,
+        o = mix(1.,.5,smoothstep(0.,5.,clamp(iTime-71.,0.,5.)))*c.yzx,
         r = c.xyy,
         u = normalize(c.yxx),
         t = c.yyy, 
