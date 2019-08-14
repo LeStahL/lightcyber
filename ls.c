@@ -540,31 +540,31 @@ void draw()
         {
             t = t_now + 11.;
         }
-        else if(override_index == 3)
+        else if(override_index == 3) // graffiti
         {
             t = t_now + 23.;
         }
-        else if(override_index == 4)
+        else if(override_index == 4) // cube
         {
             t = t_now + 39.;
         }
-        else if(override_index == 5)
+        else if(override_index == 5) // honey hell
         {
             t = t_now + 55.;
         }
-        else if(override_index == 6)
+        else if(override_index == 6) // ... also graffiti
         {
             t = t_now + 71.;
         }
-        else if(override_index == 7)
+        else if(override_index == 7) // tentacle
         {
             t = t_now + 86.5;
         }
-        else if(override_index == 8)
+        else if(override_index == 8) // bubbles
         {
             t = t_now + 103.;
         }
-        else if(override_index == 9)
+        else if(override_index == 9) // smoke
         {
             t = t_now + 118.;
         }
