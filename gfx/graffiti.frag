@@ -182,8 +182,8 @@ void colorize(in vec2 x, out vec3 col)
  
     float d;
     graf(x, d);
-    col = mix(col, mix(vec3(0.85,0.87,0.89), vec3(0.04,0.18,0.24), clamp(abs(x.y/2.),0.,1.)), sm(d-.2));
-    col = mix(col, vec3(1.00,0.40,0.39), sm(d));
+    col = mix(col, mix(mix(vec3(0.85,0.87,0.89), c.xxx, step(50., iTime)), mix(vec3(0.04,0.18,0.24),vec3(0.00,0.20,0.36),step(50.,iTime)), clamp(abs(x.y/2.),0.,1.)), sm(d-.2));
+    col = mix(col, mix(vec3(1.00,0.40,0.39), vec3(0.00,0.67,0.91), step(50., iTime)), sm(d));
     float da = d;
     stroke(d+mix(.01,.03, iScale), mix(.01,.04,iScale), d);
     //stroke(d,.01, d);
@@ -213,13 +213,16 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     vec2 uv = fragCoord/iResolution.yy-0.5*vec2(a, 1.0), 
         s;
         
-    float sc2 = 0.,//smoothstep(0.,2.,clamp((iTime-11.),0.,2.)),
-        sc3 = 0.;//smoothstep(0.,2.,clamp((iTime-13.), 0.,2.));
+    float sc2 = 0.,
+        sc3 = 0.;
+        
+    mat3 R;
+    rot3(vec3(
     
     vec3 col = c.yyy, 
-        o = mix(mix(c.yzx,c.zyx,sc2),c.zyy+mix(.2,.8,.45)*c.yyx, sc3),
-        r = mix(c.xyy,c.yzy,sc2), 
-        u = normalize(mix(c.yxx,c.xyx,sc2)),
+        o = mix(1.,.1,smoothstep(0.,5.,clamp(iTime-71.,0.,5.)))*c.yzx,
+        r = c.xyy,
+        u = normalize(c.yxx),
         t = c.yyy, 
         dir,
         n,

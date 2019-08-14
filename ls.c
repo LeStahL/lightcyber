@@ -700,7 +700,7 @@ void draw()
     else if(t < 86.5)
     {
         glUseProgram(graffiti_program);
-        glUniform1f(graffiti_iTime_location, t-71);
+        glUniform1f(graffiti_iTime_location, t);
         glUniform2f(graffiti_iResolution_location, w, h);
         
 #ifdef MIDI
