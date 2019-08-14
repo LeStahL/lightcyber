@@ -550,23 +550,35 @@ void draw()
         }
         else if(override_index == 5)
         {
-            t = t_now + 54.;
+            t = t_now + 55.;
         }
         else if(override_index == 6)
         {
-            t = t_now + 64.;
+            t = t_now + 71.;
         }
         else if(override_index == 7)
         {
-            t = t_now + 82.76;
+            t = t_now + 86.5;
         }
         else if(override_index == 8)
         {
-            t = t_now + 99.31;
+            t = t_now + 103.;
         }
         else if(override_index == 9)
         {
-            t = t_now + 112.;
+            t = t_now + 118.;
+        }
+        else if(override_index == 10)
+        {
+            t = t_now + 133.;
+        }
+        else if(override_index == 11)
+        {
+            t = t_now + 141.;
+        }
+        else if(override_index == 12)
+        {
+            t = t_now + 156.;
         }
     }
     
@@ -639,7 +651,7 @@ void draw()
         }
 #endif
     }
-    else if(t < 54)
+    else if(t < 55)
     {
         glUseProgram(groundboxes_program);
         glUniform1f(groundboxes_iTime_location, t-39);
@@ -655,28 +667,28 @@ void draw()
         glUniform1f(groundboxes_iFader6_location, fader6);
         glUniform1f(groundboxes_iFader7_location, fader7);
         
-        if(override_index == 5) 
+        if(override_index == 3) 
         {
             select_button(override_index);
             scene_override = 0;
         }
 #endif
     }
-    else if(t < 64)
+    else if(t < 71)
     {
-        glUseProgram(volclouds_program);
-        glUniform1f(volclouds_iTime_location, t-54);
-        glUniform2f(volclouds_iResolution_location, w, h);
+        glUseProgram(canal_program);
+        glUniform1f(canal_iTime_location, t-55);
+        glUniform2f(canal_iResolution_location, w, h);
         
 #ifdef MIDI
-        glUniform1f(volclouds_iFader0_location, fader0);
-        glUniform1f(volclouds_iFader1_location, fader1);
-        glUniform1f(volclouds_iFader2_location, fader2);
-        glUniform1f(volclouds_iFader3_location, fader3);
-        glUniform1f(volclouds_iFader4_location, fader4);
-        glUniform1f(volclouds_iFader5_location, fader5);
-        glUniform1f(volclouds_iFader6_location, fader6);
-        glUniform1f(volclouds_iFader7_location, fader7);
+        glUniform1f(canal_iFader0_location, fader0);
+        glUniform1f(canal_iFader1_location, fader1);
+        glUniform1f(canal_iFader2_location, fader2);
+        glUniform1f(canal_iFader3_location, fader3);
+        glUniform1f(canal_iFader4_location, fader4);
+        glUniform1f(canal_iFader5_location, fader5);
+        glUniform1f(canal_iFader6_location, fader6);
+        glUniform1f(canal_iFader7_location, fader7);
         
         if(override_index == 4)
         {
@@ -685,33 +697,33 @@ void draw()
         }
 #endif
     }
-    else if(t < 82.76)
+    else if(t < 86.5)
     {
-        glUseProgram(transbubbles_program);
-        glUniform1f(transbubbles_iTime_location, t-64);
-        glUniform2f(transbubbles_iResolution_location, w, h);
+        glUseProgram(graffiti_program);
+        glUniform1f(graffiti_iTime_location, t-71);
+        glUniform2f(graffiti_iResolution_location, w, h);
         
 #ifdef MIDI
-        glUniform1f(transbubbles_iFader0_location, fader0);
-        glUniform1f(transbubbles_iFader1_location, fader1);
-        glUniform1f(transbubbles_iFader2_location, fader2);
-        glUniform1f(transbubbles_iFader3_location, fader3);
-        glUniform1f(transbubbles_iFader4_location, fader4);
-        glUniform1f(transbubbles_iFader5_location, fader5);
-        glUniform1f(transbubbles_iFader6_location, fader6);
-        glUniform1f(transbubbles_iFader7_location, fader7);
+        glUniform1f(graffiti_iFader0_location, fader0);
+        glUniform1f(graffiti_iFader1_location, fader1);
+        glUniform1f(graffiti_iFader2_location, fader2);
+        glUniform1f(graffiti_iFader3_location, fader3);
+        glUniform1f(graffiti_iFader4_location, fader4);
+        glUniform1f(graffiti_iFader5_location, fader5);
+        glUniform1f(graffiti_iFader6_location, fader6);
+        glUniform1f(graffiti_iFader7_location, fader7);
         
-        if(override_index == 3)
+        if(override_index == 5)
         {
             select_button(override_index);
             scene_override = 0;
         }
 #endif
     }
-    else if(t < 99.31)
+    else if(t < 103)
     {
         glUseProgram(voronoidesign_program);
-        glUniform1f(voronoidesign_iTime_location, t-82.76);
+        glUniform1f(voronoidesign_iTime_location, t-86.5);
         glUniform2f(voronoidesign_iResolution_location, w, h);
       
 #ifdef MIDI
@@ -731,21 +743,21 @@ void draw()
         }
 #endif
     }
-    else if(t < 112.)
+    else if(t < 118.)
     {
-        glUseProgram(canal_program);
-        glUniform1f(canal_iTime_location, t-99.31);
-        glUniform2f(canal_iResolution_location, w, h);
+        glUseProgram(transbubbles_program);
+        glUniform1f(transbubbles_iTime_location, t-103);
+        glUniform2f(transbubbles_iResolution_location, w, h);
       
 #ifdef MIDI
-        glUniform1f(canal_iFader0_location, fader0);
-        glUniform1f(canal_iFader1_location, fader1);
-        glUniform1f(canal_iFader2_location, fader2);
-        glUniform1f(canal_iFader3_location, fader3);
-        glUniform1f(canal_iFader4_location, fader4);
-        glUniform1f(canal_iFader5_location, fader5);
-        glUniform1f(canal_iFader6_location, fader6);
-        glUniform1f(canal_iFader7_location, fader7);
+        glUniform1f(transbubbles_iFader0_location, fader0);
+        glUniform1f(transbubbles_iFader1_location, fader1);
+        glUniform1f(transbubbles_iFader2_location, fader2);
+        glUniform1f(transbubbles_iFader3_location, fader3);
+        glUniform1f(transbubbles_iFader4_location, fader4);
+        glUniform1f(transbubbles_iFader5_location, fader5);
+        glUniform1f(transbubbles_iFader6_location, fader6);
+        glUniform1f(transbubbles_iFader7_location, fader7);
         
         if(override_index == 7) 
         {
@@ -754,6 +766,76 @@ void draw()
         }
 #endif
     }
+    else if(t < 133.)
+    {
+        glUseProgram(volclouds_program);
+        glUniform1f(volclouds_iTime_location, t-118);
+        glUniform2f(volclouds_iResolution_location, w, h);
+      
+#ifdef MIDI
+        glUniform1f(volclouds_iFader0_location, fader0);
+        glUniform1f(volclouds_iFader1_location, fader1);
+        glUniform1f(volclouds_iFader2_location, fader2);
+        glUniform1f(volclouds_iFader3_location, fader3);
+        glUniform1f(volclouds_iFader4_location, fader4);
+        glUniform1f(volclouds_iFader5_location, fader5);
+        glUniform1f(volclouds_iFader6_location, fader6);
+        glUniform1f(volclouds_iFader7_location, fader7);
+        
+        if(override_index == 8) 
+        {
+            select_button(override_index);
+            scene_override = 0;
+        }
+#endif
+    }
+    else if(t < 141.)
+    {
+        glUseProgram(chart_program);
+        glUniform1f(chart_iTime_location, t-133);
+        glUniform2f(chart_iResolution_location, w, h);
+      
+#ifdef MIDI
+        glUniform1f(chart_iFader0_location, fader0);
+        glUniform1f(chart_iFader1_location, fader1);
+        glUniform1f(chart_iFader2_location, fader2);
+        glUniform1f(chart_iFader3_location, fader3);
+        glUniform1f(chart_iFader4_location, fader4);
+        glUniform1f(chart_iFader5_location, fader5);
+        glUniform1f(chart_iFader6_location, fader6);
+        glUniform1f(chart_iFader7_location, fader7);
+        
+        if(override_index == 9) 
+        {
+            select_button(override_index);
+            scene_override = 0;
+        }
+#endif
+    }
+    else if(t < 156.)
+    {
+        glUseProgram(greet_program);
+        glUniform1f(greet_iTime_location, t-141);
+        glUniform2f(greet_iResolution_location, w, h);
+      
+#ifdef MIDI
+        glUniform1f(greet_iFader0_location, fader0);
+        glUniform1f(greet_iFader1_location, fader1);
+        glUniform1f(greet_iFader2_location, fader2);
+        glUniform1f(greet_iFader3_location, fader3);
+        glUniform1f(greet_iFader4_location, fader4);
+        glUniform1f(greet_iFader5_location, fader5);
+        glUniform1f(greet_iFader6_location, fader6);
+        glUniform1f(greet_iFader7_location, fader7);
+        
+        if(override_index == 10) 
+        {
+            select_button(override_index);
+            scene_override = 0;
+        }
+#endif
+    }
+    // FIXME hier geballer
     else if(t < t_end)
     {
         glUseProgram(greet_program);
