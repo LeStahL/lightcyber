@@ -42,6 +42,7 @@ void dbox3(in vec3 x, in vec3 b, out float d);
 void dlinesegment3(in vec3 x, in vec3 p1, in vec3 p2, out float d);
 void stroke(in float d0, in float s, out float d);
 void zextrude(in float z, in float d2d, in float h, out float d);
+void scale(out float s);
 
 float sm(float d)
 {
@@ -101,9 +102,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     mat3 RR;
     rot3(.2*iTime*vec3(1.1,1.4,1.6), RR);
     
-    nbeats = mod(iTime, 60./29.);
-    iScale = nbeats-30./29.;
-    iScale = smoothstep(-5./29., 0., iScale)*(1.-smoothstep(0., 15./29., iScale));
+    scale(iScale);
+    
     vec2 uv = fragCoord/iResolution.yy-0.5*vec2(a, 1.0), 
         s;
     vec3 col = c.yyy, 

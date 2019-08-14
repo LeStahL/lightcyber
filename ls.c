@@ -641,21 +641,21 @@ void draw()
     }
     else if(t < 54)
     {
-        glUseProgram(transbubbles_program);
-        glUniform1f(transbubbles_iTime_location, t-39);
-        glUniform2f(transbubbles_iResolution_location, w, h);
+        glUseProgram(groundboxes_program);
+        glUniform1f(groundboxes_iTime_location, t-39);
+        glUniform2f(groundboxes_iResolution_location, w, h);
         
 #ifdef MIDI
-        glUniform1f(transbubbles_iFader0_location, fader0);
-        glUniform1f(transbubbles_iFader1_location, fader1);
-        glUniform1f(transbubbles_iFader2_location, fader2);
-        glUniform1f(transbubbles_iFader3_location, fader3);
-        glUniform1f(transbubbles_iFader4_location, fader4);
-        glUniform1f(transbubbles_iFader5_location, fader5);
-        glUniform1f(transbubbles_iFader6_location, fader6);
-        glUniform1f(transbubbles_iFader7_location, fader7);
+        glUniform1f(groundboxes_iFader0_location, fader0);
+        glUniform1f(groundboxes_iFader1_location, fader1);
+        glUniform1f(groundboxes_iFader2_location, fader2);
+        glUniform1f(groundboxes_iFader3_location, fader3);
+        glUniform1f(groundboxes_iFader4_location, fader4);
+        glUniform1f(groundboxes_iFader5_location, fader5);
+        glUniform1f(groundboxes_iFader6_location, fader6);
+        glUniform1f(groundboxes_iFader7_location, fader7);
         
-        if(override_index == 3)
+        if(override_index == 5) 
         {
             select_button(override_index);
             scene_override = 0;
@@ -687,21 +687,21 @@ void draw()
     }
     else if(t < 82.76)
     {
-        glUseProgram(groundboxes_program);
-        glUniform1f(groundboxes_iTime_location, t-54);
-        glUniform2f(groundboxes_iResolution_location, w, h);
+        glUseProgram(transbubbles_program);
+        glUniform1f(transbubbles_iTime_location, t-64);
+        glUniform2f(transbubbles_iResolution_location, w, h);
         
 #ifdef MIDI
-        glUniform1f(groundboxes_iFader0_location, fader0);
-        glUniform1f(groundboxes_iFader1_location, fader1);
-        glUniform1f(groundboxes_iFader2_location, fader2);
-        glUniform1f(groundboxes_iFader3_location, fader3);
-        glUniform1f(groundboxes_iFader4_location, fader4);
-        glUniform1f(groundboxes_iFader5_location, fader5);
-        glUniform1f(groundboxes_iFader6_location, fader6);
-        glUniform1f(groundboxes_iFader7_location, fader7);
+        glUniform1f(transbubbles_iFader0_location, fader0);
+        glUniform1f(transbubbles_iFader1_location, fader1);
+        glUniform1f(transbubbles_iFader2_location, fader2);
+        glUniform1f(transbubbles_iFader3_location, fader3);
+        glUniform1f(transbubbles_iFader4_location, fader4);
+        glUniform1f(transbubbles_iFader5_location, fader5);
+        glUniform1f(transbubbles_iFader6_location, fader6);
+        glUniform1f(transbubbles_iFader7_location, fader7);
         
-        if(override_index == 5) 
+        if(override_index == 3)
         {
             select_button(override_index);
             scene_override = 0;

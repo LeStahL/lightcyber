@@ -44,6 +44,7 @@ void dlinesegment(in vec2 x, in vec2 p1, in vec2 p2, out float d);
 void stroke(in float d0, in float s, out float d);
 void dvoronoi(in vec2 x, out float d, out vec2 z);
 void rot3(in vec3 phi, out mat3 R); 
+void scale(out float s);
 
 void graf(in vec2 x, out float d)
 {
@@ -207,15 +208,13 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
     a = iResolution.x/iResolution.y;
     
-    nbeats = mod(iTime, 60./29.);
-    iScale = nbeats-30./29.;
-    iScale = smoothstep(-5./29., 0., iScale)*(1.-smoothstep(0., 15./29., iScale));
+    scale(iScale);
     
     vec2 uv = fragCoord/iResolution.yy-0.5*vec2(a, 1.0), 
         s;
         
-    float sc2 = smoothstep(0.,2.,clamp((iTime-11.),0.,2.)),
-        sc3 = smoothstep(0.,2.,clamp((iTime-13.), 0.,2.));
+    float sc2 = 0.,//smoothstep(0.,2.,clamp((iTime-11.),0.,2.)),
+        sc3 = 0.;//smoothstep(0.,2.,clamp((iTime-13.), 0.,2.));
     
     vec3 col = c.yyy, 
         o = mix(mix(c.yzx,c.zyx,sc2),c.zyy+mix(.2,.8,.45)*c.yyx, sc3),

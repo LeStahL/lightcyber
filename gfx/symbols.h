@@ -2,8 +2,8 @@
 #ifndef SYMBOLIZE_H
 #define SYMBOLIZE_H
 
-extern float progress;int dsmoothvoronoi_handle, rand_handle, hash31_handle, lfnoise_handle, mfnoise_handle, dbox_handle, dlinesegment3_handle, stroke_handle, zextrude_handle, add_handle, smoothmin_handle, dspline3_handle, dvoronoi_handle, normal_handle, dbox3_handle, rot3_handle, dtriangle_handle, dlinesegment_handle, dpolygon_handle, rot_handle, dcircle_handle, dschnappsgirls_handle, dspacepigs_handle, dkewlers_handle, dfarbrausch_handle, dhaujobb_handle, dmercury_handle, rshort_handle, rfloat_handle, drhomboid_handle, dcirclesegment_handle, dglyph_handle, dstring_handle, dfloat_handle, dint_handle, dtime_handle, window_handle, progressbar_handle, hash13_handle;
-const int nsymbols = 39;
+extern float progress;int dsmoothvoronoi_handle, rand_handle, hash31_handle, lfnoise_handle, mfnoise_handle, dbox_handle, dlinesegment3_handle, stroke_handle, zextrude_handle, add_handle, smoothmin_handle, dspline3_handle, dvoronoi_handle, normal_handle, dbox3_handle, scale_handle, rot3_handle, dtriangle_handle, dlinesegment_handle, dpolygon_handle, rot_handle, dcircle_handle, dschnappsgirls_handle, dspacepigs_handle, dkewlers_handle, dfarbrausch_handle, dhaujobb_handle, dmercury_handle, rshort_handle, rfloat_handle, drhomboid_handle, dcirclesegment_handle, dglyph_handle, dstring_handle, dfloat_handle, dint_handle, dtime_handle, window_handle, progressbar_handle, hash13_handle;
+const int nsymbols = 40;
 const char *dsmoothvoronoi_source = "#version 130\n\n"
 "\n"
 "uniform float iTime;\n"
@@ -254,6 +254,107 @@ const char *dbox3_source = "#version 130\n\n"
 "  vec3 da = abs(x) - b;\n"
 "  d = length(max(da,0.0))\n"
 "         + min(max(da.x,max(da.y,da.z)),0.0);\n"
+"}\n"
+"\0";
+const char *scale_source = "#version 130\n\n"
+"uniform float iTime;\n"
+"void scale(out float s)\n"
+"{\n"
+"    if(iTime >=  0.0  && iTime <  4.705882 )\n"
+"    {\n"
+"        s = mod(iTime- 0.0 , 2.3529 )- 1.17645 ;\n"
+"        s = smoothstep( -0.196075 ,0.,s)*(1.-smoothstep(0., 0.588225 ,s));\n"
+"    }\n"
+"    if(iTime >=  4.705882  && iTime <  18.552036 )\n"
+"    {\n"
+"        s = mod(iTime- 4.705882 , 2.3079 )- 1.15395 ;\n"
+"        s = smoothstep( -0.192325 ,0.,s)*(1.-smoothstep(0., 0.576975 ,s));\n"
+"    }\n"
+"    if(iTime >=  18.552036  && iTime <  22.996481 )\n"
+"    {\n"
+"        s = mod(iTime- 18.552036 , 2.2222 )- 1.1111 ;\n"
+"        s = smoothstep( -0.18518333333333334 ,0.,s)*(1.-smoothstep(0., 0.55555 ,s));\n"
+"    }\n"
+"    if(iTime >=  22.996481  && iTime <  25.139338 )\n"
+"    {\n"
+"        s = mod(iTime- 22.996481 , 2.1427 )- 1.07135 ;\n"
+"        s = smoothstep( -0.17855833333333335 ,0.,s)*(1.-smoothstep(0., 0.535675 ,s));\n"
+"    }\n"
+"    if(iTime >=  25.139338  && iTime <  27.208303 )\n"
+"    {\n"
+"        s = mod(iTime- 25.139338 , 2.0691 )- 1.03455 ;\n"
+"        s = smoothstep( -0.17242500000000002 ,0.,s)*(1.-smoothstep(0., 0.517275 ,s));\n"
+"    }\n"
+"    if(iTime >=  27.208303  && iTime <  65.208303 )\n"
+"    {\n"
+"        s = mod(iTime- 27.208303 , 2.0 )- 1.0 ;\n"
+"        s = smoothstep( -0.16666666666666666 ,0.,s)*(1.-smoothstep(0., 0.5 ,s));\n"
+"    }\n"
+"    if(iTime >=  65.208303  && iTime <  71.109943 )\n"
+"    {\n"
+"        s = mod(iTime- 65.208303 , 1.9673 )- 0.98365 ;\n"
+"        s = smoothstep( -0.16394166666666668 ,0.,s)*(1.-smoothstep(0., 0.491825 ,s));\n"
+"    }\n"
+"    if(iTime >=  71.109943  && iTime <  82.722846 )\n"
+"    {\n"
+"        s = mod(iTime- 71.109943 , 1.9354 )- 0.9677 ;\n"
+"        s = smoothstep( -0.16128333333333333 ,0.,s)*(1.-smoothstep(0., 0.48385 ,s));\n"
+"    }\n"
+"    if(iTime >=  82.722846  && iTime <  86.722846 )\n"
+"    {\n"
+"        s = mod(iTime- 82.722846 , 2.0 )- 1.0 ;\n"
+"        s = smoothstep( -0.16666666666666666 ,0.,s)*(1.-smoothstep(0., 0.5 ,s));\n"
+"    }\n"
+"    if(iTime >=  86.722846  && iTime <  94.998708 )\n"
+"    {\n"
+"        s = mod(iTime- 86.722846 , 2.0691 )- 1.03455 ;\n"
+"        s = smoothstep( -0.17242500000000002 ,0.,s)*(1.-smoothstep(0., 0.517275 ,s));\n"
+"    }\n"
+"    if(iTime >=  94.998708  && iTime <  103.134301 )\n"
+"    {\n"
+"        s = mod(iTime- 94.998708 , 2.0338 )- 1.0169 ;\n"
+"        s = smoothstep( -0.16948333333333332 ,0.,s)*(1.-smoothstep(0., 0.50845 ,s));\n"
+"    }\n"
+"    if(iTime >=  103.134301  && iTime <  105.134301 )\n"
+"    {\n"
+"        s = mod(iTime- 103.134301 , 2.0 )- 1.0 ;\n"
+"        s = smoothstep( -0.16666666666666666 ,0.,s)*(1.-smoothstep(0., 0.5 ,s));\n"
+"    }\n"
+"    if(iTime >=  105.134301  && iTime <  107.069785 )\n"
+"    {\n"
+"        s = mod(iTime- 105.134301 , 1.9354 )- 0.9677 ;\n"
+"        s = smoothstep( -0.16128333333333333 ,0.,s)*(1.-smoothstep(0., 0.48385 ,s));\n"
+"    }\n"
+"    if(iTime >=  107.069785  && iTime <  125.819785 )\n"
+"    {\n"
+"        s = mod(iTime- 107.069785 , 1.8751 )- 0.93755 ;\n"
+"        s = smoothstep( -0.15625833333333333 ,0.,s)*(1.-smoothstep(0., 0.468775 ,s));\n"
+"    }\n"
+"    if(iTime >=  125.819785  && iTime <  129.819785 )\n"
+"    {\n"
+"        s = mod(iTime- 125.819785 , 2.0 )- 1.0 ;\n"
+"        s = smoothstep( -0.16666666666666666 ,0.,s)*(1.-smoothstep(0., 0.5 ,s));\n"
+"    }\n"
+"    if(iTime >=  129.819785  && iTime <  141.432688 )\n"
+"    {\n"
+"        s = mod(iTime- 129.819785 , 1.9354 )- 0.9677 ;\n"
+"        s = smoothstep( -0.16128333333333333 ,0.,s)*(1.-smoothstep(0., 0.48385 ,s));\n"
+"    }\n"
+"    if(iTime >=  141.432688  && iTime <  143.368172 )\n"
+"    {\n"
+"        s = mod(iTime- 141.432688 , 1.9354 )- 0.9677 ;\n"
+"        s = smoothstep( -0.16128333333333333 ,0.,s)*(1.-smoothstep(0., 0.48385 ,s));\n"
+"    }\n"
+"    if(iTime >=  143.368172  && iTime <  145.243172 )\n"
+"    {\n"
+"        s = mod(iTime- 143.368172 , 1.8751 )- 0.93755 ;\n"
+"        s = smoothstep( -0.15625833333333333 ,0.,s)*(1.-smoothstep(0., 0.468775 ,s));\n"
+"    }\n"
+"    if(iTime >=  145.243172  && iTime <  187.061354 )\n"
+"    {\n"
+"        s = mod(iTime- 145.243172 , 1.8182 )- 0.9091 ;\n"
+"        s = smoothstep( -0.15151666666666666 ,0.,s)*(1.-smoothstep(0., 0.45455 ,s));\n"
+"    }\n"
 "}\n"
 "\0";
 const char *rot3_source = "const vec3 c = vec3(1.,0.,-1.);\n"
@@ -1443,6 +1544,7 @@ const char *groundboxes_source = "/* Gross Gloss by Team210 - 64k intro by Team2
 "void dlinesegment3(in vec3 x, in vec3 p1, in vec3 p2, out float d);\n"
 "void stroke(in float d0, in float s, out float d);\n"
 "void zextrude(in float z, in float d2d, in float h, out float d);\n"
+"void scale(out float s);\n"
 "\n"
 "float sm(float d)\n"
 "{\n"
@@ -1502,9 +1604,8 @@ const char *groundboxes_source = "/* Gross Gloss by Team210 - 64k intro by Team2
 "    mat3 RR;\n"
 "    rot3(.2*iTime*vec3(1.1,1.4,1.6), RR);\n"
 "    \n"
-"    nbeats = mod(iTime, 60./29.);\n"
-"    iScale = nbeats-30./29.;\n"
-"    iScale = smoothstep(-5./29., 0., iScale)*(1.-smoothstep(0., 15./29., iScale));\n"
+"    scale(iScale);\n"
+"    \n"
 "    vec2 uv = fragCoord/iResolution.yy-0.5*vec2(a, 1.0), \n"
 "        s;\n"
 "    vec3 col = c.yyy, \n"
@@ -1719,6 +1820,7 @@ const char *graffiti_source = "/* Lightcyber by Team210 - 64k intro by Team210 a
 "void stroke(in float d0, in float s, out float d);\n"
 "void dvoronoi(in vec2 x, out float d, out vec2 z);\n"
 "void rot3(in vec3 phi, out mat3 R); \n"
+"void scale(out float s);\n"
 "\n"
 "void graf(in vec2 x, out float d)\n"
 "{\n"
@@ -1882,15 +1984,13 @@ const char *graffiti_source = "/* Lightcyber by Team210 - 64k intro by Team210 a
 "{\n"
 "    a = iResolution.x/iResolution.y;\n"
 "    \n"
-"    nbeats = mod(iTime, 60./29.);\n"
-"    iScale = nbeats-30./29.;\n"
-"    iScale = smoothstep(-5./29., 0., iScale)*(1.-smoothstep(0., 15./29., iScale));\n"
+"    scale(iScale);\n"
 "    \n"
 "    vec2 uv = fragCoord/iResolution.yy-0.5*vec2(a, 1.0), \n"
 "        s;\n"
 "        \n"
-"    float sc2 = smoothstep(0.,2.,clamp((iTime-11.),0.,2.)),\n"
-"        sc3 = smoothstep(0.,2.,clamp((iTime-13.), 0.,2.));\n"
+"    float sc2 = 0.,//smoothstep(0.,2.,clamp((iTime-11.),0.,2.)),\n"
+"        sc3 = 0.;//smoothstep(0.,2.,clamp((iTime-13.), 0.,2.));\n"
 "    \n"
 "    vec3 col = c.yyy, \n"
 "        o = mix(mix(c.yzx,c.zyx,sc2),c.zyy+mix(.2,.8,.45)*c.yyx, sc3),\n"
@@ -2314,6 +2414,7 @@ const char *evoke_source = "/* Lightcyber by Team210 - 64k intro by Team210 at S
 "void dlinesegment(in vec2 x, in vec2 p1, in vec2 p2, out float d);\n"
 "void lfnoise(in vec2 t, out float n);\n"
 "void dvoronoi(in vec2 x, out float d, out vec2 z);\n"
+"void scale(out float s);\n"
 "\n"
 "void devoke(in vec2 x, out float d)\n"
 "{\n"
@@ -2390,9 +2491,7 @@ const char *evoke_source = "/* Lightcyber by Team210 - 64k intro by Team210 at S
 "{\n"
 "    a = iResolution.x/iResolution.y;\n"
 "    \n"
-"    nbeats = mod(iTime, 60./29.);\n"
-"    iScale = nbeats-30./29.;\n"
-"    iScale = smoothstep(-5./29., 0., iScale)*(1.-smoothstep(0., 15./29., iScale));\n"
+"    scale(iScale);\n"
 "    \n"
 "    vec2 uv = fragCoord/iResolution.yy-0.5*vec2(a, 1.0), \n"
 "        s;\n"
@@ -2916,7 +3015,7 @@ const char *text_source = "/* Endeavor by Team210 - 64k intro by Team210 at Revi
 "        new.gba = mix(new.gba, vec3(1.00,0.40,0.39), sm(d));\n"
 "\n"
 "        // Add time overlay\n"
-"        dtime((uv-.45*vec2(.975*a,1.05)), iTime, .01, d);\n"
+"        dtime((uv-.45*vec2(.975*a,1.05)), iTime+11., .01, d);\n"
 "        new.gba = mix(new.gba, c.xxx, sm(d));\n"
 "        \n"
 "        // Add exact millisecond\n"
@@ -4455,6 +4554,19 @@ void Loaddbox3()
 #endif
     progress += .2/(float)nsymbols;
 }
+void Loadscale()
+{
+    int scale_size = strlen(scale_source);
+    scale_handle = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(scale_handle, 1, (GLchar **)&scale_source, &scale_size);
+    glCompileShader(scale_handle);
+#ifdef DEBUG
+    printf("---> scale Shader:\n");
+    debug(scale_handle);
+    printf(">>>>\n");
+#endif
+    progress += .2/(float)nsymbols;
+}
 void Loadrot3()
 {
     int rot3_size = strlen(rot3_source);
@@ -4800,6 +4912,8 @@ void LoadSymbols()
     updateBar();
     Loaddbox3();
     updateBar();
+    Loadscale();
+    updateBar();
     Loadrot3();
     updateBar();
     Loaddtriangle();
@@ -4930,6 +5044,7 @@ void Loadgroundboxes()
     glAttachShader(groundboxes_program,dlinesegment3_handle);
     glAttachShader(groundboxes_program,stroke_handle);
     glAttachShader(groundboxes_program,zextrude_handle);
+    glAttachShader(groundboxes_program,scale_handle);
     glAttachShader(groundboxes_program,smoothmin_handle);
     glAttachShader(groundboxes_program,add_handle);
     glAttachShader(groundboxes_program,dvoronoi_handle);
@@ -4978,6 +5093,7 @@ void Loadgraffiti()
     glAttachShader(graffiti_program,stroke_handle);
     glAttachShader(graffiti_program,dvoronoi_handle);
     glAttachShader(graffiti_program,rot3_handle);
+    glAttachShader(graffiti_program,scale_handle);
     glAttachShader(graffiti_program,zextrude_handle);
     glAttachShader(graffiti_program,add_handle);
     glAttachShader(graffiti_program,normal_handle);
@@ -5075,6 +5191,7 @@ void Loadevoke()
     glAttachShader(evoke_program,dlinesegment_handle);
     glAttachShader(evoke_program,lfnoise_handle);
     glAttachShader(evoke_program,dvoronoi_handle);
+    glAttachShader(evoke_program,scale_handle);
     glLinkProgram(evoke_program);
 #ifdef DEBUG
     printf("---> evoke Program:\n");
