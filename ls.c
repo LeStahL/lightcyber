@@ -580,6 +580,66 @@ void draw()
         {
             t = t_now + 156.;
         }
+        else if(override_index == 13)
+        {
+            t = t_now + 156.+1.*1.8182;
+        }
+        else if(override_index == 14)
+        {
+            t = t_now + 156.+2.*1.8182;
+        }
+        else if(override_index == 15)
+        {
+            t = t_now + 156.+3.*1.8182;
+        }
+        else if(override_index == 16)
+        {
+            t = t_now + 156.+3.5*1.8182;
+        }
+        else if(override_index == 17)
+        {
+            t = t_now + 156.+4.*1.8182;
+        }
+        else if(override_index == 18)
+        {
+            t = t_now + 156.+5.*1.8182;
+        }
+        else if(override_index == 19)
+        {
+            t = t_now + 156.+6.*1.8182;
+        }
+        else if(override_index == 20)
+        {
+            t = t_now + 156.+8.*1.8182;
+        }
+        else if(override_index == 21)
+        {
+            t = t_now + 156.+9.*1.8182;
+        }
+        else if(override_index == 22)
+        {
+            t = t_now + 156.+10.*1.8182;
+        }
+        else if(override_index == 23)
+        {
+            t = t_now + 156.+11.*1.8182;
+        }
+        else if(override_index == 24)
+        {
+            t = t_now + 156.+11.5*1.8182;
+        }
+        else if(override_index == 25)
+        {
+            t = t_now + 156.+12.*1.8182;
+        }
+        else if(override_index == 26)
+        {
+            t = t_now + 156.+13.*1.8182;
+        }
+        else if(override_index == 27)
+        {
+            t = t_now + 156.+14.*1.8182;
+        }
     }
     
     if(t < 11.)
@@ -835,24 +895,369 @@ void draw()
         }
 #endif
     }
-    // FIXME hier geballer
-    else if(t < t_end)
+    // FIXME hier geballer, taktlänge 1.8182
+    else if(t < 156.+1.*1.8182)
     {
-        glUseProgram(greet_program);
-        glUniform1f(greet_iTime_location, t-112.);
-        glUniform2f(greet_iResolution_location, w, h);
+        glUseProgram(volclouds_program);
+        glUniform1f(volclouds_iTime_location, t);
+        glUniform2f(volclouds_iResolution_location, w, h);
       
 #ifdef MIDI
-        glUniform1f(greet_iFader0_location, fader0);
-        glUniform1f(greet_iFader1_location, fader1);
-        glUniform1f(greet_iFader2_location, fader2);
-        glUniform1f(greet_iFader3_location, fader3);
-        glUniform1f(greet_iFader4_location, fader4);
-        glUniform1f(greet_iFader5_location, fader5);
-        glUniform1f(greet_iFader6_location, fader6);
-        glUniform1f(greet_iFader7_location, fader7);
+        glUniform1f(volclouds_iFader0_location, fader0);
+        glUniform1f(volclouds_iFader1_location, fader1);
+        glUniform1f(volclouds_iFader2_location, fader2);
+        glUniform1f(volclouds_iFader3_location, fader3);
+        glUniform1f(volclouds_iFader4_location, fader4);
+        glUniform1f(volclouds_iFader5_location, fader5);
+        glUniform1f(volclouds_iFader6_location, fader6);
+        glUniform1f(volclouds_iFader7_location, fader7);
         
-        if(override_index == 8) 
+        if(override_index == 11) 
+        {
+            select_button(override_index);
+            scene_override = 0;
+        }
+#endif
+    }
+    else if(t < 156.+2.*1.8182)
+    {
+        glUseProgram(graffiti_program);
+        glUniform1f(graffiti_iTime_location, t);
+        glUniform2f(graffiti_iResolution_location, w, h);
+      
+#ifdef MIDI
+        glUniform1f(graffiti_iFader0_location, fader0);
+        glUniform1f(graffiti_iFader1_location, fader1);
+        glUniform1f(graffiti_iFader2_location, fader2);
+        glUniform1f(graffiti_iFader3_location, fader3);
+        glUniform1f(graffiti_iFader4_location, fader4);
+        glUniform1f(graffiti_iFader5_location, fader5);
+        glUniform1f(graffiti_iFader6_location, fader6);
+        glUniform1f(graffiti_iFader7_location, fader7);
+        
+        if(override_index == 12) 
+        {
+            select_button(override_index);
+            scene_override = 0;
+        }
+#endif
+    }
+    else if(t < 156.+3.*1.8182)
+    {
+        glUseProgram(transbubbles_program);
+        glUniform1f(transbubbles_iTime_location, t);
+        glUniform2f(transbubbles_iResolution_location, w, h);
+      
+#ifdef MIDI
+        glUniform1f(transbubbles_iFader0_location, fader0);
+        glUniform1f(transbubbles_iFader1_location, fader1);
+        glUniform1f(transbubbles_iFader2_location, fader2);
+        glUniform1f(transbubbles_iFader3_location, fader3);
+        glUniform1f(transbubbles_iFader4_location, fader4);
+        glUniform1f(transbubbles_iFader5_location, fader5);
+        glUniform1f(transbubbles_iFader6_location, fader6);
+        glUniform1f(transbubbles_iFader7_location, fader7);
+        
+        if(override_index == 13) 
+        {
+            select_button(override_index);
+            scene_override = 0;
+        }
+#endif
+    }
+    else if(t < 156.+3.5*1.8182)
+    {
+        glUseProgram(voronoidesign_program);
+        glUniform1f(voronoidesign_iTime_location, t);
+        glUniform2f(voronoidesign_iResolution_location, w, h);
+      
+#ifdef MIDI
+        glUniform1f(voronoidesign_iFader0_location, fader0);
+        glUniform1f(voronoidesign_iFader1_location, fader1);
+        glUniform1f(voronoidesign_iFader2_location, fader2);
+        glUniform1f(voronoidesign_iFader3_location, fader3);
+        glUniform1f(voronoidesign_iFader4_location, fader4);
+        glUniform1f(voronoidesign_iFader5_location, fader5);
+        glUniform1f(voronoidesign_iFader6_location, fader6);
+        glUniform1f(voronoidesign_iFader7_location, fader7);
+        
+        if(override_index == 14) 
+        {
+            select_button(override_index);
+            scene_override = 0;
+        }
+#endif
+    }
+    else if(t < 156.+4.*1.8182)
+    {
+        glUseProgram(groundboxes_program);
+        glUniform1f(groundboxes_iTime_location, t);
+        glUniform2f(groundboxes_iResolution_location, w, h);
+      
+#ifdef MIDI
+        glUniform1f(groundboxes_iFader0_location, fader0);
+        glUniform1f(groundboxes_iFader1_location, fader1);
+        glUniform1f(groundboxes_iFader2_location, fader2);
+        glUniform1f(groundboxes_iFader3_location, fader3);
+        glUniform1f(groundboxes_iFader4_location, fader4);
+        glUniform1f(groundboxes_iFader5_location, fader5);
+        glUniform1f(groundboxes_iFader6_location, fader6);
+        glUniform1f(groundboxes_iFader7_location, fader7);
+        
+        if(override_index == 15) 
+        {
+            select_button(override_index);
+            scene_override = 0;
+        }
+#endif
+    }
+    else if(t < 156.+5.*1.8182)
+    {
+        glUseProgram(volclouds_program);
+        glUniform1f(volclouds_iTime_location, t);
+        glUniform2f(volclouds_iResolution_location, w, h);
+      
+#ifdef MIDI
+        glUniform1f(volclouds_iFader0_location, fader0);
+        glUniform1f(volclouds_iFader1_location, fader1);
+        glUniform1f(volclouds_iFader2_location, fader2);
+        glUniform1f(volclouds_iFader3_location, fader3);
+        glUniform1f(volclouds_iFader4_location, fader4);
+        glUniform1f(volclouds_iFader5_location, fader5);
+        glUniform1f(volclouds_iFader6_location, fader6);
+        glUniform1f(volclouds_iFader7_location, fader7);
+        
+        if(override_index == 16) 
+        {
+            select_button(override_index);
+            scene_override = 0;
+        }
+#endif
+    }
+    else if(t < 156.+6.*1.8182)
+    {
+        glUseProgram(transbubbles_program);
+        glUniform1f(transbubbles_iTime_location, t);
+        glUniform2f(transbubbles_iResolution_location, w, h);
+      
+#ifdef MIDI
+        glUniform1f(transbubbles_iFader0_location, fader0);
+        glUniform1f(transbubbles_iFader1_location, fader1);
+        glUniform1f(transbubbles_iFader2_location, fader2);
+        glUniform1f(transbubbles_iFader3_location, fader3);
+        glUniform1f(transbubbles_iFader4_location, fader4);
+        glUniform1f(transbubbles_iFader5_location, fader5);
+        glUniform1f(transbubbles_iFader6_location, fader6);
+        glUniform1f(transbubbles_iFader7_location, fader7);
+        
+        if(override_index == 17) 
+        {
+            select_button(override_index);
+            scene_override = 0;
+        }
+#endif
+    }
+    else if(t < 156.+8.*1.8182)
+    {
+        glUseProgram(canal_program);
+        glUniform1f(canal_iTime_location, t);
+        glUniform2f(canal_iResolution_location, w, h);
+      
+#ifdef MIDI
+        glUniform1f(canal_iFader0_location, fader0);
+        glUniform1f(canal_iFader1_location, fader1);
+        glUniform1f(canal_iFader2_location, fader2);
+        glUniform1f(canal_iFader3_location, fader3);
+        glUniform1f(canal_iFader4_location, fader4);
+        glUniform1f(canal_iFader5_location, fader5);
+        glUniform1f(canal_iFader6_location, fader6);
+        glUniform1f(canal_iFader7_location, fader7);
+        
+        if(override_index == 18) 
+        {
+            select_button(override_index);
+            scene_override = 0;
+        }
+#endif
+    }
+    else if(t < 156.+9.*1.8182)
+    {
+        glUseProgram(groundboxes_program);
+        glUniform1f(groundboxes_iTime_location, t);
+        glUniform2f(groundboxes_iResolution_location, w, h);
+      
+#ifdef MIDI
+        glUniform1f(groundboxes_iFader0_location, fader0);
+        glUniform1f(groundboxes_iFader1_location, fader1);
+        glUniform1f(groundboxes_iFader2_location, fader2);
+        glUniform1f(groundboxes_iFader3_location, fader3);
+        glUniform1f(groundboxes_iFader4_location, fader4);
+        glUniform1f(groundboxes_iFader5_location, fader5);
+        glUniform1f(groundboxes_iFader6_location, fader6);
+        glUniform1f(groundboxes_iFader7_location, fader7);
+        
+        if(override_index == 19) 
+        {
+            select_button(override_index);
+            scene_override = 0;
+        }
+#endif
+    }
+    else if(t < 156.+10.*1.8182)
+    {
+        glUseProgram(voronoidesign_program);
+        glUniform1f(voronoidesign_iTime_location, t);
+        glUniform2f(voronoidesign_iResolution_location, w, h);
+      
+#ifdef MIDI
+        glUniform1f(voronoidesign_iFader0_location, fader0);
+        glUniform1f(voronoidesign_iFader1_location, fader1);
+        glUniform1f(voronoidesign_iFader2_location, fader2);
+        glUniform1f(voronoidesign_iFader3_location, fader3);
+        glUniform1f(voronoidesign_iFader4_location, fader4);
+        glUniform1f(voronoidesign_iFader5_location, fader5);
+        glUniform1f(voronoidesign_iFader6_location, fader6);
+        glUniform1f(voronoidesign_iFader7_location, fader7);
+        
+        if(override_index == 20) 
+        {
+            select_button(override_index);
+            scene_override = 0;
+        }
+#endif
+    }
+    else if(t < 156.+11.*1.8182)
+    {
+        glUseProgram(canal_program);
+        glUniform1f(canal_iTime_location, t);
+        glUniform2f(canal_iResolution_location, w, h);
+      
+#ifdef MIDI
+        glUniform1f(canal_iFader0_location, fader0);
+        glUniform1f(canal_iFader1_location, fader1);
+        glUniform1f(canal_iFader2_location, fader2);
+        glUniform1f(canal_iFader3_location, fader3);
+        glUniform1f(canal_iFader4_location, fader4);
+        glUniform1f(canal_iFader5_location, fader5);
+        glUniform1f(canal_iFader6_location, fader6);
+        glUniform1f(canal_iFader7_location, fader7);
+        
+        if(override_index == 21) 
+        {
+            select_button(override_index);
+            scene_override = 0;
+        }
+#endif
+    }
+    else if(t < 156.+11.5*1.8182)
+    {
+        glUseProgram(graffiti_program);
+        glUniform1f(graffiti_iTime_location, t);
+        glUniform2f(graffiti_iResolution_location, w, h);
+      
+#ifdef MIDI
+        glUniform1f(graffiti_iFader0_location, fader0);
+        glUniform1f(graffiti_iFader1_location, fader1);
+        glUniform1f(graffiti_iFader2_location, fader2);
+        glUniform1f(graffiti_iFader3_location, fader3);
+        glUniform1f(graffiti_iFader4_location, fader4);
+        glUniform1f(graffiti_iFader5_location, fader5);
+        glUniform1f(graffiti_iFader6_location, fader6);
+        glUniform1f(graffiti_iFader7_location, fader7);
+        
+        if(override_index == 22) 
+        {
+            select_button(override_index);
+            scene_override = 0;
+        }
+#endif
+    }
+    else if(t < 156.+12.*1.8182)
+    {
+        glUseProgram(transbubbles_program);
+        glUniform1f(transbubbles_iTime_location, t);
+        glUniform2f(transbubbles_iResolution_location, w, h);
+      
+#ifdef MIDI
+        glUniform1f(transbubbles_iFader0_location, fader0);
+        glUniform1f(transbubbles_iFader1_location, fader1);
+        glUniform1f(transbubbles_iFader2_location, fader2);
+        glUniform1f(transbubbles_iFader3_location, fader3);
+        glUniform1f(transbubbles_iFader4_location, fader4);
+        glUniform1f(transbubbles_iFader5_location, fader5);
+        glUniform1f(transbubbles_iFader6_location, fader6);
+        glUniform1f(transbubbles_iFader7_location, fader7);
+        
+        if(override_index == 23) 
+        {
+            select_button(override_index);
+            scene_override = 0;
+        }
+#endif
+    }
+    else if(t < 156.+13.*1.8182)
+    {
+        glUseProgram(volclouds_program);
+        glUniform1f(volclouds_iTime_location, t);
+        glUniform2f(volclouds_iResolution_location, w, h);
+      
+#ifdef MIDI
+        glUniform1f(volclouds_iFader0_location, fader0);
+        glUniform1f(volclouds_iFader1_location, fader1);
+        glUniform1f(volclouds_iFader2_location, fader2);
+        glUniform1f(volclouds_iFader3_location, fader3);
+        glUniform1f(volclouds_iFader4_location, fader4);
+        glUniform1f(volclouds_iFader5_location, fader5);
+        glUniform1f(volclouds_iFader6_location, fader6);
+        glUniform1f(volclouds_iFader7_location, fader7);
+        
+        if(override_index == 24) 
+        {
+            select_button(override_index);
+            scene_override = 0;
+        }
+#endif
+    }
+    else if(t < 156.+14.*1.8182)
+    {
+        glUseProgram(groundboxes_program);
+        glUniform1f(groundboxes_iTime_location, t);
+        glUniform2f(groundboxes_iResolution_location, w, h);
+      
+#ifdef MIDI
+        glUniform1f(groundboxes_iFader0_location, fader0);
+        glUniform1f(groundboxes_iFader1_location, fader1);
+        glUniform1f(groundboxes_iFader2_location, fader2);
+        glUniform1f(groundboxes_iFader3_location, fader3);
+        glUniform1f(groundboxes_iFader4_location, fader4);
+        glUniform1f(groundboxes_iFader5_location, fader5);
+        glUniform1f(groundboxes_iFader6_location, fader6);
+        glUniform1f(groundboxes_iFader7_location, fader7);
+        
+        if(override_index == 25) 
+        {
+            select_button(override_index);
+            scene_override = 0;
+        }
+#endif
+    }
+    else if(t < t_end)
+    {
+        glUseProgram(voronoidesign_program);
+        glUniform1f(voronoidesign_iTime_location, t);
+        glUniform2f(voronoidesign_iResolution_location, w, h);
+      
+#ifdef MIDI
+        glUniform1f(voronoidesign_iFader0_location, fader0);
+        glUniform1f(voronoidesign_iFader1_location, fader1);
+        glUniform1f(voronoidesign_iFader2_location, fader2);
+        glUniform1f(voronoidesign_iFader3_location, fader3);
+        glUniform1f(voronoidesign_iFader4_location, fader4);
+        glUniform1f(voronoidesign_iFader5_location, fader5);
+        glUniform1f(voronoidesign_iFader6_location, fader6);
+        glUniform1f(voronoidesign_iFader7_location, fader7);
+        
+        if(override_index == 26) 
         {
             select_button(override_index);
             scene_override = 0;
