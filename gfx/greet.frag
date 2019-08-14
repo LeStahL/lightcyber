@@ -60,9 +60,17 @@ void dmercury(in vec2 x, out float d);
 vec2 ind, indc;
 void scene(in vec3 x, out vec2 sdf)
 {
-    x.z -= .05*iTime;
-    
     float d;
+
+    d = mix(mix(mix(mix(mix(mix(mix(0.,0.14173228346456693,smoothstep(0.,0.341334,iTime)),
+            0.14173228346456693+.25,smoothstep(0.341334,2.276818,iTime)),
+            0.14173228346456693+.5,smoothstep(2.276818,4.151818,iTime)),
+            0.14173228346456693+.75,smoothstep(4.151818,4.151818+1*1.8182,iTime)),
+            0.14173228346456693+1.,smoothstep(4.151818+1*1.8182,4.151818+2*1.8182,iTime)),
+            0.14173228346456693+1.25,smoothstep(4.151818+2*1.8182,4.151818+3*1.8182,iTime)),
+            0.,smoothstep(4.151818+3*1.8182,4.151818+5*1.8182,iTime));
+//     x.z -= mix(0.,1.5,iFader0);
+    x.z -= d;
     
     // Corridor
     dbox3(x, vec3(.1,.1,1.e3), d);
@@ -99,49 +107,16 @@ void scene(in vec3 x, out vec2 sdf)
     dz = mod(x.z-.5*tsize, tsize)-.5*tsize;
     zi = round((x.z-dz)/tsize);
     zi = mod(zi, 6.);
-    if(zi < .5)
-    {
-        dmercury(20.*x.xy, d);
-        stroke(d/20.,tw, d);
-        zextrude(dz, -d, .005, d);
-        add(sdf, vec2(d, 5.), sdf);
-    }
-    else if(zi < 1.5)
-    {
-        dhaujobb(20.*x.xy, d);
-        stroke(d/20.,tw, d);
-        zextrude(dz, -d, .005, d);
-        add(sdf, vec2(d, 5.), sdf);
-    }
-    else if(zi < 2.5)
-    {
-        dfarbrausch(20.*x.xy, d);
-        stroke(d/20.,tw, d);
-        zextrude(dz, -d, .005, d);
-        add(sdf, vec2(d, 5.), sdf);
-    }
-    else if(zi < 3.5)
-    {
-        dkewlers(20.*x.xy, d);
-        stroke(d/20.,tw, d);
-        zextrude(dz, -d, .005, d);
-        add(sdf, vec2(d, 5.), sdf);
-    }
-	else if(zi < 4.5)
-    {
-        dspacepigs(20.*x.xy, d);
-        stroke(d/20.,tw, d);
-        zextrude(dz, -d, .005, d);
-        add(sdf, vec2(d, 5.), sdf);
-    }
-	else if(zi < 5.5)
-    {
-        dschnappsgirls(20.*x.xy, d);
-        stroke(d/20.,tw, d);
-        zextrude(dz, -d, .005, d);
-        add(sdf, vec2(d, 5.), sdf);
-    }
-
+    
+    if(zi < .5)dmercury(20.*x.xy, d);
+    else if(zi < 1.5)dhaujobb(20.*x.xy, d);
+    else if(zi < 2.5)dfarbrausch(20.*x.xy, d);
+    else if(zi < 3.5)dkewlers(20.*x.xy, d);
+	else if(zi < 4.5)dspacepigs(20.*x.xy, d);
+	else if(zi < 5.5)dschnappsgirls(20.*x.xy, d);
+    stroke(d/20.,tw, d);
+    zextrude(dz, -d, .005, d);
+    add(sdf, vec2(d, 5.), sdf);
 }
 
 void normal(in vec3 x, out vec3 n, in float dx);
@@ -282,6 +257,9 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     
     //col = atan(col);
     col *= col;
+    col = clamp(col, 0., 1.);
+    col = mix(col, c.yyy, smoothstep(4.151818+3*1.8182,13.,iTime));
+    
     fragColor = vec4(clamp(col,0.,1.),1.0);
 }	
 
