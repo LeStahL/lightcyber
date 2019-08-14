@@ -36,44 +36,6 @@ void dlinesegment(in vec2 x, in vec2 p1, in vec2 p2, out float d)
     d = length(x-mix(p1, p2, clamp(dot(x-p1, da)/dot(da,da),0.,1.)));
 }
 
-void palette1(in float scale, out vec3 col)
-{
-    const int N = 5;
-   
-    //*
-    const vec3 colors[N] = vec3[N](
-            vec3(0.82,0.27,0.13),
-            vec3(0.85,0.77,0.68),
-            vec3(0.65,0.59,0.55),
-            vec3(0.45,0.29,0.24),
-            vec3(0.85,0.27,0.15)
-        );
-    //*/
-    
-    /*
-	const vec3 colors[N] = vec3[N](
-       	vec3(0.86,0.21,0.13),
-        vec3(0.85,0.80,0.62),
-        vec3(0.22,0.25,0.25),
-        vec3(0.16,0.17,0.17),
-        vec3(0.12,0.12,0.13)
-    );
-    //*/
-    
-	/*
-    const vec3 colors[N] = vec3[N](
-       	vec3(0.00,0.00,0.00),
-        vec3(0.64,0.05,0.05),
-        vec3(0.91,0.06,0.05),
-        vec3(0.96,0.82,0.65),
-        vec3(0.65,0.49,0.36)
-    );
-    //*/
-	float index = floor(scale*float(N)), 
-        remainder = scale*float(N)-index;
-    col = mix(colors[int(index)],colors[int(index)+1], remainder);
-}
-
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
     a = iResolution.x/iResolution.y;
@@ -89,14 +51,12 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     col = mix(col, c.xxx, sm(d));
     dlinesegment(uv, -.25*a*c.xy, -.25*a*c.xy+.5*a*iProgress*c.xy, d);
     d = abs(d)-.045;
+    col = mix(col, mix(vec3(0.41,0.00,0.11), vec3(1.00,0.36,0.51), clamp((uv.y+.05)/.1,0.,1.)), sm(d));
     
-    vec3 c1;
-    palette1(clamp((uv.y+.045)/.15,0.,1.), c1);
+    col += col;
+    col *= col;
     
-    col = mix(col, c1, sm(d));
-    
-    //col += col;
-    //col *= col;
+    col = .5*c.xxx/sqrt(3.)*length(col);
     
     fragColor = vec4(clamp(col,0.,1.),1.0);
 }
