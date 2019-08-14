@@ -202,10 +202,10 @@ float rfloat(int off)
 }
 
 #define NTRK 17
-#define NMOD 214
-#define NPTN 38
-#define NNOT 1887
-#define NDRM 38
+#define NMOD 220
+#define NPTN 41
+#define NNOT 1979
+#define NDRM 40
 
 int trk_sep(int index)      {return int(rfloat(index));}
 int trk_syn(int index)      {return int(rfloat(index+1+1*NTRK));}
@@ -322,8 +322,8 @@ vec2 mainSynth(float time)
                         amaydrumR = vel*sinshape(fract(sin(_t2*100.*30.)*50000.*20.)*doubleslope(_t2,0.,.1,.1)+lpnoise(_t2 + 0.,6000.),1.,5.)*theta(Bprog)*exp(-2.*Bprog);
                     }
                     else if(drum == 6){
-                        amaydrumL = vel*(clamp(2.24*_tri(drop_phase(_t,.01,330.,120.)),-1.,1.)*(1.-smoothstep(-1e-3,0.,_t-.26))+.72*clamp(.78*_tri(drop_phase(_t,.01,330.,120.)+.72*lpnoise(_t,1282.)),-1.,1.)*exp(-29.17*_t)+.02*lpnoise(_t,6207.)*(1.-smoothstep(0.,.93,_t-.16))+.73*lpnoise(_t,2799.)*exp(-_t*1.92)+.02*lpnoise(_t,5625.)*exp(-_t*13.04))*smoothstep(0.,.007,_t);
-                        amaydrumR = vel*(clamp(2.24*_tri(drop_phase(_t2,.01,330.,120.)),-1.,1.)*(1.-smoothstep(-1e-3,0.,_t2-.26))+.72*clamp(.78*_tri(drop_phase(_t2,.01,330.,120.)+.72*lpnoise(_t2,1282.)),-1.,1.)*exp(-29.17*_t2)+.02*lpnoise(_t2,6207.)*(1.-smoothstep(0.,.93,_t2-.16))+.73*lpnoise(_t2,2799.)*exp(-_t2*1.92)+.02*lpnoise(_t2,5625.)*exp(-_t2*13.04))*smoothstep(0.,.007,_t2);
+                        amaydrumL = vel*(clamp(1.26*_tri(drop_phase(_t,.03,271.,59.)),-1.,1.)*(1.-smoothstep(-1e-3,0.,_t-.1))+.16*clamp(.08*_tri(drop_phase(_t,.03,271.,59.)+.16*lpnoise(_t,8492.)),-1.,1.)*exp(-28.35*_t)+.06*lpnoise(_t,16312.)*(1.-smoothstep(0.,.4,_t-.19))+.56*lpnoise(_t,3082.)*exp(-_t*16.02)+.79*lpnoise(_t,6472.)*exp(-_t*2.63))*smoothstep(0.,.005,_t);
+                        amaydrumR = vel*(clamp(1.26*_tri(drop_phase(_t2,.03,271.,59.)),-1.,1.)*(1.-smoothstep(-1e-3,0.,_t2-.1))+.16*clamp(.08*_tri(drop_phase(_t2,.03,271.,59.)+.16*lpnoise(_t2,8492.)),-1.,1.)*exp(-28.35*_t2)+.06*lpnoise(_t2,16312.)*(1.-smoothstep(0.,.4,_t2-.19))+.56*lpnoise(_t2,3082.)*exp(-_t2*16.02)+.79*lpnoise(_t2,6472.)*exp(-_t2*2.63))*smoothstep(0.,.005,_t2);
                     }
                     else if(drum == 8){
                         amaydrumL = vel*(.3+(.7*theta(Bprog)*exp(-10.*Bprog)))*sinshape(((clamp(.72*_tri(drop_phase(_t,.07,227.,107.)),-1.,1.)*(1.-smoothstep(-1e-3,0.,_t-.09))+.69*clamp(.94*_tri(drop_phase(_t,.07,227.,107.)+.69*lpnoise(_t,8709.)),-1.,1.)*exp(-13.89*_t)+.06*lpnoise(_t,18745.)*(1.-smoothstep(0.,.67,_t-.17))+.28*lpnoise(_t,7506.)*exp(-_t*12.44)+.82*lpnoise(_t,2600.)*exp(-_t*17.54))*smoothstep(0.,.004,_t)),.6,9.);
@@ -381,9 +381,17 @@ vec2 mainSynth(float time)
                         amaydrumR = vel*(vel*(clamp(1.32*_tri(drop_phase(_t2,.06,308.,80.)),-1.,1.)*(1.-smoothstep(-1e-3,0.,_t2-.15))+.82*clamp(.49*_tri(drop_phase(_t2,.06,308.,80.)+.82*lpnoise(_t2,4595.)),-1.,1.)*exp(-1.97*_t2)+.09*lpnoise(_t2,4032.)*(1.-smoothstep(0.,.97,_t2-.79))+.1*lpnoise(_t2,1111.)*exp(-_t2*12.69)+.6*lpnoise(_t2,7795.)*exp(-_t2*1.08))*smoothstep(0.,.003,_t2))
       +.5*((clamp(1.35*_tri(drop_phase(_t2,.07,244.,112.)),-1.,1.)*(1.-smoothstep(-1e-3,0.,_t2-.09))+.27*clamp(.03*_tri(drop_phase(_t2,.07,244.,112.)+.27*lpnoise(_t2,5148.)),-1.,1.)*exp(-24.07*_t2)+0.*lpnoise(_t2,1959.)*(1.-smoothstep(0.,.98,_t2-.64))+.43*lpnoise(_t2,8238.)*exp(-_t2*25.54)+.11*lpnoise(_t2,3803.)*exp(-_t2*10.51))*smoothstep(0.,.006,_t2));
                     }
+                    else if(drum == 33){
+                        amaydrumL = vel*((clamp(2.58*_tri(drop_phase(_t,.05,156.,91.)),-1.,1.)*(1.-smoothstep(-1e-3,0.,_t-.04))+.35*clamp(.44*_tri(drop_phase(_t,.05,156.,91.)+.35*lpnoise(_t,6183.)),-1.,1.)*exp(-7.56*_t)+.08*lpnoise(_t,7245.)*(1.-smoothstep(0.,.58,_t-.2))+.72*lpnoise(_t,2591.)*exp(-_t*5.48)+.73*lpnoise(_t,3597.)*exp(-_t*29.4))*smoothstep(0.,.01,_t));
+                        amaydrumR = vel*((clamp(2.58*_tri(drop_phase(_t2,.05,156.,91.)),-1.,1.)*(1.-smoothstep(-1e-3,0.,_t2-.04))+.35*clamp(.44*_tri(drop_phase(_t2,.05,156.,91.)+.35*lpnoise(_t2,6183.)),-1.,1.)*exp(-7.56*_t2)+.08*lpnoise(_t2,7245.)*(1.-smoothstep(0.,.58,_t2-.2))+.72*lpnoise(_t2,2591.)*exp(-_t2*5.48)+.73*lpnoise(_t2,3597.)*exp(-_t2*29.4))*smoothstep(0.,.01,_t2));
+                    }
                     else if(drum == 34){
                         amaydrumL = vel*((clamp(1.42*_tri(drop_phase(_t,.02,261.,53.)),-1.,1.)*(1.-smoothstep(-1e-3,0.,_t-.28))+.86*clamp(.04*_tri(drop_phase(_t,.02,261.,53.)+.86*lpnoise(_t,3210.)),-1.,1.)*exp(-20.77*_t)+.03*lpnoise(_t,2325.)*(1.-smoothstep(0.,.42,_t-.01))+.28*lpnoise(_t,4276.)*exp(-_t*14.57)+.72*lpnoise(_t,3219.)*exp(-_t*9.93))*smoothstep(0.,.007,_t));
                         amaydrumR = vel*((clamp(1.42*_tri(drop_phase(_t2,.02,261.,53.)),-1.,1.)*(1.-smoothstep(-1e-3,0.,_t2-.28))+.86*clamp(.04*_tri(drop_phase(_t2,.02,261.,53.)+.86*lpnoise(_t2,3210.)),-1.,1.)*exp(-20.77*_t2)+.03*lpnoise(_t2,2325.)*(1.-smoothstep(0.,.42,_t2-.01))+.28*lpnoise(_t2,4276.)*exp(-_t2*14.57)+.72*lpnoise(_t2,3219.)*exp(-_t2*9.93))*smoothstep(0.,.007,_t2));
+                    }
+                    else if(drum == 39){
+                        amaydrumL = vel*((clamp(2.27*_tri(drop_phase(_t,.03,241.,72.)),-1.,1.)*(1.-smoothstep(-1e-3,0.,_t-.01))+.91*clamp(.9*_tri(drop_phase(_t,.03,241.,72.)+.91*lpnoise(_t,8164.)),-1.,1.)*exp(-20.76*_t)+.05*lpnoise(_t,10466.)*(1.-smoothstep(0.,.18,_t-.56))+.56*lpnoise(_t,7123.)*exp(-_t*5.45)+.11*lpnoise(_t,1134.)*exp(-_t*13.82))*smoothstep(0.,.004,_t));
+                        amaydrumR = vel*((clamp(2.27*_tri(drop_phase(_t2,.03,241.,72.)),-1.,1.)*(1.-smoothstep(-1e-3,0.,_t2-.01))+.91*clamp(.9*_tri(drop_phase(_t2,.03,241.,72.)+.91*lpnoise(_t2,8164.)),-1.,1.)*exp(-20.76*_t2)+.05*lpnoise(_t2,10466.)*(1.-smoothstep(0.,.18,_t2-.56))+.56*lpnoise(_t2,7123.)*exp(-_t2*5.45)+.11*lpnoise(_t2,1134.)*exp(-_t2*13.82))*smoothstep(0.,.004,_t2));
                     }
                     
                     dL += amtL * s_atan(env * amaydrumL);
