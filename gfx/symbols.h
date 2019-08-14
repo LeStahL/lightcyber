@@ -2,8 +2,109 @@
 #ifndef SYMBOLIZE_H
 #define SYMBOLIZE_H
 
-extern float progress;int dsmoothvoronoi_handle, rand_handle, hash31_handle, lfnoise_handle, mfnoise_handle, dbox_handle, dlinesegment3_handle, stroke_handle, zextrude_handle, add_handle, smoothmin_handle, dspline3_handle, dvoronoi_handle, normal_handle, dbox3_handle, scale_handle, rot3_handle, dtriangle_handle, dlinesegment_handle, dpolygon_handle, rot_handle, dcircle_handle, dschnappsgirls_handle, dspacepigs_handle, dkewlers_handle, dfarbrausch_handle, dhaujobb_handle, dmercury_handle, rshort_handle, rfloat_handle, drhomboid_handle, dcirclesegment_handle, dglyph_handle, dstring_handle, dfloat_handle, dint_handle, dtime_handle, window_handle, progressbar_handle, hash13_handle;
+extern float progress;int scale_handle, dsmoothvoronoi_handle, rand_handle, hash31_handle, lfnoise_handle, mfnoise_handle, dbox_handle, dlinesegment3_handle, stroke_handle, zextrude_handle, add_handle, smoothmin_handle, dspline3_handle, dvoronoi_handle, normal_handle, dbox3_handle, rot3_handle, dtriangle_handle, dlinesegment_handle, dpolygon_handle, rot_handle, dcircle_handle, dschnappsgirls_handle, dspacepigs_handle, dkewlers_handle, dfarbrausch_handle, dhaujobb_handle, dmercury_handle, rshort_handle, rfloat_handle, drhomboid_handle, dcirclesegment_handle, dglyph_handle, dstring_handle, dfloat_handle, dint_handle, dtime_handle, window_handle, progressbar_handle, hash13_handle;
 const int nsymbols = 40;
+const char *scale_source = "#version 130\n\n"
+"uniform float iTime;\n"
+"void scale(out float s)\n"
+"{\n"
+"    if(iTime >=  0.0  && iTime <  4.705882 )\n"
+"    {\n"
+"        s = mod(iTime , 0.588225 )- 0.2941125 ;\n"
+"        s = smoothstep( -0.04901875 ,0.,s)*(1.-smoothstep(0., 0.14705625 ,s));\n"
+"    }\n"
+"    if(iTime >=  4.705882  && iTime <  18.552036 )\n"
+"    {\n"
+"        s = mod(iTime , 0.576975 )- 0.2884875 ;\n"
+"        s = smoothstep( -0.04808125 ,0.,s)*(1.-smoothstep(0., 0.14424375 ,s));\n"
+"    }\n"
+"    if(iTime >=  18.552036  && iTime <  22.996481 )\n"
+"    {\n"
+"        s = mod(iTime , 0.55555 )- 0.277775 ;\n"
+"        s = smoothstep( -0.046295833333333335 ,0.,s)*(1.-smoothstep(0., 0.1388875 ,s));\n"
+"    }\n"
+"    if(iTime >=  22.996481  && iTime <  25.139338 )\n"
+"    {\n"
+"        s = mod(iTime , 0.535675 )- 0.2678375 ;\n"
+"        s = smoothstep( -0.04463958333333334 ,0.,s)*(1.-smoothstep(0., 0.13391875 ,s));\n"
+"    }\n"
+"    if(iTime >=  25.139338  && iTime <  27.208303 )\n"
+"    {\n"
+"        s = mod(iTime , 0.517275 )- 0.2586375 ;\n"
+"        s = smoothstep( -0.043106250000000006 ,0.,s)*(1.-smoothstep(0., 0.12931875 ,s));\n"
+"    }\n"
+"    if(iTime >=  27.208303  && iTime <  65.208303 )\n"
+"    {\n"
+"        s = mod(iTime , 0.5 )- 0.25 ;\n"
+"        s = smoothstep( -0.041666666666666664 ,0.,s)*(1.-smoothstep(0., 0.125 ,s));\n"
+"    }\n"
+"    if(iTime >=  65.208303  && iTime <  71.109943 )\n"
+"    {\n"
+"        s = mod(iTime , 0.491825 )- 0.2459125 ;\n"
+"        s = smoothstep( -0.04098541666666667 ,0.,s)*(1.-smoothstep(0., 0.12295625 ,s));\n"
+"    }\n"
+"    if(iTime >=  71.109943  && iTime <  82.722846 )\n"
+"    {\n"
+"        s = mod(iTime , 0.48385 )- 0.241925 ;\n"
+"        s = smoothstep( -0.040320833333333334 ,0.,s)*(1.-smoothstep(0., 0.1209625 ,s));\n"
+"    }\n"
+"    if(iTime >=  82.722846  && iTime <  86.722846 )\n"
+"    {\n"
+"        s = mod(iTime , 0.5 )- 0.25 ;\n"
+"        s = smoothstep( -0.041666666666666664 ,0.,s)*(1.-smoothstep(0., 0.125 ,s));\n"
+"    }\n"
+"    if(iTime >=  86.722846  && iTime <  94.998708 )\n"
+"    {\n"
+"        s = mod(iTime , 0.517275 )- 0.2586375 ;\n"
+"        s = smoothstep( -0.043106250000000006 ,0.,s)*(1.-smoothstep(0., 0.12931875 ,s));\n"
+"    }\n"
+"    if(iTime >=  94.998708  && iTime <  103.134301 )\n"
+"    {\n"
+"        s = mod(iTime , 0.50845 )- 0.254225 ;\n"
+"        s = smoothstep( -0.04237083333333333 ,0.,s)*(1.-smoothstep(0., 0.1271125 ,s));\n"
+"    }\n"
+"    if(iTime >=  103.134301  && iTime <  105.134301 )\n"
+"    {\n"
+"        s = mod(iTime , 0.5 )- 0.25 ;\n"
+"        s = smoothstep( -0.041666666666666664 ,0.,s)*(1.-smoothstep(0., 0.125 ,s));\n"
+"    }\n"
+"    if(iTime >=  105.134301  && iTime <  107.069785 )\n"
+"    {\n"
+"        s = mod(iTime , 0.48385 )- 0.241925 ;\n"
+"        s = smoothstep( -0.040320833333333334 ,0.,s)*(1.-smoothstep(0., 0.1209625 ,s));\n"
+"    }\n"
+"    if(iTime >=  107.069785  && iTime <  125.819785 )\n"
+"    {\n"
+"        s = mod(iTime , 0.468775 )- 0.2343875 ;\n"
+"        s = smoothstep( -0.03906458333333333 ,0.,s)*(1.-smoothstep(0., 0.11719375 ,s));\n"
+"    }\n"
+"    if(iTime >=  125.819785  && iTime <  129.819785 )\n"
+"    {\n"
+"        s = mod(iTime , 0.5 )- 0.25 ;\n"
+"        s = smoothstep( -0.041666666666666664 ,0.,s)*(1.-smoothstep(0., 0.125 ,s));\n"
+"    }\n"
+"    if(iTime >=  129.819785  && iTime <  141.432688 )\n"
+"    {\n"
+"        s = mod(iTime , 0.48385 )- 0.241925 ;\n"
+"        s = smoothstep( -0.040320833333333334 ,0.,s)*(1.-smoothstep(0., 0.1209625 ,s));\n"
+"    }\n"
+"    if(iTime >=  141.432688  && iTime <  143.368172 )\n"
+"    {\n"
+"        s = mod(iTime , 0.48385 )- 0.241925 ;\n"
+"        s = smoothstep( -0.040320833333333334 ,0.,s)*(1.-smoothstep(0., 0.1209625 ,s));\n"
+"    }\n"
+"    if(iTime >=  143.368172  && iTime <  145.243172 )\n"
+"    {\n"
+"        s = mod(iTime , 0.468775 )- 0.2343875 ;\n"
+"        s = smoothstep( -0.03906458333333333 ,0.,s)*(1.-smoothstep(0., 0.11719375 ,s));\n"
+"    }\n"
+"    if(iTime >=  145.243172  && iTime <  187.061354 )\n"
+"    {\n"
+"        s = mod(iTime , 0.45455 )- 0.227275 ;\n"
+"        s = smoothstep( -0.037879166666666665 ,0.,s)*(1.-smoothstep(0., 0.1136375 ,s));\n"
+"    }\n"
+"}\n"
+"\0";
 const char *dsmoothvoronoi_source = "#version 130\n\n"
 "\n"
 "uniform float iTime;\n"
@@ -254,107 +355,6 @@ const char *dbox3_source = "#version 130\n\n"
 "  vec3 da = abs(x) - b;\n"
 "  d = length(max(da,0.0))\n"
 "         + min(max(da.x,max(da.y,da.z)),0.0);\n"
-"}\n"
-"\0";
-const char *scale_source = "#version 130\n\n"
-"uniform float iTime;\n"
-"void scale(out float s)\n"
-"{\n"
-"    if(iTime >=  0.0  && iTime <  4.705882 )\n"
-"    {\n"
-"        s = mod(iTime , 0.588225 )- 0.2941125 ;\n"
-"        s = smoothstep( -0.04901875 ,0.,s)*(1.-smoothstep(0., 0.14705625 ,s));\n"
-"    }\n"
-"    if(iTime >=  4.705882  && iTime <  18.552036 )\n"
-"    {\n"
-"        s = mod(iTime , 0.576975 )- 0.2884875 ;\n"
-"        s = smoothstep( -0.04808125 ,0.,s)*(1.-smoothstep(0., 0.14424375 ,s));\n"
-"    }\n"
-"    if(iTime >=  18.552036  && iTime <  22.996481 )\n"
-"    {\n"
-"        s = mod(iTime , 0.55555 )- 0.277775 ;\n"
-"        s = smoothstep( -0.046295833333333335 ,0.,s)*(1.-smoothstep(0., 0.1388875 ,s));\n"
-"    }\n"
-"    if(iTime >=  22.996481  && iTime <  25.139338 )\n"
-"    {\n"
-"        s = mod(iTime , 0.535675 )- 0.2678375 ;\n"
-"        s = smoothstep( -0.04463958333333334 ,0.,s)*(1.-smoothstep(0., 0.13391875 ,s));\n"
-"    }\n"
-"    if(iTime >=  25.139338  && iTime <  27.208303 )\n"
-"    {\n"
-"        s = mod(iTime , 0.517275 )- 0.2586375 ;\n"
-"        s = smoothstep( -0.043106250000000006 ,0.,s)*(1.-smoothstep(0., 0.12931875 ,s));\n"
-"    }\n"
-"    if(iTime >=  27.208303  && iTime <  65.208303 )\n"
-"    {\n"
-"        s = mod(iTime , 0.5 )- 0.25 ;\n"
-"        s = smoothstep( -0.041666666666666664 ,0.,s)*(1.-smoothstep(0., 0.125 ,s));\n"
-"    }\n"
-"    if(iTime >=  65.208303  && iTime <  71.109943 )\n"
-"    {\n"
-"        s = mod(iTime , 0.491825 )- 0.2459125 ;\n"
-"        s = smoothstep( -0.04098541666666667 ,0.,s)*(1.-smoothstep(0., 0.12295625 ,s));\n"
-"    }\n"
-"    if(iTime >=  71.109943  && iTime <  82.722846 )\n"
-"    {\n"
-"        s = mod(iTime , 0.48385 )- 0.241925 ;\n"
-"        s = smoothstep( -0.040320833333333334 ,0.,s)*(1.-smoothstep(0., 0.1209625 ,s));\n"
-"    }\n"
-"    if(iTime >=  82.722846  && iTime <  86.722846 )\n"
-"    {\n"
-"        s = mod(iTime , 0.5 )- 0.25 ;\n"
-"        s = smoothstep( -0.041666666666666664 ,0.,s)*(1.-smoothstep(0., 0.125 ,s));\n"
-"    }\n"
-"    if(iTime >=  86.722846  && iTime <  94.998708 )\n"
-"    {\n"
-"        s = mod(iTime , 0.517275 )- 0.2586375 ;\n"
-"        s = smoothstep( -0.043106250000000006 ,0.,s)*(1.-smoothstep(0., 0.12931875 ,s));\n"
-"    }\n"
-"    if(iTime >=  94.998708  && iTime <  103.134301 )\n"
-"    {\n"
-"        s = mod(iTime , 0.50845 )- 0.254225 ;\n"
-"        s = smoothstep( -0.04237083333333333 ,0.,s)*(1.-smoothstep(0., 0.1271125 ,s));\n"
-"    }\n"
-"    if(iTime >=  103.134301  && iTime <  105.134301 )\n"
-"    {\n"
-"        s = mod(iTime , 0.5 )- 0.25 ;\n"
-"        s = smoothstep( -0.041666666666666664 ,0.,s)*(1.-smoothstep(0., 0.125 ,s));\n"
-"    }\n"
-"    if(iTime >=  105.134301  && iTime <  107.069785 )\n"
-"    {\n"
-"        s = mod(iTime , 0.48385 )- 0.241925 ;\n"
-"        s = smoothstep( -0.040320833333333334 ,0.,s)*(1.-smoothstep(0., 0.1209625 ,s));\n"
-"    }\n"
-"    if(iTime >=  107.069785  && iTime <  125.819785 )\n"
-"    {\n"
-"        s = mod(iTime , 0.468775 )- 0.2343875 ;\n"
-"        s = smoothstep( -0.03906458333333333 ,0.,s)*(1.-smoothstep(0., 0.11719375 ,s));\n"
-"    }\n"
-"    if(iTime >=  125.819785  && iTime <  129.819785 )\n"
-"    {\n"
-"        s = mod(iTime , 0.5 )- 0.25 ;\n"
-"        s = smoothstep( -0.041666666666666664 ,0.,s)*(1.-smoothstep(0., 0.125 ,s));\n"
-"    }\n"
-"    if(iTime >=  129.819785  && iTime <  141.432688 )\n"
-"    {\n"
-"        s = mod(iTime , 0.48385 )- 0.241925 ;\n"
-"        s = smoothstep( -0.040320833333333334 ,0.,s)*(1.-smoothstep(0., 0.1209625 ,s));\n"
-"    }\n"
-"    if(iTime >=  141.432688  && iTime <  143.368172 )\n"
-"    {\n"
-"        s = mod(iTime , 0.48385 )- 0.241925 ;\n"
-"        s = smoothstep( -0.040320833333333334 ,0.,s)*(1.-smoothstep(0., 0.1209625 ,s));\n"
-"    }\n"
-"    if(iTime >=  143.368172  && iTime <  145.243172 )\n"
-"    {\n"
-"        s = mod(iTime , 0.468775 )- 0.2343875 ;\n"
-"        s = smoothstep( -0.03906458333333333 ,0.,s)*(1.-smoothstep(0., 0.11719375 ,s));\n"
-"    }\n"
-"    if(iTime >=  145.243172  && iTime <  187.061354 )\n"
-"    {\n"
-"        s = mod(iTime , 0.45455 )- 0.227275 ;\n"
-"        s = smoothstep( -0.037879166666666665 ,0.,s)*(1.-smoothstep(0., 0.1136375 ,s));\n"
-"    }\n"
 "}\n"
 "\0";
 const char *rot3_source = "const vec3 c = vec3(1.,0.,-1.);\n"
@@ -1283,6 +1283,7 @@ const char *voronoidesign_source = "/* Gross Gloss by Team210 - 64k intro by Tea
 "const vec3 c = vec3(1.0, 0.0, -1.0);\n"
 "const float pi = acos(-1.);\n"
 "\n"
+"void scale(out float s);\n"
 "void dsmoothvoronoi(in vec2 x, out float d, out vec2 z);\n"
 "void rand(in vec2 x, out float n);\n"
 "void hash31(in float p, out vec3 d);\n"
@@ -1369,9 +1370,7 @@ const char *voronoidesign_source = "/* Gross Gloss by Team210 - 64k intro by Tea
 "    vec2 uv = ( fragCoord -.5* iResolution.xy) / iResolution.y, \n"
 "        s;\n"
 "    \n"
-"    nbeats = mod(iTime, 60./29.);\n"
-"    iScale = nbeats-30./29.;\n"
-"    iScale = smoothstep(-5./29., 0., iScale)*(1.-smoothstep(0., 15./29., iScale));\n"
+"    scale(iScale);\n"
 "    \n"
 "    uv *= 2.;\n"
 "    \n"
@@ -2120,7 +2119,7 @@ const char *greet_source = "/* Gross Gloss by Team210 - 64k intro by Team210 at 
 "// void dbox(in vec2 x, in vec2 b, out float d);\n"
 "// void dlinesegment(in vec2 x, in vec2 p1, in vec2 p2, out float d);\n"
 "// void dtriangle(in vec2 p, in vec2 p0, in vec2 p1, in vec2 p2, out float dst);\n"
-"\n"
+"void scale(out float s);\n"
 "void rand(in vec2 x, out float n);\n"
 "void hash31(in float p, out vec3 d);\n"
 "void lfnoise(in vec2 t, out float n);\n"
@@ -2232,12 +2231,11 @@ const char *greet_source = "/* Gross Gloss by Team210 - 64k intro by Team210 at 
 "}\n"
 "\n"
 "void mainImage( out vec4 fragColor, in vec2 fragCoord )\n"
-"{\n"
-"    iScale = 1.;\n"
-"    \n"
+"{    \n"
 "    vec2 uv = ( fragCoord -.5* iResolution.xy) / iResolution.y, \n"
 "        s;\n"
-"    \n"
+" \n"
+"    scale(iScale);\n"
 "    //uv *= 2.;\n"
 "    \n"
 "    vec3 col = c.yyy, \n"
@@ -2594,6 +2592,7 @@ const char *canal_source = "/* Gross Gloss by Team210 - 64k intro by Team210 at 
 "const vec3 c = vec3(1.0, 0.0, -1.0);\n"
 "const float pi = acos(-1.);\n"
 "\n"
+"void scale(out float s);\n"
 "void rand(in vec2 x, out float n);\n"
 "void hash31(in float p, out vec3 d);\n"
 "void lfnoise(in vec2 t, out float n);\n"
@@ -2678,9 +2677,7 @@ const char *canal_source = "/* Gross Gloss by Team210 - 64k intro by Team210 at 
 "    vec2 uv = ( fragCoord -.5* iResolution.xy) / iResolution.y, \n"
 "        s;\n"
 "    \n"
-"    nbeats = mod(iTime, 60./29.);\n"
-"    iScale = nbeats-30./29.;\n"
-"    iScale = smoothstep(-5./29., 0., iScale)*(1.-smoothstep(0., 15./29., iScale));\n"
+"    scale(iScale);\n"
 "    \n"
 "    float dx, dx2, d0;\n"
 "    lfnoise(-.5*1.3*iTime*c.xx, dx);\n"
@@ -4357,6 +4354,19 @@ const char *volclouds_source = "#version 130\n\n"
 "    mainImage(gl_FragColor, gl_FragCoord.xy);\n"
 "}\n"
 "\0";
+void Loadscale()
+{
+    int scale_size = strlen(scale_source);
+    scale_handle = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(scale_handle, 1, (GLchar **)&scale_source, &scale_size);
+    glCompileShader(scale_handle);
+#ifdef DEBUG
+    printf("---> scale Shader:\n");
+    debug(scale_handle);
+    printf(">>>>\n");
+#endif
+    progress += .2/(float)nsymbols;
+}
 void Loaddsmoothvoronoi()
 {
     int dsmoothvoronoi_size = strlen(dsmoothvoronoi_source);
@@ -4548,19 +4558,6 @@ void Loaddbox3()
 #ifdef DEBUG
     printf("---> dbox3 Shader:\n");
     debug(dbox3_handle);
-    printf(">>>>\n");
-#endif
-    progress += .2/(float)nsymbols;
-}
-void Loadscale()
-{
-    int scale_size = strlen(scale_source);
-    scale_handle = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(scale_handle, 1, (GLchar **)&scale_source, &scale_size);
-    glCompileShader(scale_handle);
-#ifdef DEBUG
-    printf("---> scale Shader:\n");
-    debug(scale_handle);
     printf(">>>>\n");
 #endif
     progress += .2/(float)nsymbols;
@@ -4880,6 +4877,8 @@ void Loadhash13()
 
 void LoadSymbols()
 {
+    Loadscale();
+    updateBar();
     Loaddsmoothvoronoi();
     updateBar();
     Loadrand();
@@ -4909,8 +4908,6 @@ void LoadSymbols()
     Loadnormal();
     updateBar();
     Loaddbox3();
-    updateBar();
-    Loadscale();
     updateBar();
     Loadrot3();
     updateBar();
@@ -4988,6 +4985,7 @@ void Loadvoronoidesign()
 #endif
     voronoidesign_program = glCreateProgram();
     glAttachShader(voronoidesign_program,voronoidesign_handle);
+    glAttachShader(voronoidesign_program,scale_handle);
     glAttachShader(voronoidesign_program,dsmoothvoronoi_handle);
     glAttachShader(voronoidesign_program,rand_handle);
     glAttachShader(voronoidesign_program,hash31_handle);
@@ -5134,6 +5132,7 @@ void Loadgreet()
     glAttachShader(greet_program,dbox_handle);
     glAttachShader(greet_program,dlinesegment_handle);
     glAttachShader(greet_program,dtriangle_handle);
+    glAttachShader(greet_program,scale_handle);
     glAttachShader(greet_program,rand_handle);
     glAttachShader(greet_program,hash31_handle);
     glAttachShader(greet_program,lfnoise_handle);
@@ -5223,6 +5222,7 @@ void Loadcanal()
 #endif
     canal_program = glCreateProgram();
     glAttachShader(canal_program,canal_handle);
+    glAttachShader(canal_program,scale_handle);
     glAttachShader(canal_program,rand_handle);
     glAttachShader(canal_program,hash31_handle);
     glAttachShader(canal_program,lfnoise_handle);

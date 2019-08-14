@@ -40,7 +40,7 @@ float iScale;
 // void dbox(in vec2 x, in vec2 b, out float d);
 // void dlinesegment(in vec2 x, in vec2 p1, in vec2 p2, out float d);
 // void dtriangle(in vec2 p, in vec2 p0, in vec2 p1, in vec2 p2, out float dst);
-
+void scale(out float s);
 void rand(in vec2 x, out float n);
 void hash31(in float p, out vec3 d);
 void lfnoise(in vec2 t, out float n);
@@ -152,12 +152,11 @@ float sm(float d)
 }
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
-{
-    iScale = 1.;
-    
+{    
     vec2 uv = ( fragCoord -.5* iResolution.xy) / iResolution.y, 
         s;
-    
+ 
+    scale(iScale);
     //uv *= 2.;
     
     vec3 col = c.yyy, 

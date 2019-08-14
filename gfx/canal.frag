@@ -37,6 +37,7 @@ float iScale;
 const vec3 c = vec3(1.0, 0.0, -1.0);
 const float pi = acos(-1.);
 
+void scale(out float s);
 void rand(in vec2 x, out float n);
 void hash31(in float p, out vec3 d);
 void lfnoise(in vec2 t, out float n);
@@ -121,9 +122,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     vec2 uv = ( fragCoord -.5* iResolution.xy) / iResolution.y, 
         s;
     
-    nbeats = mod(iTime, 60./29.);
-    iScale = nbeats-30./29.;
-    iScale = smoothstep(-5./29., 0., iScale)*(1.-smoothstep(0., 15./29., iScale));
+    scale(iScale);
     
     float dx, dx2, d0;
     lfnoise(-.5*1.3*iTime*c.xx, dx);
