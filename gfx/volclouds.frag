@@ -17,6 +17,7 @@ float a = 1.0;
 
 float nbeats, iScale;
 
+void scale(out float s);
 // Creative Commons Attribution-ShareAlike 4.0 International Public License
 // Created by David Hoskins.
 // See https://www.shadertoy.com/view/4djSRW
@@ -146,13 +147,11 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
     rot3(.01*vec3(1.1,1.3,1.5)*iTime, R);
     
+    scale(iScale);
+    
     float a = iResolution.x/iResolution.y;
     vec2 uv = fragCoord/iResolution.yy-0.5*vec2(a, 1.0);
     vec3 col = c.yyy;
-    
-    nbeats = mod(iTime, 60./29.);
-    iScale = nbeats-30./29.;
-    iScale = smoothstep(-5./29., 0., iScale)*(1.-smoothstep(0., 15./29., iScale));
     
     float d = 0.;
     vec2 s;

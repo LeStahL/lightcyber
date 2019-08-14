@@ -17,6 +17,7 @@ float a = 1.0;
 
 float nbeats, iScale;
 
+void scale(out float s);
 void rand(in vec2 x, out float n);
 void lfnoise(in vec2 t, out float n);
 void dbox3(in vec3 x, in vec3 b, out float d);
@@ -103,9 +104,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     rot3(.1*vec3(1.1,1.3,1.5)*iTime, R);
     vec3 col = c.yyy;
     
-    nbeats = mod(iTime, 60./29.);
-    iScale = nbeats-30./29.;
-    iScale = smoothstep(-5./29., 0., iScale)*(1.-smoothstep(0., 15./29., iScale));
+    scale(iScale);
     
     float d = 0.;
     vec2 s;
