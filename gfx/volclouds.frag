@@ -105,10 +105,40 @@ void normal(in vec3 x, out vec3 n, in float dx)
     n = normalize(n-s.x);
 }
 
+void palette2(in float scale, out vec3 col)
+{
+    const int N = 5;
+    const vec3 colors[N] = vec3[N](
+            vec3(0.82,0.27,0.13),
+            vec3(0.85,0.77,0.68),
+            vec3(0.65,0.59,0.55),
+            vec3(0.45,0.29,0.24),
+            vec3(0.85,0.27,0.15)
+    );
+	float index = floor(scale*float(N)), 
+        remainder = scale*float(N)-index;
+    col = mix(colors[int(index)],colors[int(index)+1], remainder);
+}
+
+void palette3(in float scale, out vec3 col)
+{
+    const int N = 5;
+	const vec3 colors[N] = vec3[N](
+       	vec3(0.86,0.21,0.13),
+        vec3(0.85,0.80,0.62),
+        vec3(0.22,0.25,0.25),
+        vec3(0.16,0.17,0.17),
+        vec3(0.12,0.12,0.13)
+    );
+	float index = floor(scale*float(N)), 
+        remainder = scale*float(N)-index;
+    col = mix(colors[int(index)],colors[int(index)+1], remainder);
+}
+
 void palette1(in float scale, out vec3 col)
 {
     const int N = 5;
-   
+    
     /*
     const vec3 colors[N] = vec3[N](
             vec3(0.82,0.27,0.13),
@@ -169,7 +199,7 @@ void palette1(in float scale, out vec3 col)
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
-    rot3(.06*vec3(1.1,1.3,1.5)*iTime, R);
+    rot3(mix(mix(mix(0.,pi/2.,clamp((iTime/5.),0.,1.)),0.,clamp((iTime-5.)/5.,0.,1.)), pi/2.,clamp((iTime-10.)/5.,0.,1.))*c.xyx, R);
     
     scale(iScale);
     
@@ -196,13 +226,18 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         vec3 l = normalize(x+.1*n);
         vec3 c1;
         palette1(-s.x, c1);
+        vec3 c2;
+        palette2(-s.x, c2);
+        c1 = mix(c1, c2, iFader0+smoothstep(5.,6.,iTime));
+        palette3(-s.x, c2);
+        c1 = mix(c1, c2, smoothstep(10.,11.,iTime));
         c1 = .1*c1
                             + .1*c1 * abs(dot(l,n))
                             + 1.354 * c1 * abs(pow(dot(reflect(-l,n),dir),2.));
     	c1 = mix(c1, 2.*c1, smoothstep(mix(1.,.6,iScale), 1.02, 1.-abs(dot(n, c.xyy))));
         c1 = mix(c1, 2.*c1, smoothstep(mix(1.,.6,iScale), 1.02, abs(dot(n, c.zyy))));
-    	col = mix(col, c1, d*d);
-    	
+        c1 = clamp(c1, 0., 1.);
+        col = mix(col, c1, d*d);
     }
 
     col *= col;
