@@ -54,7 +54,7 @@ vec2 vind,vind2;
 float v, fn, r1, fb;
 void scene(in vec3 x, out vec2 sdf)
 {
-    x.y += .2*iTime;
+    x.y += mix(.2,-.2,step(150., iTime))*iTime;
     
     dvoronoi(1.5*x.xy, v, vind);
     
@@ -110,6 +110,7 @@ float sm(float d)
     return smoothstep(1.5/iResolution.y, -1.5/iResolution.y, d);
 }
 
+float nan;
 void vs(in vec3 x, out vec2 sdf)
 {
     vec2 vi;

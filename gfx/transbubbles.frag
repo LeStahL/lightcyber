@@ -77,6 +77,7 @@ vec3 ind;
 void scene(in vec3 x, out vec2 sdf)
 {
     x = R * x;
+    x -= mix(0.,.1*iTime, step(150., iTime));
 //     x.z -= .1*iTime;
     
     sdf = c.xy;
@@ -148,7 +149,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
                             + .5 * col * abs(pow(dot(reflect(-l,n),dir),2.));
             
             vec3 c1 = c.yyy;
-            for(float fraction = 0.; fraction <= 4.; fraction += 1.)
+            for(float fraction = 0.; fraction <= 3.; fraction += 1.)
     		{
 //                 o = x;
 //                 dir = refract(dir,n,.9);
@@ -161,6 +162,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
                 
                 dir = mix(ddir, dir,mx);
                 dir = mix(dir,dddir,my);
+                dir = mix(dir, ddir, step(150.,iTime));
+                
                 d = 2.e-2;
 
                 for(i = 0; i<N; ++i)
@@ -206,8 +209,27 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
                         	(fraction == 2.)?vec3(0.13,0.55,0.57):
                         	(fraction == 3.)?vec3(0.29,0.22,0.30):
                         vec3(0.00,0.00,0.00);
+                        vec3 c4 = (fraction == 0.)?vec3(0.09,0.00,0.13):
+                        	(fraction == 1.)?vec3(0.87,0.38,0.61):
+                        	(fraction == 2.)?vec3(0.97,0.45,0.50):
+                        	(fraction == 3.)?vec3(0.97,0.70,0.72):
+                        vec3(0.04,0.04,0.05);
+                        vec3 c5 = (fraction == 0.)?vec3(0.94,0.24,0.27):
+                        	(fraction == 1.)?vec3(0.48,0.49,0.55):
+                        	(fraction == 2.)?vec3(0.81,0.76,0.90):
+                        	(fraction == 3.)?vec3(0.44,0.33,0.60):
+                        vec3(0.34,0.24,0.50);
+                        vec3 c6 = (fraction == 0.)?vec3(0.11,0.32,0.23):
+                        	(fraction == 1.)?vec3(0.25,0.89,0.79):
+                        	(fraction == 2.)?vec3(0.31,0.59,0.56):
+                        	(fraction == 3.)?vec3(0.00,0.34,0.39):
+                        vec3(0.00,0.15,0.17);
                         c1 = mix(c1,c2, mx);
                         c1 = mix(c1,c3, my);
+                        c1 = mix(c1, c4, step(150.,iTime));
+                        c1 = mix(c1, c5, step(163.5,iTime));
+                        c1 = mix(c1, c6, step(170.,iTime));
+
                         c1 = .1*c1
                             + .4*c1 * abs(dot(l,n))
                             + mix(mix(5.8,3.79,mx),4.753,my) * c1 * abs(pow(dot(reflect(-l,n),dir),2.));
