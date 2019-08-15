@@ -226,11 +226,14 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         vec3 l = normalize(x+.1*n);
         vec3 c1;
         palette1(-s.x, c1);
-        vec3 c2;
-        palette2(-s.x, c2);
-        c1 = mix(c1, c2, iFader0+smoothstep(5.,6.,iTime));
-        palette3(-s.x, c2);
-        c1 = mix(c1, c2, smoothstep(10.,11.,iTime));
+        if(iTime < 150.)
+        {
+            vec3 c2;
+            palette2(-s.x, c2);
+            c1 = mix(c1, c2, iFader0+smoothstep(5.,6.,iTime));
+            palette3(-s.x, c2);
+            c1 = mix(c1, c2, smoothstep(10.,11.,iTime));
+        }
         c1 = .1*c1
                             + .1*c1 * abs(dot(l,n))
                             + 1.354 * c1 * abs(pow(dot(reflect(-l,n),dir),2.));

@@ -434,6 +434,16 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         new.gba = mix(new.gba, c.xxx, sm(da));
         
     }
+    else
+    {
+        float da;
+        dstring(uv-vec2(-.55,0.), 27., .025, da);
+        da = mix(1., da, smoothstep(172.,172.5,iTime));
+        new.gba = mix(new.gba, c.yyy, smoothstep(172.,172.5,iTime));
+        new.gba = mix(new.gba, vec3(.9,.2,.03), sm(da));
+        stroke(da-.005, .001, da);
+        new.gba = mix(new.gba, c.xxx, sm(da));
+    }
     
     //FIXME: remove debug lines
 //     vec2 ad = abs(mod(uv-.05,.02)-.01)-.001;

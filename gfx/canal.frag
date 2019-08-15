@@ -57,7 +57,7 @@ void scene(in vec3 x, out vec2 sdf)
         d, v;
     
     lfnoise(.5*x.z*c.xx, dx);
-    x.xy-=.4*dx*c.xy;
+    x.xy-=.2*dx*c.xy;
     
     // Voronoi
     float phi = atan(x.y,x.x);
@@ -137,10 +137,10 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     lfnoise(-.5*1.3*(iTime+1.e-3)*c.xx, dx2);
 
     vec3 col = c.yyy, 
-        o = c.yyx+.1*c.yxy+.4*dx*c.xyy,
+        o = c.yyx+.1*c.yxy+.2*dx*c.xyy,
         r = c.xyy, 
         u = c.yxy, 
-        t = c.yyy+.4*dx2*c.xyy, 
+        t = c.yyy+.2*dx2*c.xyy, 
         dir,
         n,
         x;
