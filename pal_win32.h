@@ -269,24 +269,70 @@ int WINAPI demo(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, in
 	// Add scene selector
 	HWND hSceneComboBox = CreateWindow(WC_COMBOBOX, TEXT(""),
 	 CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,
-	 100, 120, 175, 280, lwnd, (HMENU)10, hInstance,
+	 100, 120, 175, 680, lwnd, (HMENU)10, hInstance,
 	 NULL);
 
 	// Populate with entries
 	const char *all_scenes = "All scenes",
-		*graffiti_scene = "Graffiti",
-        *block_scene = "Transparent Blocks",
-        *voronoi_scene = "Voronoi Canyon",
-        *blood_cell_scene = "Blood Cells";
+		*logo210_scene = "Logo 210",
+        *evoke_scene = "Evoke Logo",
+        *graffiti_scene = "Red Graffiti",
+        *groundboxes_scene = "Cube",
+        *canal_scene = "Honey Hell",
+        *graffiti_2_scene = "Blue Graffiti",
+        *voronoidesign_scene = "Tentacles",
+        *transbubbles_scene = "Bubbles",
+        *volclouds_scene = "Smoke",
+        *chart_scene = "Chart",
+        *greet_scene = "Greetings",
+        *volclouds_2_scene = "Smoke II",
+        *graffiti_3_scene = "Graffiti III",
+        *transbubbles_2_scene = "Bubbles II",
+        *voronoidesign_2_scene = "Tentacles II",
+        *groundboxes_2_scene = "Cube II",
+        *volclouds_3_scene = "Smoke III",
+        *transbubbles_3_scene = "Bubbles III",
+        *canal_2_scene = "Honey Hell II",
+        *groundboxes_3_scene = "Cube III",
+        *voronoidesign_3_scene = "Tentacles III",
+        *canal_3_scene = "Honey Hell III",
+        *graffiti_4_scene = "Graffiti IV",
+        *transbubbles_4_scene = "Bubbles IV",
+        *volclouds_4_scene = "Smoke IV",
+        *groundboxes_4_scene = "Cube IV",
+        *voronoidesign_4_scene = "Tentacles V (End)";
 	SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (all_scenes));
-	SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (graffiti_scene));
-	SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (block_scene));
-	SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (voronoi_scene));
-	SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (blood_cell_scene));
+    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (logo210_scene));
+    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (evoke_scene));
+    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (graffiti_scene));
+    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (groundboxes_scene));
+    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (canal_scene));
+    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (graffiti_2_scene));
+    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (voronoidesign_scene));
+    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (transbubbles_scene));
+    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (volclouds_scene));
+    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (chart_scene));
+    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (greet_scene));
+    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (volclouds_2_scene));
+    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (graffiti_3_scene));
+    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (transbubbles_2_scene));
+    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (voronoidesign_2_scene));
+    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (groundboxes_2_scene));
+    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (volclouds_3_scene));
+    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (transbubbles_3_scene));
+    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (canal_2_scene));
+    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (groundboxes_3_scene));
+    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (voronoidesign_3_scene));
+    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (canal_3_scene));
+    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (graffiti_4_scene));
+    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (transbubbles_4_scene));
+    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (volclouds_4_scene));
+    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (groundboxes_4_scene));
+    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (voronoidesign_4_scene));
 	SendMessage(hSceneComboBox, CB_SETCURSEL, 0, 0);
 
 	// Add start button
-	HWND hwndButton = CreateWindow(WC_BUTTON,"Party!",WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,185,165,90,90,lwnd,(HMENU)7,hInstance,NULL);
+	HWND hwndButton = CreateWindow(WC_BUTTON,"Offend!",WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,185,165,90,90,lwnd,(HMENU)7,hInstance,NULL);
 
 	// Show the selector
 	ShowWindow(lwnd, TRUE);

@@ -50,7 +50,7 @@ void dsmoothvoronoi(in vec2 x, out float d, out vec2 z);
 vec2 ind;
 void scene(in vec3 x, out vec2 sdf)
 {
-    x.z -= 1.3*iTime;
+    x.z -= mix(1.3,-1.3,step(156., iTime))*iTime;
     
     float dx,
         d, v;
@@ -165,14 +165,17 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
        
 		if(s.y == 1.)
         {
-            col = vec3(0.76,0.20,0.23);
+            col = mix(vec3(0.76,0.20,0.23), vec3(0.07,0.64,0.29), step(166., iTime));
             
             col = .2*col
                 + .2*col * abs(dot(l,n))
                 + .6*col * pow(abs(dot(reflect(-l,n),dir)),3.);
             
-            col = mix(col, 2.*vec3(0.76,0.20,0.13), smoothstep(0.658, 1.02, 1.-abs(dot(n, c.yyz))));
-        	col = mix(col, vec3(0.96,0.7,0.423), smoothstep(0.658, 1.02, abs(dot(n, c.yyz))));
+            vec3 c1 = 2.*col;
+            col = mix(col, c1, smoothstep(0.658, 1.02, 1.-abs(dot(n, c.yyz))));
+            
+            vec3 c2 = vec3(0.96,0.7,0.423);
+        	col = mix(col, c2, smoothstep(0.658, 1.02, abs(dot(n, c.yyz))));
         }
         else if(s.y == 2.) // Mirror material
         {
