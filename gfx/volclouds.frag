@@ -130,12 +130,36 @@ void palette1(in float scale, out vec3 col)
     //*/
     
 	//*
-    const vec3 colors[N] = vec3[N](
+    vec3 colors[N];
+    if(iTime < 150.)
+        colors = vec3[N](
        	vec3(0.99,0.33,0.05),
         vec3(0.94,0.94,0.94),
         vec3(0.75,0.82,0.88),
         vec3(0.25,0.34,0.39),
-        vec3(0.17,0.22,0.27)
+        vec3(0.17,0.22,0.27));
+    else if(iTime < 160.)
+        colors = vec3[N](
+            vec3(0.82,0.27,0.13),
+            vec3(0.85,0.77,0.68),
+            vec3(0.65,0.59,0.55),
+            vec3(0.45,0.29,0.24),
+            vec3(0.85,0.27,0.15)
+        );
+    else if(iTime < 165.)
+        colors = vec3[N](
+            vec3(0.11,0.32,0.23),
+            vec3(0.25,0.89,0.79),
+            vec3(0.31,0.59,0.56),
+            vec3(0.00,0.34,0.39),
+            vec3(0.00,0.15,0.17)
+        );
+    else colors = vec3[N](
+       	vec3(0.86,0.21,0.13),
+        vec3(0.85,0.80,0.62),
+        vec3(0.22,0.25,0.25),
+        vec3(0.16,0.17,0.17),
+        vec3(0.12,0.12,0.13)
     );
     //*/
 	float index = floor(scale*float(N)), 
