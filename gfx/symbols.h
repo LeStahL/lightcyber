@@ -2659,7 +2659,7 @@ const char *canal_source = "/* Gross Gloss by Team210 - 64k intro by Team210 at 
 "{\n"
 "    vec2 uv = ( fragCoord -.5* iResolution.xy) / iResolution.y, \n"
 "        s;\n"
-"    \n"
+"        \n"
 "    float phi = .3*iTime,\n"
 "        co = cos(phi), \n"
 "        si = sin(phi);\n"
