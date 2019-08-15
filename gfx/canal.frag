@@ -168,7 +168,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
        
 		if(s.y == 1.)
         {
-            col = mix(mix(vec3(0.76,0.20,0.23), vec3(0.07,0.64,0.29), step(166., iTime)), vec3(0.25,0.25,0.25), step(174., iTime));
+            col = vec3(0.25,0.25,0.25);
             vec3 c0 = col;
             col = .2*col
                 + .2*col * abs(dot(l,n))
@@ -176,7 +176,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
             
             col = mix(col, 1.2*c0, smoothstep(0.658, 1.02, 1.-abs(dot(n, c.yyz))));
             
-            vec3 c2 = vec3(0.96,0.7,0.423);
+            vec3 c2 = mix(mix(vec3(0.76,0.20,0.23), vec3(0.07,0.64,0.29), step(166.,iTime)), vec3(0.96,0.7,0.423), step(174.,iTime));
         	col = mix(col, c2, smoothstep(0.658, 1.02, abs(dot(n, c.yyz))));
         }
         else if(s.y == 2.) // Mirror material
@@ -185,7 +185,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
             col = .2*col
                 + .2*col * abs(dot(l,n))
                 + .3*col * pow(abs(dot(reflect(-l,n),dir)),2.);
-            
             
             N = 50;
             o = x;
@@ -216,7 +215,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
                 if(s.y == 1.)
                 {
-                    col = mix(mix(vec3(0.76,0.20,0.23), vec3(0.07,0.64,0.29), step(166., iTime)), vec3(0.25,0.25,0.25), step(174., iTime));
+                    col = vec3(0.25,0.25,0.25);
                     vec3 c0 = col;
                     col = .2*col
                         + .2*col * abs(dot(l,n))
@@ -224,7 +223,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
                     
                     col = mix(col, 1.2*c0, smoothstep(0.658, 1.02, 1.-abs(dot(n, c.yyz))));
                     
-                    vec3 c2 = vec3(0.96,0.7,0.423);
+                    vec3 c2 = mix(mix(vec3(0.76,0.20,0.23), vec3(0.07,0.64,0.29), step(166.,iTime)), vec3(0.96,0.7,0.423), step(174.,iTime));
                     col = mix(col, c2, smoothstep(0.658, 1.02, abs(dot(n, c.yyz))));
                 }
             }
