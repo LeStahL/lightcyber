@@ -54,6 +54,7 @@ vec2 vind,vind2;
 float v, fn, r1, fb;
 void scene(in vec3 x, out vec2 sdf)
 {
+    x.y = mix(x.y, -x.y, step(150., iTime));
     x.y += mix(.2,-.2,step(150., iTime))*iTime;
     
     dvoronoi(1.5*x.xy, v, vind);

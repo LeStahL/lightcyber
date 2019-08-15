@@ -432,7 +432,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         
         stroke(da-.02,.001,da);
         new.gba = mix(new.gba, c.xxx, sm(da));
-        
     }
     else
     {
