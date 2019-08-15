@@ -169,7 +169,7 @@ void palette1(in float scale, out vec3 col)
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
-    rot3(.01*vec3(1.1,1.3,1.5)*iTime, R);
+    rot3(.06*vec3(1.1,1.3,1.5)*iTime, R);
     
     scale(iScale);
     
