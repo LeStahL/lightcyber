@@ -50,6 +50,7 @@ void dsmoothvoronoi(in vec2 x, out float d, out vec2 z);
 vec2 ind;
 void scene(in vec3 x, out vec2 sdf)
 {
+//     x.y = mix(x.y,-x.y,step(156., iTime));
     x.z -= mix(1.3,-1.3,step(156., iTime))*iTime;
     
     float dx,
@@ -121,6 +122,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
     vec2 uv = ( fragCoord -.5* iResolution.xy) / iResolution.y, 
         s;
+        
+    uv.y = mix(uv.y,-uv.y,step(156., iTime));
     
     scale(iScale);
     
@@ -165,14 +168,13 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
        
 		if(s.y == 1.)
         {
-            col = mix(vec3(0.76,0.20,0.23), vec3(0.07,0.64,0.29), step(166., iTime));
-            
+            col = mix(mix(vec3(0.76,0.20,0.23), vec3(0.07,0.64,0.29), step(166., iTime)), vec3(0.25,0.25,0.25), step(174., iTime));
+            vec3 c0 = col;
             col = .2*col
                 + .2*col * abs(dot(l,n))
                 + .6*col * pow(abs(dot(reflect(-l,n),dir)),3.);
             
-            vec3 c1 = 2.*col;
-            col = mix(col, c1, smoothstep(0.658, 1.02, 1.-abs(dot(n, c.yyz))));
+            col = mix(col, 1.2*c0, smoothstep(0.658, 1.02, 1.-abs(dot(n, c.yyz))));
             
             vec3 c2 = vec3(0.96,0.7,0.423);
         	col = mix(col, c2, smoothstep(0.658, 1.02, abs(dot(n, c.yyz))));
@@ -214,12 +216,16 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
                 if(s.y == 1.)
                 {
-                    c1 = vec3(0.76,0.20,0.23);
-                    c1 = .2*c1
-                        + .2*c1 * abs(dot(l,n))
-                        + .6*c1 * pow(abs(dot(reflect(-l,n),dir)),3.);
-                    c1 = mix(c1, 2.*vec3(0.76,0.20,0.13), smoothstep(0.658, 1.02, clamp(1.-abs(dot(n, c.yyz)),0.,1.)));
-        			c1 = mix(c1, vec3(0.96,0.7,0.423), smoothstep(0.658, 1.02, abs(dot(n, c.yyz))));
+                    col = mix(mix(vec3(0.76,0.20,0.23), vec3(0.07,0.64,0.29), step(166., iTime)), vec3(0.25,0.25,0.25), step(174., iTime));
+                    vec3 c0 = col;
+                    col = .2*col
+                        + .2*col * abs(dot(l,n))
+                        + .6*col * pow(abs(dot(reflect(-l,n),dir)),3.);
+                    
+                    col = mix(col, 1.2*c0, smoothstep(0.658, 1.02, 1.-abs(dot(n, c.yyz))));
+                    
+                    vec3 c2 = vec3(0.96,0.7,0.423);
+                    col = mix(col, c2, smoothstep(0.658, 1.02, abs(dot(n, c.yyz))));
                 }
             }
             //c1 = mix(c1, c.yyy, smoothstep(3.,6.,d));
