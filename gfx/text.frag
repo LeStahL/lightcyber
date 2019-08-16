@@ -442,6 +442,68 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         stroke(da-.02,.001,da);
         new.gba = mix(new.gba, c.xxx, sm(da));
     }
+    else if(iTime < 60.)
+    {
+        //vec3(0.93,0.36,0.44)
+        float da, db;
+        
+        db = abs(mod(uv.x+uv.y,.3)-.15)-.075;
+        vec3 c1 = mix(mix(new.gba,vec3(0.93,0.36,0.44),.5), c.xxx, sm(db));
+        
+        // Banging your head against 
+        dstring((uv-vec2(-.3,.3)), 38., .02, da);
+        
+        db = smoothstep(45.,46.,iTime)-smoothstep(50.,51.,iTime);
+        da = mix(1., da, db);
+        stroke(da-.005,.0025,db);
+        new.gba = mix(new.gba, c.yyy, sm(db));
+        
+        new.gba = mix(new.gba, c1, sm(da-.0025));
+        
+        db = da+.0025;
+        new.gba = mix(new.gba,2.*c1, sm(db));
+        
+        // a wall for one hour burns 
+        dstring((uv-vec2(-.3,.25)), 39., .02, da);
+        
+        db = smoothstep(46.,47.,iTime)-smoothstep(51.,52.,iTime);
+        da = mix(1., da, db);
+        stroke(da-.005,.0025,db);
+        new.gba = mix(new.gba,c.yyy, sm(db));
+        
+        new.gba = mix(new.gba, c1, sm(da-.0025));
+        
+        db = da+.0025;
+        new.gba = mix(new.gba,2.*c1, sm(db));
+        
+        // 150 kilocalories. Want to
+        dstring((uv-vec2(-.3,.2)), 40., .02, da);
+        
+        db = smoothstep(47.,48.,iTime)-smoothstep(52.,53.,iTime);
+        da = mix(1., da, db);
+        stroke(da-.005,.0025,db);
+        new.gba = mix(new.gba,c.yyy, sm(db));
+        
+        new.gba = mix(new.gba, c1, sm(da-.0025));
+        
+        db = da+.0025;
+        new.gba = mix(new.gba, 2.*c1, sm(db));
+        
+        // start losing some weight?
+        dstring((uv-vec2(-.3,.15)), 41., .02, da);
+        
+        db = smoothstep(48.,49.,iTime)-smoothstep(53.,54.,iTime);
+        da = mix(1., da, db);
+        stroke(da-.005,.0025,db);
+        new.gba = mix(new.gba, c.yyy, sm(db));
+        
+        new.gba = mix(new.gba, c1, sm(da-.0025));
+        
+        db = da+.0025;
+        new.gba = mix(new.gba, 2.*c1, sm(db));
+        
+        new.gba = clamp(new.gba,0.,1.);
+    }
     else if(iTime < 130.)
     {
         float da, db;
