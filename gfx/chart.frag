@@ -103,16 +103,19 @@ void scene(in vec3 x, out vec2 sdf)
     vec3 xi = (y-x)/.2;
     ind = xi.y;
     
-    float n;
+    float dx;
+    lfnoise(ind*c.xx, dx);
+    
+    float n;    
     mfnoise((x.x+.3*iTime)*c.xx-xi.y,12.,120.,.45, n);
     n *= clamp(.2-.01*xi.y,0.,1.);
     
     vec2 sda;
-    dbox3(x-.2*xi.y*c.xyy, vec3(.5,.01,.3-n), sda.x);
+    dbox3(x-1.4*dx*c.xyy, vec3(.5,.01,.3*(.5+.5*dx)-n), sda.x);
     sda.y = 1.;
     add(sdf,sda,sdf);
     
-    dbox3(x-(.3-n)*c.yyx-.2*xi.y*c.xyy, vec3(.5,.03,.01), sda.x);
+    dbox3(x-(.3*(.5+.5*dx)-n)*c.yyx-1.4*dx*c.xyy, vec3(.5,.03,.01), sda.x);
     sda.y = 4.;
     add(sdf, sda, sdf);
 }
@@ -138,7 +141,7 @@ float sm(float d)
 
 void palette1(in float scale, out vec3 col)
 {
-    const int N = 5;
+    const int N = 8;
    
     /*
     const vec3 colors[N] = vec3[N](
@@ -162,11 +165,14 @@ void palette1(in float scale, out vec3 col)
     
 	//*
     const vec3 colors[N] = vec3[N](
-       	vec3(0.99,0.33,0.05),
-        vec3(0.94,0.94,0.94),
-        vec3(0.75,0.82,0.88),
-        vec3(0.25,0.34,0.39),
-        vec3(0.17,0.22,0.27)
+       	vec3(0.18,0.30,0.65),
+        vec3(0.00,0.69,0.80),
+        vec3(0.45,0.72,0.50),
+        vec3(0.93,0.36,0.44),
+        vec3(1.00,0.51,0.45),
+        vec3(0.78,0.57,0.78),
+        vec3(0.54,0.33,0.60),
+        vec3(0.98,0.78,0.38)
     );
     //*/
 	float index = floor(scale*float(N)), 
@@ -201,9 +207,9 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         scene(x,s);
         if(s.x < 1.e-4)break;
         //d += s.x;
-        d += min(s.x, 8.e-3);
+        d += min(s.x, 7.e-3);
     }
-        
+    
     if(s.x < 1.e-4)
     {
         normal(x,n, 5.e-4);
@@ -211,7 +217,11 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         
         if(s.y == 1.)
         {
-            col = mix(vec3(0.81,0.15,0.18),vec3(0.62,0.27,0.35),clamp(1.-x.z/.3,0.,1.));
+            ind = .5+.5*clamp(ind/10.,-1.,1.);
+            palette1(ind, col);
+            vec3 c1;
+            palette1(ind+.1, c1);
+            col = mix(col,c1,clamp(1.-x.z/.3,0.,1.));
             col = .3*col
                 + .4*col * abs(dot(l,n))
                 + .9 * col * abs(pow(dot(reflect(-l,n),dir),3.));
@@ -238,7 +248,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
             dir = reflect(dir,n);
             d = 1.e-2;
             
-            N = 150;
+            N = 100;
             
             for(i = 0; i<N; ++i)
             {
@@ -255,7 +265,11 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
                 if(s.y == 1.)
                 {
-                    c1 = mix(vec3(0.81,0.15,0.18),vec3(0.62,0.27,0.35),clamp(1.-x.z/.3,0.,1.));
+                    ind = .5+.5*clamp(ind/10.,-1.,1.);
+                    palette1(ind, c1);
+                    vec3 c2;
+                    palette1(ind+.1, c2);
+                    c1 = mix(c1,c1,clamp(1.-x.z/.3,0.,1.));
                     c1 = .3*c1
                         + .4*c1 * abs(dot(l,n))
                         + .9 * c1 * abs(pow(dot(reflect(-l,n),dir),3.));
