@@ -22,15 +22,6 @@ uniform vec2 iResolution;
 uniform sampler2D iChannel0, iFont;
 uniform float iFSAA;
 
-uniform float iFader0;
-uniform float iFader1;
-uniform float iFader2;
-uniform float iFader3;
-uniform float iFader4;
-uniform float iFader5;
-uniform float iFader6;
-uniform float iFader7;
-
 out vec4 gl_FragColor;
 
 // Global constants

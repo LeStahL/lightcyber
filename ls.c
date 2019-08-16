@@ -15,8 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#define DEBUG // Shader debug i/o
-#define MIDI // APC40 mkII controls
+// #define DEBUG // Shader debug i/o
+// #define MIDI // APC40 mkII controls
 
 const char *demoname = "Lightcyber/Team210";
 unsigned int muted = 0.;
@@ -648,6 +648,8 @@ void draw()
         glUniform1f(logo210_iTime_location, t);
         glUniform2f(logo210_iResolution_location, w, h);
         
+#ifdef MIDI
+        
         glUniform1f(logo210_iFader0_location, fader0);
         glUniform1f(logo210_iFader1_location, fader1);
         glUniform1f(logo210_iFader2_location, fader2);
@@ -656,8 +658,7 @@ void draw()
         glUniform1f(logo210_iFader5_location, fader5);
         glUniform1f(logo210_iFader6_location, fader6);
         glUniform1f(logo210_iFader7_location, fader7);
-        
-#ifdef MIDI
+
         if(override_index == 0)
         {
             select_button(override_index);
@@ -1292,6 +1293,7 @@ void draw()
     glUniform1i(text_iFont_location, 1);
     glUniform1f(text_iFSAA_location, fsaa);
     
+#ifdef MIDI
     glUniform1f(text_iFader0_location, fader0);
     glUniform1f(text_iFader1_location, fader1);
     glUniform1f(text_iFader2_location, fader2);
@@ -1300,6 +1302,7 @@ void draw()
     glUniform1f(text_iFader5_location, fader5);
     glUniform1f(text_iFader6_location, fader6);
     glUniform1f(text_iFader7_location, fader7);
+#endif
     
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, first_pass_texture);

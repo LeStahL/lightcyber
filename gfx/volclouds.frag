@@ -2,14 +2,6 @@
 
 uniform float iTime;
 uniform vec2 iResolution;
-uniform float iFader0;
-uniform float iFader1;
-uniform float iFader2;
-uniform float iFader3;
-uniform float iFader4;
-uniform float iFader5;
-uniform float iFader6;
-uniform float iFader7;
 
 const float pi = acos(-1.);
 const vec3 c = vec3(1.,0.,-1.);
@@ -138,28 +130,7 @@ void palette3(in float scale, out vec3 col)
 void palette1(in float scale, out vec3 col)
 {
     const int N = 5;
-    
-    /*
-    const vec3 colors[N] = vec3[N](
-            vec3(0.82,0.27,0.13),
-            vec3(0.85,0.77,0.68),
-            vec3(0.65,0.59,0.55),
-            vec3(0.45,0.29,0.24),
-            vec3(0.85,0.27,0.15)
-        );
-    //*/
-    
-    /*
-	const vec3 colors[N] = vec3[N](
-       	vec3(0.86,0.21,0.13),
-        vec3(0.85,0.80,0.62),
-        vec3(0.22,0.25,0.25),
-        vec3(0.16,0.17,0.17),
-        vec3(0.12,0.12,0.13)
-    );
-    //*/
-    
-	//*
+
     vec3 colors[N];
     if(iTime < 150.)
         colors = vec3[N](
@@ -191,7 +162,7 @@ void palette1(in float scale, out vec3 col)
         vec3(0.16,0.17,0.17),
         vec3(0.12,0.12,0.13)
     );
-    //*/
+
 	float index = floor(scale*float(N)), 
         remainder = scale*float(N)-index;
     col = mix(colors[int(index)],colors[int(index)+1], remainder);
@@ -230,7 +201,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         {
             vec3 c2;
             palette2(-s.x, c2);
-            c1 = mix(c1, c2, iFader0+smoothstep(5.,6.,iTime));
+            c1 = mix(c1, c2, smoothstep(5.,6.,iTime));
             palette3(-s.x, c2);
             c1 = mix(c1, c2, smoothstep(10.,11.,iTime));
         }
