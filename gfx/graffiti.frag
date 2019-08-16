@@ -100,9 +100,10 @@ void graf(in vec2 x, out float d)
 void zextrude(in float z, in float d2d, in float h, out float d);
 void add(in vec2 sda, in vec2 sdb, out vec2 sdf);
 
+mat3 R;
 void scene(in vec3 x, out vec2 sdf)
 {
-    
+    x = R * x;
     x.x += .3*iTime;
     x *= 2.;
     
@@ -116,6 +117,8 @@ void scene(in vec3 x, out vec2 sdf)
     mat3 RR;
     rot3(1.3*mix(.2,1.5, .5+.5*n.x)*n.z * c.xyy, RR);
     x = RR * x;
+    
+//     x = R * x;
     
     x.z = abs(x.z);
     
@@ -212,12 +215,14 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     
     vec2 uv = fragCoord/iResolution.yy-0.5*vec2(a, 1.0), 
         s;
-        
+    
+    if(iTime > 71.)
+        rot3(mix(pi/4.*c.xyy, 7.*pi/4.*c.xxy,smoothstep(71.,86.,iTime)), R);
+    else R = mat3(1.);
+    
     float sc2 = 0.,
         sc3 = 0.;
         
-    mat3 R;
-    
     vec3 col = c.yyy, 
         o = mix(1.,.5,smoothstep(0.,5.,clamp(iTime-71.,0.,5.)))*c.yzx,
         r = c.xyy,

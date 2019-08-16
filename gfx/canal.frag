@@ -47,6 +47,7 @@ void add(in vec2 sda, in vec2 sdb, out vec2 sdf);
 void smoothmin(in float a, in float b, in float k, out float dst);
 void dsmoothvoronoi(in vec2 x, out float d, out vec2 z);
 
+mat3 R;
 vec2 ind;
 void scene(in vec3 x, out vec2 sdf)
 {
@@ -126,7 +127,14 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     float phi = .3*iTime,
         co = cos(phi), 
         si = sin(phi);
-    uv = mix(uv,mat2(co,si,-si,co)*uv,step(156., iTime));
+    
+    float phi2 = mix(mix(mix(0.,pi/4.,smoothstep(0.,2., iTime)),
+                    -pi/4.,smoothstep(5.,7.,iTime)),
+                    pi/2.,smoothstep(10.,12.,iTime)),
+        co2 = cos(phi2),
+        si2 = sin(phi2);
+    
+    uv = mix(mat2(co2,si2,-si2,co2)*uv,mat2(co,si,-si,co)*uv,step(156., iTime));
     
     uv.y = mix(uv.y,-uv.y,step(156., iTime));
     
