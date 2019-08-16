@@ -1292,6 +1292,15 @@ void draw()
     glUniform1i(text_iFont_location, 1);
     glUniform1f(text_iFSAA_location, fsaa);
     
+    glUniform1f(text_iFader0_location, fader0);
+    glUniform1f(text_iFader1_location, fader1);
+    glUniform1f(text_iFader2_location, fader2);
+    glUniform1f(text_iFader3_location, fader3);
+    glUniform1f(text_iFader4_location, fader4);
+    glUniform1f(text_iFader5_location, fader5);
+    glUniform1f(text_iFader6_location, fader6);
+    glUniform1f(text_iFader7_location, fader7);
+    
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, first_pass_texture);
 //     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);

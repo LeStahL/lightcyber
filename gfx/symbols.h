@@ -2826,6 +2826,15 @@ const char *text_source = "/* Endeavor by Team210 - 64k intro by Team210 at Revi
 "uniform sampler2D iChannel0, iFont;\n"
 "uniform float iFSAA;\n"
 "\n"
+"uniform float iFader0;\n"
+"uniform float iFader1;\n"
+"uniform float iFader2;\n"
+"uniform float iFader3;\n"
+"uniform float iFader4;\n"
+"uniform float iFader5;\n"
+"uniform float iFader6;\n"
+"uniform float iFader7;\n"
+"\n"
 "out vec4 gl_FragColor;\n"
 "\n"
 "// Global constants\n"
@@ -3236,6 +3245,28 @@ const char *text_source = "/* Endeavor by Team210 - 64k intro by Team210 at Revi
 "        \n"
 "        stroke(da-.02,.001,da);\n"
 "        new.gba = mix(new.gba, c.xxx, sm(da));\n"
+"    }\n"
+"    else if(iTime < 130.)\n"
+"    {\n"
+"        float da, db;\n"
+"        \n"
+"        dbox(uv-vec2(.05,.3), vec2(1.6,.055), da);\n"
+"        da = mix(1.,da,smoothstep(125.,126.,iTime));\n"
+"        new.gba = mix(new.gba, mix(new.gba,c.xxx,.5), sm(da));\n"
+"        \n"
+"        // Wait, what?\n"
+"        dstring((uv-vec2(-.4,.3)), 28., .05, da);\n"
+"        \n"
+"        lfnoise(55.*uv, db);\n"
+"        stroke(db,0.535,db);\n"
+"        vec3 c1 = mix(mix(new.gba,c.yyy,.3), c.yyy, sm(db/50.));\n"
+"        \n"
+"        db = smoothstep(125.,126.,iTime);\n"
+"        da = mix(1., da, db);\n"
+"        new.gba = mix(new.gba, c1, sm(da));\n"
+"        \n"
+"        stroke(da-.01,.001,da);\n"
+"        new.gba = mix(new.gba, c.yyy, sm(da));\n"
 "    }\n"
 "    else\n"
 "    {\n"
@@ -5441,7 +5472,7 @@ int graffiti_iTime_location,graffiti_iResolution_location,graffiti_iFader0_locat
 int greet_iTime_location,greet_iResolution_location,greet_iFader0_location,greet_iFader1_location,greet_iFader2_location,greet_iFader3_location,greet_iFader4_location,greet_iFader5_location,greet_iFader6_location,greet_iFader7_location;
 int evoke_iTime_location,evoke_iResolution_location,evoke_iFader0_location,evoke_iFader1_location,evoke_iFader2_location,evoke_iFader3_location,evoke_iFader4_location,evoke_iFader5_location,evoke_iFader6_location,evoke_iFader7_location;
 int canal_iTime_location,canal_iResolution_location,canal_iFader0_location,canal_iFader1_location,canal_iFader2_location,canal_iFader3_location,canal_iFader4_location,canal_iFader5_location,canal_iFader6_location,canal_iFader7_location;
-int text_iFontWidth_location,text_iTime_location,text_iResolution_location,text_iChannel0_location,text_iFont_location,text_iFSAA_location;
+int text_iFontWidth_location,text_iTime_location,text_iResolution_location,text_iChannel0_location,text_iFont_location,text_iFSAA_location,text_iFader0_location,text_iFader1_location,text_iFader2_location,text_iFader3_location,text_iFader4_location,text_iFader5_location,text_iFader6_location,text_iFader7_location;
 int post_iFSAA_location,post_iResolution_location,post_iChannel0_location,post_iTime_location;
 int logo210_iTime_location,logo210_iResolution_location,logo210_iFader0_location,logo210_iFader1_location,logo210_iFader2_location,logo210_iFader3_location,logo210_iFader4_location,logo210_iFader5_location,logo210_iFader6_location,logo210_iFader7_location;
 int transbubbles_iTime_location,transbubbles_iResolution_location,transbubbles_iFader0_location,transbubbles_iFader1_location,transbubbles_iFader2_location,transbubbles_iFader3_location,transbubbles_iFader4_location,transbubbles_iFader5_location,transbubbles_iFader6_location,transbubbles_iFader7_location;
@@ -5774,6 +5805,14 @@ void Loadtext()
     text_iChannel0_location = glGetUniformLocation(text_program, "iChannel0");
     text_iFont_location = glGetUniformLocation(text_program, "iFont");
     text_iFSAA_location = glGetUniformLocation(text_program, "iFSAA");
+    text_iFader0_location = glGetUniformLocation(text_program, "iFader0");
+    text_iFader1_location = glGetUniformLocation(text_program, "iFader1");
+    text_iFader2_location = glGetUniformLocation(text_program, "iFader2");
+    text_iFader3_location = glGetUniformLocation(text_program, "iFader3");
+    text_iFader4_location = glGetUniformLocation(text_program, "iFader4");
+    text_iFader5_location = glGetUniformLocation(text_program, "iFader5");
+    text_iFader6_location = glGetUniformLocation(text_program, "iFader6");
+    text_iFader7_location = glGetUniformLocation(text_program, "iFader7");
     progress += .2/(float)nprograms;
 }
 

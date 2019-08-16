@@ -22,6 +22,15 @@ uniform vec2 iResolution;
 uniform sampler2D iChannel0, iFont;
 uniform float iFSAA;
 
+uniform float iFader0;
+uniform float iFader1;
+uniform float iFader2;
+uniform float iFader3;
+uniform float iFader4;
+uniform float iFader5;
+uniform float iFader6;
+uniform float iFader7;
+
 out vec4 gl_FragColor;
 
 // Global constants
@@ -432,6 +441,28 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         
         stroke(da-.02,.001,da);
         new.gba = mix(new.gba, c.xxx, sm(da));
+    }
+    else if(iTime < 130.)
+    {
+        float da, db;
+        
+        dbox(uv-vec2(.05,.3), vec2(1.6,.055), da);
+        da = mix(1.,da,smoothstep(125.,126.,iTime));
+        new.gba = mix(new.gba, mix(new.gba,c.xxx,.5), sm(da));
+        
+        // Wait, what?
+        dstring((uv-vec2(-.4,.3)), 28., .05, da);
+        
+        lfnoise(55.*uv, db);
+        stroke(db,0.535,db);
+        vec3 c1 = mix(mix(new.gba,c.yyy,.3), c.yyy, sm(db/50.));
+        
+        db = smoothstep(125.,126.,iTime);
+        da = mix(1., da, db);
+        new.gba = mix(new.gba, c1, sm(da));
+        
+        stroke(da-.01,.001,da);
+        new.gba = mix(new.gba, c.yyy, sm(da));
     }
     else
     {
