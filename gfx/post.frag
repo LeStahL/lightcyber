@@ -343,10 +343,10 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord_ )
 //         lscale = iScale;
         lscale = smoothstep(0.,.5,clamp((iTime-10.),0.,1.))*(1.-smoothstep(0.,.5,clamp((iTime-18.),0.,1.)));
 //         lscale += smoothstep(0.,.5,clamp((iTime-10.),0.,1.))*(1.-smoothstep(0.,.5,clamp((iTime-18.),0.,1.)));
-        
+        rscale = smoothstep(167.,167.5,iTime)-smoothstep(172.,172.5,iTime);
         
 //         rscale = iScale;
-        rscale = 0.;
+//         rscale = 0.;
         size = mix(.005, .01, rscale);
         size = mix(0., size, max(rscale, lscale));
      
