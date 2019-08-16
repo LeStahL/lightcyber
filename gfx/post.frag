@@ -229,6 +229,23 @@ void normal(in vec3 x, out vec3 n, in float dx);
 void mainImage( out vec4 fragColor, in vec2 fragCoord_ )
 {
     vec2 fragCoord = fragCoord_;
+    
+    if(iTime < 159.5456 && iTime > 155.9092)
+    {
+        vec2 n;
+        lfnoise(22.*fragCoord/iResolution-3.*iTime, n.x);
+        lfnoise(22.*fragCoord/iResolution-3.*iTime-1337., n.y);
+        fragCoord += 22.*n;
+    }
+    else if(iTime < 165. && iTime > 163.182)
+    {
+        vec2 n;
+        lfnoise(22.*fragCoord/iResolution-3.*iTime, n.x);
+        lfnoise(22.*fragCoord/iResolution-3.*iTime-1337., n.y);
+        fragCoord += 22.*n;
+    }
+    
+    
     float a = iResolution.x/iResolution.y;
     vec2 uv = fragCoord/iResolution.yy-0.5*vec2(a, 1.0);
     
