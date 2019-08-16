@@ -737,7 +737,7 @@ void draw()
     else if(t < 71)
     {
         glUseProgram(canal_program);
-        glUniform1f(canal_iTime_location, t);
+        glUniform1f(canal_iTime_location, t-55.);
         glUniform2f(canal_iResolution_location, w, h);
         
 #ifdef MIDI
@@ -1312,8 +1312,6 @@ void draw()
     quad();
     glBindTexture(GL_TEXTURE_2D, 0);
 }
-
-
 
 
 

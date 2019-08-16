@@ -2588,11 +2588,14 @@ const char *canal_source = "/* Gross Gloss by Team210 - 64k intro by Team210 at 
 "void add(in vec2 sda, in vec2 sdb, out vec2 sdf);\n"
 "void smoothmin(in float a, in float b, in float k, out float dst);\n"
 "void dsmoothvoronoi(in vec2 x, out float d, out vec2 z);\n"
+"void rot3(in vec3 phi, out mat3 R); \n"
 "\n"
 "mat3 R;\n"
 "vec2 ind;\n"
 "void scene(in vec3 x, out vec2 sdf)\n"
 "{\n"
+"    x = R * x;\n"
+"\n"
 "//     x.y = mix(x.y,-x.y,step(156., iTime));\n"
 "    x.z -= mix(1.3,-1.3,step(156., iTime))*iTime;\n"
 "    \n"
@@ -2601,6 +2604,8 @@ const char *canal_source = "/* Gross Gloss by Team210 - 64k intro by Team210 at 
 "    \n"
 "    lfnoise(.5*x.z*c.xx, dx);\n"
 "    x.xy-=.2*dx*c.xy;\n"
+"    \n"
+"    \n"
 "    \n"
 "    // Voronoi\n"
 "    float phi = atan(x.y,x.x);\n"
@@ -2666,17 +2671,17 @@ const char *canal_source = "/* Gross Gloss by Team210 - 64k intro by Team210 at 
 "    vec2 uv = ( fragCoord -.5* iResolution.xy) / iResolution.y, \n"
 "        s;\n"
 "        \n"
-"    float phi = .3*iTime,\n"
+"    float phi = mix(0.,.3*iTime,smoothstep(5.,6., iTime))*step(iTime,156.),\n"
 "        co = cos(phi), \n"
 "        si = sin(phi);\n"
 "    \n"
-"    float phi2 = mix(mix(mix(0.,pi/4.,smoothstep(0.,2., iTime)),\n"
-"                    -pi/4.,smoothstep(5.,7.,iTime)),\n"
-"                    pi/2.,smoothstep(10.,12.,iTime)),\n"
+"    float phi2 = mix(mix(mix(0.,pi/4.,smoothstep(5.,6., iTime)),\n"
+"                    -pi/4.,smoothstep(9.,10.,iTime)),\n"
+"                    pi/2.,smoothstep(13.,14.,iTime))*step(iTime,156.),\n"
 "        co2 = cos(phi2),\n"
 "        si2 = sin(phi2);\n"
-"    \n"
-"    uv = mix(mat2(co2,si2,-si2,co2)*uv,mat2(co,si,-si,co)*uv,step(156., iTime));\n"
+"    rot3(mod(vec3(phi,phi2,0.),pi),R);\n"
+"    uv = mix(uv,mat2(co,si,-si,co)*uv,step(156., iTime));\n"
 "    \n"
 "    uv.y = mix(uv.y,-uv.y,step(156., iTime));\n"
 "    \n"
@@ -5774,6 +5779,7 @@ void Loadcanal()
     glAttachShader(canal_program,add_handle);
     glAttachShader(canal_program,smoothmin_handle);
     glAttachShader(canal_program,dsmoothvoronoi_handle);
+    glAttachShader(canal_program,rot3_handle);
     glAttachShader(canal_program,normal_handle);
     glLinkProgram(canal_program);
 #ifdef DEBUG

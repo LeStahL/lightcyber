@@ -46,11 +46,14 @@ void zextrude(in float z, in float d2d, in float h, out float d);
 void add(in vec2 sda, in vec2 sdb, out vec2 sdf);
 void smoothmin(in float a, in float b, in float k, out float dst);
 void dsmoothvoronoi(in vec2 x, out float d, out vec2 z);
+void rot3(in vec3 phi, out mat3 R); 
 
 mat3 R;
 vec2 ind;
 void scene(in vec3 x, out vec2 sdf)
 {
+    x = R * x;
+
 //     x.y = mix(x.y,-x.y,step(156., iTime));
     x.z -= mix(1.3,-1.3,step(156., iTime))*iTime;
     
@@ -59,6 +62,8 @@ void scene(in vec3 x, out vec2 sdf)
     
     lfnoise(.5*x.z*c.xx, dx);
     x.xy-=.2*dx*c.xy;
+    
+    
     
     // Voronoi
     float phi = atan(x.y,x.x);
@@ -124,17 +129,17 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     vec2 uv = ( fragCoord -.5* iResolution.xy) / iResolution.y, 
         s;
         
-    float phi = .3*iTime,
+    float phi = mix(0.,.3*iTime,smoothstep(5.,6., iTime))*step(iTime,156.),
         co = cos(phi), 
         si = sin(phi);
     
-    float phi2 = mix(mix(mix(0.,pi/4.,smoothstep(0.,2., iTime)),
-                    -pi/4.,smoothstep(5.,7.,iTime)),
-                    pi/2.,smoothstep(10.,12.,iTime)),
+    float phi2 = mix(mix(mix(0.,pi/4.,smoothstep(5.,6., iTime)),
+                    -pi/4.,smoothstep(9.,10.,iTime)),
+                    pi/2.,smoothstep(13.,14.,iTime))*step(iTime,156.),
         co2 = cos(phi2),
         si2 = sin(phi2);
-    
-    uv = mix(mat2(co2,si2,-si2,co2)*uv,mat2(co,si,-si,co)*uv,step(156., iTime));
+    rot3(mod(vec3(phi,phi2,0.),pi),R);
+    uv = mix(uv,mat2(co,si,-si,co)*uv,step(156., iTime));
     
     uv.y = mix(uv.y,-uv.y,step(156., iTime));
     
