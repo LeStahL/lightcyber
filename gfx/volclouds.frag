@@ -184,7 +184,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     
 	o = c.yyx;
     t = c.yyy;
-    int N = 50,
+    int N = 40,
         i;
     dir = normalize(vec3(uv,-1.));//normalize(t-o);
     

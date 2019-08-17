@@ -104,10 +104,20 @@ LRESULT CALLBACK DialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					}
 					else if(index == 1)
 					{
+						w = 1600;
+						h = 900;
+					}
+					else if(index == 2)
+					{
+						w = 1280;
+						h = 720;
+					}
+					else if(index == 3)
+					{
 						w = 960;
 						h = 540;
 					}
-					else if(index == 2)
+					else if(index == 4)
 					{
 						w = 1024;
 						h = 768;
@@ -192,14 +202,18 @@ int WINAPI demo(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, in
 	// Add resolution Combo box
 	HWND hResolutionComboBox = CreateWindow(WC_COMBOBOX, TEXT(""),
 	 CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,
-	 100, 10, 175, 80, lwnd, (HMENU)5, hInstance,
+	 100, 10, 175, 400, lwnd, (HMENU)5, hInstance,
 	 NULL);
 
 	// Add items to resolution combo box and select full HD
 	const char *fullhd = "1920*1080",
+        *resolution_1600x900 = "1600*900",
+        *resolution_1280x720 = "1280*720",
 		*halfhd = "960*540",
 		*normal = "1024*768";
 	SendMessage(hResolutionComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (fullhd));
+    SendMessage(hResolutionComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (resolution_1600x900));
+    SendMessage(hResolutionComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (resolution_1280x720));
 	SendMessage(hResolutionComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (halfhd));
 	SendMessage(hResolutionComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (normal));
 	SendMessage(hResolutionComboBox, CB_SETCURSEL, 0, 0);
@@ -225,22 +239,22 @@ int WINAPI demo(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, in
 		*fsaa9 = "9*FSAA",
 		*fsaa16 = "16*FSAA",
 		*fsaa25 = "25*FSAA",
-        *fsaa36 = "36*FSAA",
-        *fsaa49 = "49*FSAA",
-        *fsaa64 = "64*FSAA",
-        *fsaa81 = "81*FSAA",
-        *fsaa100 = "100*FSAA";
+        *fsaa36 = "36*FSAA";//,
+//         *fsaa49 = "49*FSAA",
+//         *fsaa64 = "64*FSAA",
+//         *fsaa81 = "81*FSAA",
+//         *fsaa100 = "100*FSAA";
 	SendMessage(hFSAAComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (fsaa1));
 	SendMessage(hFSAAComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (fsaa4));
 	SendMessage(hFSAAComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (fsaa9));
 	SendMessage(hFSAAComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (fsaa16));
 	SendMessage(hFSAAComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (fsaa25));
     SendMessage(hFSAAComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (fsaa36));
-    SendMessage(hFSAAComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (fsaa49));
-    SendMessage(hFSAAComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (fsaa64));
-    SendMessage(hFSAAComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (fsaa81));
-    SendMessage(hFSAAComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (fsaa100));
-	SendMessage(hFSAAComboBox, CB_SETCURSEL, 9, 0);
+//     SendMessage(hFSAAComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (fsaa49));
+//     SendMessage(hFSAAComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (fsaa64));
+//     SendMessage(hFSAAComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (fsaa81));
+//     SendMessage(hFSAAComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (fsaa100));
+	SendMessage(hFSAAComboBox, CB_SETCURSEL, 5, 0);
 
 	// Add "SFX Buffer: " text
 	HWND hTXAAText = CreateWindow(WC_STATIC, "SFX Buffer: ", WS_VISIBLE | WS_CHILD | SS_LEFT, 10,95,100,100, lwnd, NULL, hInstance, NULL);
@@ -372,10 +386,10 @@ int WINAPI demo(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, in
 
 	RegisterClassEx(&wc);
 
-	// Get full screen information
-	HMONITOR hmon = MonitorFromWindow(0, MONITOR_DEFAULTTONEAREST);
-	MONITORINFO mi = { sizeof(mi) };
-	GetMonitorInfo(hmon, &mi);
+// 	// Get full screen information
+// 	HMONITOR hmon = MonitorFromWindow(0, MONITOR_DEFAULTTONEAREST);
+// 	MONITORINFO mi = { sizeof(mi) };
+// 	GetMonitorInfo(hmon, &mi);
 
 	// Create the window.
 	HWND hwnd = CreateWindowEx(
@@ -383,10 +397,10 @@ int WINAPI demo(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, in
 		WindowClass,                                                // Window class
 		":: NR4^QM/Team210 :: GO - MAKE A DEMO ::",                                 // Window text
 		WS_POPUP | WS_VISIBLE,                                      // Window style
-		mi.rcMonitor.left,
-		mi.rcMonitor.top,
-		mi.rcMonitor.right - mi.rcMonitor.left,
-		mi.rcMonitor.bottom - mi.rcMonitor.top,                     // Size and position
+		0,
+		0,
+		w,
+		h,                     // Size and position
 
 		NULL,                                                       // Parent window
 		NULL,                                                       // Menu
@@ -394,6 +408,15 @@ int WINAPI demo(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, in
 		0                                                           // Additional application data
 	);
 
+    DEVMODE dm = { 0 };
+    dm.dmSize = sizeof(dm);
+    dm.dmPelsWidth = w;
+    dm.dmPelsHeight = h;
+    dm.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT;
+    
+    ChangeDisplaySettings(&dm, CDS_FULLSCREEN);
+    
+    
 	// Show it
 	ShowWindow(hwnd, TRUE);
 	UpdateWindow(hwnd);
@@ -449,6 +472,8 @@ int WINAPI demo(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, in
 	glActiveTexture = (PFNGLACTIVETEXTUREPROC) wglGetProcAddress("glActiveTexture");
 	glUniform1i = (PFNGLUNIFORM1IPROC) wglGetProcAddress("glUniform1i");
 
+    ShowCursor(FALSE);
+    
 	load_demo();
 
 	// Main loop

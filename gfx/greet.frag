@@ -108,7 +108,10 @@ void scene(in vec3 x, out vec2 sdf)
 	else if(zi < 5.5)dschnappsgirls(20.*x.xy, d);
     stroke(d/20.,tw, d);
     zextrude(dz, -d, .005, d);
-    add(sdf, vec2(d, 5.), sdf);
+    if(zi == 0.)
+        add(sdf, vec2(d, 6.), sdf);
+    else
+        add(sdf, vec2(d, 5.), sdf);
 }
 
 void normal(in vec3 x, out vec3 n, in float dx);
@@ -153,7 +156,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     if(i < N)
     {
         normal(x,n, 5.e-4);
-        vec3 l = mix(1.5,.2,abs(pow(sin(2.*2.*pi*(x.z-.05*iTime)), 2.)))*n;//normalize(x-.1*c.yxy);
+//         vec3 l = mix(1.5,.2,abs(pow(sin(2.*2.*pi*(x.z-.05*iTime)), 2.)))*n;//normalize(x-.1*c.yxy);
+        vec3 l = x+.1*n;
        
 		if(s.y == 2.)
         {
@@ -186,7 +190,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
             }
             
             normal(x,n, 5.e-4);
-        	vec3 l = mix(1.5,.2,abs(pow(sin(4.*2.*pi*(x.z-.05*iTime)), 2.)))*n;//normalize(x-.1*c.yxy);
+        	//vec3 l = mix(1.5,.2,abs(pow(sin(4.*2.*pi*(x.z-.05*iTime)), 2.)))*n;//normalize(x-.1*c.yxy);
+            vec3 l = x+.1*n;
        
             vec3 c1;
             if(s.y == 2.)
@@ -221,6 +226,13 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
                     + .8*vec3(.8,.3,.2) * pow(abs(dot(reflect(-l,n),dir)),2.);
                 c1 = mix(c1, c.xxx, .1);
             }
+            else if(s.y == 6.)
+            {
+                c1 = .2*.2*c.xyy
+                    + .2*.5*mix(c.xyy, vec3(0.24,0.11,0.024), step(0.,-x.y)) * abs(dot(l,n))
+                    + mix(.5,1.1,.5+.5*sin(6.*iTime))*mix(vec3(.8,.3,.2),vec3(1.,.3,.6),.5+.5*sin(6.*iTime)) * pow(abs(dot(reflect(-l,n),dir)),2.);
+                c1 = mix(c1, c.xxx, .1);
+            }
             
             col = mix(col, c1, .5);
         }
@@ -240,6 +252,13 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
                 + .8*vec3(.8,.3,.2) * pow(abs(dot(reflect(-l,n),dir)),2.);
             col = mix(col, c.xxx, .1);
         }
+        else if(s.y == 6.)
+            {
+                col = .2*.2*c.xyy
+                    + .2*.5*mix(c.xyy, vec3(0.24,0.11,0.024), step(0.,-x.y)) * abs(dot(l,n))
+                    + mix(.5,1.1,.5+.5*sin(6.*iTime))*mix(vec3(.8,.3,.2),vec3(1.,.3,.6),.5+.5*sin(6.*iTime)) * pow(abs(dot(reflect(-l,n),dir)),2.);
+                col = mix(col, c.xxx, .1);
+            }
 
     }
     

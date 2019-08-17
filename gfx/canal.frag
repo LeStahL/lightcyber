@@ -149,7 +149,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         dir,
         n,
         x;
-    int N = 400,
+    int N = 300,
         i, a = 0;
     t = uv.x * r + uv.y * u;
     dir = normalize(t-o);
