@@ -1,6 +1,6 @@
 # Lightcyber - 64k Intro by Team210 at Evoke 2k19
 # Copyright (C) 2019 Alexander Kraus <nr4@z10.info>
-# Copyright (C) 2019 DaDummy <>
+# Copyright (C) 2019 DaDummy <c.anselm@paindevs.com>
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
