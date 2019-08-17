@@ -216,7 +216,7 @@ int WINAPI demo(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, in
     SendMessage(hResolutionComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (resolution_1280x720));
 	SendMessage(hResolutionComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (halfhd));
 	SendMessage(hResolutionComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (normal));
-	SendMessage(hResolutionComboBox, CB_SETCURSEL, 0, 0);
+	SendMessage(hResolutionComboBox, CB_SETCURSEL, 2, 0);
 
 	// Add mute checkbox
 	HWND hMuteCheckbox = CreateWindow(WC_BUTTON, TEXT("Mute"),

@@ -126,7 +126,7 @@ void debugp(int program)
 #define printf(a)
 #endif //DEBUG
 
-int w = 1920, h = 1080;
+int w = 1280, h = 720;
 
 #ifdef MIDI
 HMIDIOUT hMidiOut;

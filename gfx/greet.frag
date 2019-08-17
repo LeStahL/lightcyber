@@ -129,6 +129,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     scale(iScale);
     //uv *= 2.;
     
+    float d0;
+    vec3 o0, dir0;
     vec3 col = c.yyy, 
         o = c.yyx,
         r = c.xyy, 
@@ -159,6 +161,10 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 //         vec3 l = mix(1.5,.2,abs(pow(sin(2.*2.*pi*(x.z-.05*iTime)), 2.)))*n;//normalize(x-.1*c.yxy);
         vec3 l = x+.1*n;
        
+        o0 = o;
+        d0 = d;
+        dir0 = dir;
+       
 		if(s.y == 2.)
         {
             col = .23*c.xxx;
@@ -176,6 +182,9 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
                 + mix(.5,.1,r)*vec3(0.45,0.69,0.76) * pow(abs(dot(reflect(-l,n),dir)),2.);
             
             // Reflections
+            d0 = d;
+            o0 = o;
+            dir0 = dir;
             d = 1.e-2;
             o = x;
             dir = reflect(dir, n);
@@ -260,6 +269,41 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
                 col = mix(col, c.xxx, .1);
             }
 
+    }
+    
+    
+    float da;
+//     float da = -(o0.z)/dir0.z;
+//     if(da < d)
+    {
+        float dd = mix(mix(mix(mix(mix(mix(mix(0.,0.14173228346456693,smoothstep(0.,0.341334,iTime)),
+            0.14173228346456693+.25,smoothstep(0.341334,2.276818,iTime)),
+            0.14173228346456693+.5,smoothstep(2.276818,4.151818,iTime)),
+            0.14173228346456693+.75,smoothstep(4.151818,4.151818+1*1.8182,iTime)),
+            0.14173228346456693+1.,smoothstep(4.151818+1*1.8182,4.151818+2*1.8182,iTime)),
+            0.14173228346456693+1.25,smoothstep(4.151818+2*1.8182,4.151818+3*1.8182,iTime)),
+            0.,smoothstep(4.151818+3*1.8182,4.151818+5*1.8182,iTime));
+        
+        da = -(o0.z-dd)/dir0.z;
+        x = o0 + da * dir0;
+//         x.z -= dd;
+        
+//     x.z -= mix(0.,1.5,iFader0);
+//         x.z += dd;
+        
+        float tsize = .25;
+        float tw = .0005;
+        float dz = mod(x.z-.5*tsize, tsize)-.5*tsize;
+        float zi = round((x.z-dz)/tsize);
+        zi = mod(zi, 6.);
+        
+//         if(zi < .5)
+        if(da > 0.)
+        {
+            dmercury(20.*x.xy, da);
+            stroke(da, tw, da);
+            col = mix(col, mix(col, vec3(1.,.3,.6),.5),sm(da/50.*( .6+.4*sin(6.*iTime))));
+        }
     }
     
     col = mix(col, 0.*.23*c.xxx*vec3(0.76,0.20,0.13),smoothstep(1.,5.,d));
