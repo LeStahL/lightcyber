@@ -128,6 +128,101 @@ void debugp(int program)
 
 int w = 1280, h = 720;
 
+// Supported resolutions
+const int nresolutions = 9;
+const char *resolution_names[] = 
+{
+    // 16:9
+    "1920*1080",
+    "1600*900",
+    "1280*720",
+    "960*540",
+    // 4:3
+    "1600*1200",
+    "1280*960",
+    "1024*768",
+    "800*600",
+    "640*480"
+};
+const int widths[] = 
+{
+    1920,
+    1600,
+    1280,
+    960,
+    1600,
+    1280,
+    1024,
+    800,
+    640
+};
+const int heights[] = 
+{
+    1080,
+    900,
+    720,
+    540,
+    1200,
+    960,
+    768,
+    600,
+    480
+};
+
+// Supported FSAA entries;
+const int nfsaa = 6;
+const char *fsaa_names[] =
+{
+    "1x (None)",
+    "4x",
+    "9x",
+    "16x",
+    "25x",
+    "36x"
+};
+
+const int nbuffersizes = 4;
+const char *buffersize_names[] = 
+{
+    "128x128 px",
+    "256x256 px",
+    "512x512 px",
+    "1024x1024 px"
+};
+
+const int nscenes = 28;
+const char *scene_names[] = 
+{
+    "All scenes",
+    "Logo 210",
+    "Evoke Logo",
+    "Red Graffiti",
+    "Cube",
+    "Honey Hell",
+    "Blue Graffiti",
+    "Tentacles",
+    "Bubbles",
+    "Smoke",
+    "Chart",
+    "Greetings",
+    "Smoke II",
+    "Graffiti III",
+    "Bubbles II",
+    "Tentacles II",
+    "Cube II",
+    "Smoke III",
+    "Bubbles III",
+    "Honey Hell II",
+    "Cube III",
+    "Tentacles III",
+    "Honey Hell III",
+    "Graffiti IV",
+    "Bubbles IV",
+    "Smoke IV",
+    "Cube IV",
+    "Tentacles V (End)"
+};
+
 #ifdef MIDI
 HMIDIOUT hMidiOut;
 #endif

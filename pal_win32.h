@@ -97,31 +97,8 @@ LRESULT CALLBACK DialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				case 5:
 				{
 					int index = SendMessage(hSender, CB_GETCURSEL, 0, 0);
-					if(index == 0)
-					{
-						w = 1920;
-						h = 1080;
-					}
-					else if(index == 1)
-					{
-						w = 1600;
-						h = 900;
-					}
-					else if(index == 2)
-					{
-						w = 1280;
-						h = 720;
-					}
-					else if(index == 3)
-					{
-						w = 960;
-						h = 540;
-					}
-					else if(index == 4)
-					{
-						w = 1024;
-						h = 768;
-					}
+					w = widths[index];
+                    h = heights[index];
 				}
 					break;
 				case 6:
@@ -188,7 +165,7 @@ int WINAPI demo(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, in
 		WS_OVERLAPPEDWINDOW,            // Window style
 
 		// Size and position
-		200, 200, 300, 300,
+		200, 200, 600, 300,
 
 		NULL,       // Parent window
 		NULL,       // Menu
@@ -206,17 +183,11 @@ int WINAPI demo(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, in
 	 NULL);
 
 	// Add items to resolution combo box and select full HD
-	const char *fullhd = "1920*1080",
-        *resolution_1600x900 = "1600*900",
-        *resolution_1280x720 = "1280*720",
-		*halfhd = "960*540",
-		*normal = "1024*768";
-	SendMessage(hResolutionComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (fullhd));
-    SendMessage(hResolutionComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (resolution_1600x900));
-    SendMessage(hResolutionComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (resolution_1280x720));
-	SendMessage(hResolutionComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (halfhd));
-	SendMessage(hResolutionComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (normal));
+    for(int i=0; i<nresolutions; ++i)
+        SendMessage(hResolutionComboBox, (UINT) CB_ADDSTRING, (WPARAM) 0, (LPARAM) resolution_names[i]);
 	SendMessage(hResolutionComboBox, CB_SETCURSEL, 2, 0);
+    w = widths[2];
+    h = heights[2];
 
 	// Add mute checkbox
 	HWND hMuteCheckbox = CreateWindow(WC_BUTTON, TEXT("Mute"),
@@ -232,49 +203,25 @@ int WINAPI demo(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, in
 	 CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,
 	 100, 60, 175, 280, lwnd, (HMENU)8, hInstance,
 	 NULL);
-
-	// Populate with entries
-	const char *fsaa1= "None",
-		*fsaa4 = "4*FSAA",
-		*fsaa9 = "9*FSAA",
-		*fsaa16 = "16*FSAA",
-		*fsaa25 = "25*FSAA",
-        *fsaa36 = "36*FSAA";//,
-//         *fsaa49 = "49*FSAA",
-//         *fsaa64 = "64*FSAA",
-//         *fsaa81 = "81*FSAA",
-//         *fsaa100 = "100*FSAA";
-	SendMessage(hFSAAComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (fsaa1));
-	SendMessage(hFSAAComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (fsaa4));
-	SendMessage(hFSAAComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (fsaa9));
-	SendMessage(hFSAAComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (fsaa16));
-	SendMessage(hFSAAComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (fsaa25));
-    SendMessage(hFSAAComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (fsaa36));
-//     SendMessage(hFSAAComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (fsaa49));
-//     SendMessage(hFSAAComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (fsaa64));
-//     SendMessage(hFSAAComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (fsaa81));
-//     SendMessage(hFSAAComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (fsaa100));
-	SendMessage(hFSAAComboBox, CB_SETCURSEL, 5, 0);
+    
+    // Populate with entries
+    for(int i=0; i<nfsaa; ++i)
+        SendMessage(hFSAAComboBox, (UINT) CB_ADDSTRING, (WPARAM) 0, (LPARAM) fsaa_names[i]);
+	SendMessage(hFSAAComboBox, CB_SETCURSEL, nfsaa-1, 0);
+    fsaa = nfsaa*nfsaa;
 
 	// Add "SFX Buffer: " text
 	HWND hTXAAText = CreateWindow(WC_STATIC, "SFX Buffer: ", WS_VISIBLE | WS_CHILD | SS_LEFT, 10,95,100,100, lwnd, NULL, hInstance, NULL);
 
 	// Add SFX buffer size combo box
-	HWND hTXAAComboBox= CreateWindow(WC_COMBOBOX, TEXT(""),
+	HWND hTXAAComboBox = CreateWindow(WC_COMBOBOX, TEXT(""),
 	 CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,
 	 100, 90, 175, 280, lwnd, (HMENU)9, hInstance,
 	 NULL);
 
 	// Populate with entries
-	const char *buf128= "128^2 px",
-		*buf256 = "256^2 px",
-		*buf512 = "512^2 px",
-		*buf1024 = "1024^2 px";
-	SendMessage(hTXAAComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (buf128));
-	SendMessage(hTXAAComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (buf256));
-	SendMessage(hTXAAComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (buf512));
-	SendMessage(hTXAAComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (buf1024));
-	//SendMessage(hTXAAComboBox, CB_SETCURSEL, 3, 0);
+    for(int i=0; i<4; ++i)
+        SendMessage(hTXAAComboBox, (UINT) CB_ADDSTRING, (WPARAM) 0, (LPARAM) buffersize_names[i]);
 	SendMessage(hTXAAComboBox, CB_SETCURSEL, 2, 0);
 
 	// Add "Antialiasing: " text
@@ -286,67 +233,13 @@ int WINAPI demo(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, in
 	 100, 120, 175, 680, lwnd, (HMENU)10, hInstance,
 	 NULL);
 
-	// Populate with entries
-	const char *all_scenes = "All scenes",
-		*logo210_scene = "Logo 210",
-        *evoke_scene = "Evoke Logo",
-        *graffiti_scene = "Red Graffiti",
-        *groundboxes_scene = "Cube",
-        *canal_scene = "Honey Hell",
-        *graffiti_2_scene = "Blue Graffiti",
-        *voronoidesign_scene = "Tentacles",
-        *transbubbles_scene = "Bubbles",
-        *volclouds_scene = "Smoke",
-        *chart_scene = "Chart",
-        *greet_scene = "Greetings",
-        *volclouds_2_scene = "Smoke II",
-        *graffiti_3_scene = "Graffiti III",
-        *transbubbles_2_scene = "Bubbles II",
-        *voronoidesign_2_scene = "Tentacles II",
-        *groundboxes_2_scene = "Cube II",
-        *volclouds_3_scene = "Smoke III",
-        *transbubbles_3_scene = "Bubbles III",
-        *canal_2_scene = "Honey Hell II",
-        *groundboxes_3_scene = "Cube III",
-        *voronoidesign_3_scene = "Tentacles III",
-        *canal_3_scene = "Honey Hell III",
-        *graffiti_4_scene = "Graffiti IV",
-        *transbubbles_4_scene = "Bubbles IV",
-        *volclouds_4_scene = "Smoke IV",
-        *groundboxes_4_scene = "Cube IV",
-        *voronoidesign_4_scene = "Tentacles V (End)";
-	SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (all_scenes));
-    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (logo210_scene));
-    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (evoke_scene));
-    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (graffiti_scene));
-    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (groundboxes_scene));
-    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (canal_scene));
-    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (graffiti_2_scene));
-    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (voronoidesign_scene));
-    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (transbubbles_scene));
-    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (volclouds_scene));
-    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (chart_scene));
-    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (greet_scene));
-    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (volclouds_2_scene));
-    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (graffiti_3_scene));
-    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (transbubbles_2_scene));
-    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (voronoidesign_2_scene));
-    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (groundboxes_2_scene));
-    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (volclouds_3_scene));
-    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (transbubbles_3_scene));
-    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (canal_2_scene));
-    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (groundboxes_3_scene));
-    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (voronoidesign_3_scene));
-    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (canal_3_scene));
-    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (graffiti_4_scene));
-    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (transbubbles_4_scene));
-    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (volclouds_4_scene));
-    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (groundboxes_4_scene));
-    SendMessage(hSceneComboBox,(UINT) CB_ADDSTRING,(WPARAM) 0,(LPARAM) (voronoidesign_4_scene));
+    // Populate with entries
+    for(int i=0; i<nscenes; ++i)
+        SendMessage(hSceneComboBox, (UINT) CB_ADDSTRING, (WPARAM) 0, (LPARAM) scene_names[i]);
 	SendMessage(hSceneComboBox, CB_SETCURSEL, 0, 0);
 
 	// Add start button
-	HWND hwndButton = CreateWindow(WC_BUTTON,"Offend!",WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,185,165,90,90,lwnd,(HMENU)7,hInstance,NULL);
+	HWND hwndButton = CreateWindow(WC_BUTTON,"Offend!",WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,485,165,90,90,lwnd,(HMENU)7,hInstance,NULL);
 
 	// Show the selector
 	ShowWindow(lwnd, TRUE);
