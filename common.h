@@ -32,6 +32,7 @@
 #	include <commctrl.h>
 #	include <mmsystem.h>
 #	include <Mmreg.h>
+#   include <vfw.h>
 #endif
 
 #include <GL/gl.h>

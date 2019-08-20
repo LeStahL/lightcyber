@@ -15,8 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#define DEBUG // Shader debug i/o
+// #define DEBUG // Shader debug i/o
 // #define MIDI // APC40 mkII controls
+// #define RECORD // Compile in recording capabilities
 
 const char *demoname = "Lightcyber/Team210";
 unsigned int muted = 0.;
@@ -520,8 +521,12 @@ void draw()
     
     t = t_now;
     if(t > t_end)
+    {
+#ifdef RECORD
+        if(recording) capFileSaveAs(hCaptureWindow, record_filename); 
+#endif
         ExitProcess(0);
-    
+    }
 #ifdef MIDI
     if(time_dial != 0 ||  time_fine_dial != 0 || time_very_fine_dial != 0)
     {

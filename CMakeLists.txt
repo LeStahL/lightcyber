@@ -65,7 +65,7 @@ if(MSVC)
     target_compile_options(lightcyber PRIVATE /Gy /O1 /fp:fast /GR- /GS- /MT )
 
     if (MSVC_VERSION GREATER_EQUAL 1910) # VS2017
-        target_link_libraries(lightcyber Winmm.lib User32.lib ucrt.lib msvcrt.lib vcruntime.lib ucrt.lib)
+        target_link_libraries(lightcyber Winmm.lib User32.lib ucrt.lib msvcrt.lib vcruntime.lib ucrt.lib Vfw32.lib)
     else()
         # for debug output: User32.lib ucrt.lib msvcrt.lib
         target_link_libraries(lightcyber User32.lib Winmm.lib ucrt.lib msvcrt.lib)

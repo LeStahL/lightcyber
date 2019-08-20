@@ -32,7 +32,9 @@ WAVEHDR header = { 0, 0, 0, 0, 0, 0, 0, 0 };
 HDC hdc;
 HGLRC glrc;
 
-HWND hRecordFilenameEdit;
+#ifdef RECORD
+HWND hRecordFilenameEdit, hCaptureWindow, hCaptureDriverComboBox ;
+#endif 
 
 int flip_buffers()
 {
@@ -59,6 +61,12 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			switch(wParam)
 			{
 				case VK_ESCAPE:
+#ifdef RECORD
+                    if(recording) 
+                    {
+                        capFileSaveAs(hCaptureWindow, record_filename);
+                    }
+#endif
 					ExitProcess(0);
 					break;
 				case VK_SPACE:
@@ -72,6 +80,9 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			}
 			break;
 		case WM_RBUTTONDOWN:
+#ifdef RECORD
+            if(recording) capFileSaveAs(hCaptureWindow, record_filename);
+#endif
 			ExitProcess(0);
 			break;
 //         case WM_MOUSEMOVE:
@@ -111,7 +122,9 @@ LRESULT CALLBACK DialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 						SendMessage(hSender, BM_SETCHECK, BST_UNCHECKED, 0);
                 break;
 				case 7:
+#ifdef RECORD
                     GetWindowText(hRecordFilenameEdit, record_filename, 1024);
+#endif
 					DestroyWindow(hwnd);
 					PostQuitMessage(0);
                 break;
@@ -135,6 +148,8 @@ LRESULT CALLBACK DialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					override_index = SendMessage(hSender, CB_GETCURSEL, 0, 0);
 					scene_override = override_index > 0;
 				}
+				break;
+#ifdef RECORDING
                 case 11:
                 {
                     recording = !recording;
@@ -142,14 +157,17 @@ LRESULT CALLBACK DialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                     {
 						SendMessage(hSender, BM_SETCHECK, BST_CHECKED, 0);
                         EnableWindow(hRecordFilenameEdit, TRUE);
+                        EnableWindow(hCaptureDriverComboBox, TRUE);
                     }
                     else
                     {
 						SendMessage(hSender, BM_SETCHECK, BST_UNCHECKED, 0);
                         EnableWindow(hRecordFilenameEdit, FALSE);
+                        EnableWindow(hCaptureDriverComboBox, FALSE);
                     }
                 }
 				break;
+#endif
 			}
 			break;
 
@@ -182,7 +200,7 @@ int WINAPI demo(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, in
 		WS_OVERLAPPEDWINDOW,            // Window style
 
 		// Size and position
-		200, 200, 300, 330,
+		200, 200, 300, 360,
 
 		NULL,       // Parent window
 		NULL,       // Menu
@@ -256,17 +274,43 @@ int WINAPI demo(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, in
 	SendMessage(hSceneComboBox, CB_SETCURSEL, 0, 0);
 
 	// Add start button
-	HWND hwndButton = CreateWindow(WC_BUTTON,"Offend!",WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,185,195,90,90,lwnd,(HMENU)7,hInstance,NULL);
+	HWND hwndButton = CreateWindow(WC_BUTTON,"Offend!",WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,185,225,90,90,lwnd,(HMENU)7,hInstance,NULL);
 
+#ifdef RECORD
     // Add record checkbox
 	HWND hRecordCheckbox = CreateWindow(WC_BUTTON, TEXT("Record"),
 					 WS_VISIBLE | WS_CHILD | BS_CHECKBOX,
-					 10, 150, 100, 20,
+					 10, 150, 89, 20,
 					 lwnd, (HMENU) 11, hInstance, NULL);
     
     // Add record filename text field
     hRecordFilenameEdit = CreateWindow(WC_EDIT, TEXT("lightcyber.avi"), WS_VISIBLE | WS_CHILD | WS_BORDER ,100,150 ,175,25,lwnd, (HMENU) 12,NULL,NULL );
     EnableWindow(hRecordFilenameEdit, FALSE);
+    
+    // Add capture driver selector
+	hCaptureDriverComboBox = CreateWindow(WC_COMBOBOX, TEXT(""),
+        CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE,
+        100, 180, 175, 680, lwnd, (HMENU)12, hInstance,
+        NULL);
+    char capture_device_name[80];
+    char capture_device_version[80];
+
+    for(int wIndex = 0; wIndex < 10; wIndex++) 
+    {
+        if (capGetDriverDescription(
+                wIndex, 
+                capture_device_name, 
+                sizeof (capture_device_name), 
+                capture_device_version, 
+                sizeof (capture_device_version)
+            )) 
+        {
+            SendMessage(hCaptureDriverComboBox, (UINT) CB_ADDSTRING, (WPARAM) 0, (LPARAM) capture_device_name);
+        }
+    } 
+    SendMessage(hCaptureDriverComboBox, CB_SETCURSEL, 0, 0);
+    EnableWindow(hCaptureDriverComboBox, FALSE);
+#endif
     
 	// Show the selector
 	ShowWindow(lwnd, TRUE);
@@ -278,6 +322,14 @@ int WINAPI demo(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, in
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
+
+#if RECORDING
+	if(recording)
+    {
+        // FIXME: add actually selected driver
+        SendMessage (hCaptureWindow, WM_CAP_DRIVER_CONNECT, 0, 0L); 
+    }
+#endif
 
 #ifdef DEBUG
 	printf("Rendering Demo with:\nSound ");
@@ -308,22 +360,38 @@ int WINAPI demo(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, in
 	RegisterClassEx(&wc);
 
 	// Create the window.
-	HWND hwnd = CreateWindowEx(
-		0,                                                          // Optional window styles.
-		WindowClass,                                                // Window class
-		":: Team210 :: GO - MAKE A DEMO ::",                                 // Window text
-		WS_POPUP | WS_VISIBLE,                                      // Window style
-		0,
-		0,
-		w,
-		h,                     // Size and position
+    HWND hwnd = CreateWindowEx(
+            0,                                                          // Optional window styles.
+            WindowClass,                                                // Window class
+            ":: Team210 :: GO - MAKE A DEMO ::",                                 // Window text
+            WS_POPUP | WS_VISIBLE,                                      // Window style
+            0,
+            0,
+            w,
+            h,                     // Size and position
 
-		NULL,                                                       // Parent window
-		NULL,                                                       // Menu
-		hInstance,                                                  // Instance handle
-		0                                                           // Additional application data
-	);
-
+            NULL,                                                       // Parent window
+            NULL,                                                       // Menu
+            hInstance,                                                  // Instance handle
+            0                                                           // Additional application data
+        );
+#ifdef RECORD
+    if(recording)
+    {
+        hCaptureWindow = capCreateCaptureWindow(
+            WindowClass,
+            WS_CHILD | WS_VISIBLE,
+            0,
+            0,
+            w,
+            h,
+            hwnd,
+            0                                                
+        );
+        capCaptureSequence(hCaptureWindow); 
+    }
+#endif
+    
     DEVMODE dm = { 0 };
     dm.dmSize = sizeof(dm);
     dm.dmPelsWidth = w;
