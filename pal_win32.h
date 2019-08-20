@@ -32,6 +32,8 @@ WAVEHDR header = { 0, 0, 0, 0, 0, 0, 0, 0 };
 HDC hdc;
 HGLRC glrc;
 
+HWND hRecordFilenameEdit;
+
 int flip_buffers()
 {
 	SwapBuffers(hdc);
@@ -100,24 +102,24 @@ LRESULT CALLBACK DialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					w = widths[index];
                     h = heights[index];
 				}
-					break;
+                break;
 				case 6:
 					muted = !muted;
 					if(muted)
 						SendMessage(hSender, BM_SETCHECK, BST_CHECKED, 0);
 					else
 						SendMessage(hSender, BM_SETCHECK, BST_UNCHECKED, 0);
-					break;
+                break;
 				case 7:
 					DestroyWindow(hwnd);
 					PostQuitMessage(0);
-					break;
+                break;
 				case 8: // Full screen Antialiasing
 				{
 					int index = SendMessage(hSender, CB_GETCURSEL, 0, 0);
 					fsaa = (index + 1)*(index + 1);
 				}
-					break;
+                break;
 				case 9: // Texture buffer size
 				{
 					int index = SendMessage(hSender, CB_GETCURSEL, 0, 0);
@@ -126,12 +128,26 @@ LRESULT CALLBACK DialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 						texs *= 2;
 					block_size = texs*texs;
 				}
-					break;
+                break;
 				case 10:
 				{
 					override_index = SendMessage(hSender, CB_GETCURSEL, 0, 0);
 					scene_override = override_index > 0;
 				}
+                case 11:
+                {
+                    recording = !recording;
+					if(recording)
+                    {
+						SendMessage(hSender, BM_SETCHECK, BST_CHECKED, 0);
+                        EnableWindow(hRecordFilenameEdit, TRUE);
+                    }
+                    else
+                    {
+						SendMessage(hSender, BM_SETCHECK, BST_UNCHECKED, 0);
+                        EnableWindow(hRecordFilenameEdit, FALSE);
+                    }
+                }
 				break;
 			}
 			break;
@@ -165,7 +181,7 @@ int WINAPI demo(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, in
 		WS_OVERLAPPEDWINDOW,            // Window style
 
 		// Size and position
-		200, 200, 600, 300,
+		200, 200, 300, 330,
 
 		NULL,       // Parent window
 		NULL,       // Menu
@@ -239,8 +255,18 @@ int WINAPI demo(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, in
 	SendMessage(hSceneComboBox, CB_SETCURSEL, 0, 0);
 
 	// Add start button
-	HWND hwndButton = CreateWindow(WC_BUTTON,"Offend!",WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,485,165,90,90,lwnd,(HMENU)7,hInstance,NULL);
+	HWND hwndButton = CreateWindow(WC_BUTTON,"Offend!",WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,185,195,90,90,lwnd,(HMENU)7,hInstance,NULL);
 
+    // Add record checkbox
+	HWND hRecordCheckbox = CreateWindow(WC_BUTTON, TEXT("Record"),
+					 WS_VISIBLE | WS_CHILD | BS_CHECKBOX,
+					 10, 150, 100, 20,
+					 lwnd, (HMENU) 11, hInstance, NULL);
+    
+    // Add record filename text field
+    hRecordFilenameEdit = CreateWindow(WC_EDIT, TEXT("lightcyber.avi"), WS_VISIBLE | WS_CHILD | WS_BORDER ,100,150 ,175,25,lwnd, (HMENU) 12,NULL,NULL );
+    EnableWindow(hRecordFilenameEdit, FALSE);
+    
 	// Show the selector
 	ShowWindow(lwnd, TRUE);
 	UpdateWindow(lwnd);
@@ -279,16 +305,11 @@ int WINAPI demo(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, in
 
 	RegisterClassEx(&wc);
 
-// 	// Get full screen information
-// 	HMONITOR hmon = MonitorFromWindow(0, MONITOR_DEFAULTTONEAREST);
-// 	MONITORINFO mi = { sizeof(mi) };
-// 	GetMonitorInfo(hmon, &mi);
-
 	// Create the window.
 	HWND hwnd = CreateWindowEx(
 		0,                                                          // Optional window styles.
 		WindowClass,                                                // Window class
-		":: NR4^QM/Team210 :: GO - MAKE A DEMO ::",                                 // Window text
+		":: Team210 :: GO - MAKE A DEMO ::",                                 // Window text
 		WS_POPUP | WS_VISIBLE,                                      // Window style
 		0,
 		0,
@@ -308,7 +329,6 @@ int WINAPI demo(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, in
     dm.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT;
     
     ChangeDisplaySettings(&dm, CDS_FULLSCREEN);
-    
     
 	// Show it
 	ShowWindow(hwnd, TRUE);

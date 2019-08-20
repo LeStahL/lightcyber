@@ -19,8 +19,6 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-// #define DEBUG
-
 #define FALSE (0)
 #define TRUE (1)
 #define ABS(x) ((x)<0?(-x):(x))
@@ -270,7 +268,7 @@ int
     load_progress_location,
     
     // Antialiasing
-    fsaa = 25,
+    fsaa = 36,
     txaa = 1,
 
 	// Text
@@ -313,7 +311,8 @@ int music1_size;
 float texs = 512;
 int block_size = 512 * 512,
 nblocks1;
-unsigned int paused = 0;
+unsigned int paused = 0, 
+    recording = 0;
 float progress = .0;
 
 double t_paused;
