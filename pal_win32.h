@@ -111,6 +111,7 @@ LRESULT CALLBACK DialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 						SendMessage(hSender, BM_SETCHECK, BST_UNCHECKED, 0);
                 break;
 				case 7:
+                    GetWindowText(hRecordFilenameEdit, record_filename, 1024);
 					DestroyWindow(hwnd);
 					PostQuitMessage(0);
                 break;
@@ -280,10 +281,11 @@ int WINAPI demo(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, in
 
 #ifdef DEBUG
 	printf("Rendering Demo with:\nSound ");
-//     if(muted)printf("muted");
-//     else printf("playing");
+    if(muted)printf("muted");
+    else printf("playing");
 	printf("\nResolution: %d * %d\n", w, h);
 	printf("FSAA: %d*\n", fsaa);
+    if(recording)printf("recording to %s\n", record_filename);
 #endif
 
 	// Display demo window

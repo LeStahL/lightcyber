@@ -314,6 +314,7 @@ nblocks1;
 unsigned int paused = 0, 
     recording = 0;
 float progress = .0;
+char record_filename[1024];
 
 double t_paused;
 
