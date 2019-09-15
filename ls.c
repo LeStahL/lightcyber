@@ -527,6 +527,7 @@ void draw()
 #endif
         ExitProcess(0);
     }
+    
 #ifdef MIDI
     if(time_dial != 0 ||  time_fine_dial != 0 || time_very_fine_dial != 0)
     {
@@ -534,12 +535,6 @@ void draw()
         scene_override = 0;
     }
 #endif
-    
-    if(scene_override)
-    {
-        if(override_index <= 1) t = t_now;
-        else t = t_now + scene_start_times[(override_index-2)];
-    }
 
 #include "scenes.h"
     

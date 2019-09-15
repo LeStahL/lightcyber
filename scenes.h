@@ -1,6 +1,41 @@
 #ifndef SCENES_H
 #define SCENES_H
-
+    const double scene_start_times[] =
+    {
+        11.,
+        23.,
+        39.,
+        55.,
+        71.,
+        86.5,
+        103.,
+        118.,
+        133.,
+        141.,
+        156.,
+        157.8182,
+        159.6364,
+        161.4546,
+        162.3637,
+        163.2728,
+        165.091,
+        166.9092,
+        170.5456,
+        172.3638,
+        174.1820,
+        176.0002,
+        176.9093,
+        177.8184,
+        179.6366,
+        181.4548
+    };
+    
+    if(scene_override)
+    {
+        if(override_index <= 1) t = t_now;
+        else t = t_now + scene_start_times[(override_index-2)];
+    }
+    
     if(t < 11.)
     {
         glUseProgram(logo210_program);
