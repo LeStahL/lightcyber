@@ -189,38 +189,7 @@ const char *buffersize_names[] =
     "1024x1024 px"
 };
 
-const int nscenes = 28;
-const char *scene_names[] = 
-{
-    "All scenes",
-    "Logo 210",
-    "Evoke Logo",
-    "Red Graffiti",
-    "Cube",
-    "Honey Hell",
-    "Blue Graffiti",
-    "Tentacles",
-    "Bubbles",
-    "Smoke",
-    "Chart",
-    "Greetings",
-    "Smoke II",
-    "Graffiti III",
-    "Bubbles II",
-    "Tentacles II",
-    "Cube II",
-    "Smoke III",
-    "Bubbles III",
-    "Honey Hell II",
-    "Cube III",
-    "Tentacles III",
-    "Honey Hell III",
-    "Graffiti IV",
-    "Bubbles IV",
-    "Smoke IV",
-    "Cube IV",
-    "Tentacles V (End)"
-};
+#include "scenes.h"
 
 #ifdef MIDI
 HMIDIOUT hMidiOut;
